@@ -1,4 +1,4 @@
-package com.aueb.issues.user;
+package entity;
 
 /**
  * @author George Karampelas

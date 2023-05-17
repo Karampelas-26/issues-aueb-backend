@@ -1,15 +1,14 @@
 package com.aueb.issues.auth;
 
 import com.aueb.issues.security.JwtTokenUtil;
-import com.aueb.issues.user.User;
-import com.aueb.issues.user.UserRepository;
+import entity.User;
+import com.aueb.repository.UserRepository;
+import entity.auth.LoginRequest;
+import entity.auth.LoginResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

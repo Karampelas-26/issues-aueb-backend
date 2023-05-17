@@ -1,6 +1,6 @@
 package com.aueb.issues.security;
 
-import com.aueb.issues.user.User;
+import entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

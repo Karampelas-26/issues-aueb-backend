@@ -1,5 +1,7 @@
 package com.aueb.issues.auth;
 
+import entity.auth.LoginRequest;
+import entity.auth.LoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

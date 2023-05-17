@@ -1,4 +1,4 @@
-package com.aueb.issues.user;
+package entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,9 +41,9 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        List<GrantedAuthority> role = new ArrayList<GrantedAuthority>();
-        role.add(new SimpleGrantedAuthority("ROLE_"+this.role));
-        return role;
+        List<GrantedAuthority> tempRole = new ArrayList<GrantedAuthority>();
+        tempRole.add(new SimpleGrantedAuthority("ROLE_"+this.role));
+        return tempRole;
     }
 
     @Override

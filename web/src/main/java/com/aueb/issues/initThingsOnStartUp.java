@@ -1,8 +1,8 @@
 package com.aueb.issues;
 
-import com.aueb.issues.user.Role;
-import com.aueb.issues.user.User;
-import com.aueb.issues.user.UserRepository;
+import entity.Role;
+import entity.User;
+import com.aueb.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;

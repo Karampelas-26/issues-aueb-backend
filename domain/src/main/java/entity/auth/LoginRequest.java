@@ -1,4 +1,4 @@
-package com.aueb.issues.auth;
+package entity.auth;
 
 import lombok.*;
 
@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class LoginResponse {
+public class LoginRequest {
     private String email;
-    private String accessToken;
+    private String password;
 }
