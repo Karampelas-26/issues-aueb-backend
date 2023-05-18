@@ -1,4 +1,4 @@
-package com.aueb.issues.auth;
+package com.aueb.issues.web.auth;
 
 import com.aueb.issues.repository.UserRepository;
 import com.aueb.issues.security.JwtTokenUtil;
