@@ -1,6 +1,6 @@
 package com.aueb.issues.web.comittee;
 
-import com.aueb.issues.web.dto.ApplicationsResponse;
+import com.aueb.issues.web.dto.TeacherApplicationsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,7 +23,7 @@ public class ComitteeController {
     ComitteeService comitteeService;
 
     @GetMapping("/applications")
-    public ResponseEntity<ApplicationsResponse> getApplications() {
+    public ResponseEntity<TeacherApplicationsDTO> getApplications() {
         return ResponseEntity.ok(this.comitteeService.getApplications());
     }
 
