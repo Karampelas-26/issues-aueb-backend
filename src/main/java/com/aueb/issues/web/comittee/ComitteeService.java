@@ -12,7 +12,7 @@ public class ComitteeService {
 
     public ApplicationsResponse getApplications() {
         return ApplicationsResponse.builder()
-                .name("i m committee")
+                .name("i m committekghle")
                 .build();
     }
 }

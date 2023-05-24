@@ -41,19 +41,17 @@ public class UserEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        List<GrantedAuthority> tempRole = new ArrayList<GrantedAuthority>();
-        tempRole.add(new SimpleGrantedAuthority("ROLE_"+this.role));
-        return tempRole;
+        return List.of(new SimpleGrantedAuthority("ROLE_"+role.name()));
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return this.email;
     }
 
     @Override
