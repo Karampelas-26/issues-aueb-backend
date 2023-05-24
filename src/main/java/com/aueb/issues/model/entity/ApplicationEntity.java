@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.aueb.issues.model.entity.BuildingEntity;
 
+import java.time.LocalDateTime;
+
 /**
  * @author George Karampelas
  * @author Meme-iDanis
@@ -21,7 +23,6 @@ public class ApplicationEntity {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private String id;
     private String title;
     @OneToOne
@@ -30,4 +31,9 @@ public class ApplicationEntity {
     @OneToOne
     @JoinColumn(name = "building_id")
     private BuildingEntity building;
+    @Enumerated(EnumType.STRING)
+    private Priority priority;
+    private LocalDateTime createDate;
+    private LocalDateTime completionDate;
+
 }

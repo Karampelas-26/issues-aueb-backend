@@ -24,8 +24,7 @@ import java.util.*;
 public class UserEntity implements UserDetails {
 
     @Id
-    @GeneratedValue
-    private Long id;
+    private String id;
     private String email;
     private String password;
     private String phone;

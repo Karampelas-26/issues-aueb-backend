@@ -23,6 +23,5 @@ public class BuildingEntity {
     private String name;
     private String address;
     private int floors;
-//    private
 
 }

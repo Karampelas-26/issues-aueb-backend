@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * @author George Karampelasd
@@ -32,6 +33,7 @@ public class initThingsOnStartUp implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         UserEntity admin = UserEntity.builder()
+                .id(String.valueOf(UUID.randomUUID()))
                 .email("admin")
                 .password(passwordEncoder.encode("pass"))
                 .phone("6945227237")
@@ -44,6 +46,7 @@ public class initThingsOnStartUp implements CommandLineRunner {
                 .build();
         userRepository.save(admin);
         UserEntity teacher = UserEntity.builder()
+                .id(String.valueOf(UUID.randomUUID()))
                 .email("teach")
                 .password(passwordEncoder.encode("pass"))
                 .phone("6945227238")
@@ -56,6 +59,7 @@ public class initThingsOnStartUp implements CommandLineRunner {
                 .build();
         userRepository.save(teacher);
         UserEntity tech = UserEntity.builder()
+                .id(String.valueOf(UUID.randomUUID()))
                 .email("tech")
                 .password(passwordEncoder.encode("pass"))
                 .phone("6945227238")

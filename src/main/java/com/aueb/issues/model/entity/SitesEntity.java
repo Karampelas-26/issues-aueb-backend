@@ -1,9 +1,6 @@
 package com.aueb.issues.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +17,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "sites")
 public class SitesEntity {
     @Id
-    @GeneratedValue
-    private int id;
+    private String id;
+    private String name;
+    private String buildingId;
+    private String floor;
 }
