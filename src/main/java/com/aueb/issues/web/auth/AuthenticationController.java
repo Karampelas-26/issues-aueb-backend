@@ -2,6 +2,10 @@ package com.aueb.issues.web.auth;
 
 import com.aueb.issues.model.auth.LoginRequest;
 import com.aueb.issues.model.auth.LoginResponse;
+import com.aueb.issues.web.dto.ForgotPasswordRequest;
+import com.aueb.issues.web.dto.ForgotPasswordResponse;
+import com.aueb.issues.web.dto.ResetPasswordRequest;
+import com.aueb.issues.web.dto.ResetPasswordResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +27,14 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.login(loginRequest));
     }
 
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<ForgotPasswordResponse> forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest){
+        return ResponseEntity.ok(authenticationService.forgotPassword(forgotPasswordRequest));
+    }
 
-    //just a GET for testing
-    @GetMapping
-    public ResponseEntity<String> sayHi(){
-        return ResponseEntity.ok("hello dude");
+    @PostMapping("/resetPassword")
+    public ResponseEntity<ResetPasswordResponse> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+        return ResponseEntity.ok(authenticationService.resetPassword(resetPasswordRequest));
     }
 
 }
