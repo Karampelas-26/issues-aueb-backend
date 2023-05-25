@@ -1,11 +1,15 @@
 package com.aueb.issues.repository.representations;
 
 import com.opencsv.bean.CsvBindByName;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserRepresentation {
     @CsvBindByName(column = "firstname")
     private String fName;
