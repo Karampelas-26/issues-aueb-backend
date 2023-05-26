@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .disable()
                 .authorizeHttpRequests(
                         (authorization) -> authorization
+                                .requestMatchers("/technician/**").permitAll()
                                 .requestMatchers("/comittee/**").authenticated()
                                 .requestMatchers("/auth/**").permitAll()
                                 .anyRequest()

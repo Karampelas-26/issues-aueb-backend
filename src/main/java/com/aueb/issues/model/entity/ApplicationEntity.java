@@ -1,11 +1,7 @@
 package com.aueb.issues.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import com.aueb.issues.model.entity.BuildingEntity;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +14,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Getter
+@Setter
 @Table(name = "application")
 public class ApplicationEntity {
 
