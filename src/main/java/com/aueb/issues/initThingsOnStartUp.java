@@ -43,6 +43,7 @@ public class initThingsOnStartUp implements CommandLineRunner {
                 .address("Eygeniou Karavias 2, 11144 Attica")
                 .createdDate(new Date())
                 .role(Role.ADMIN)
+                .activated(false)
                 .build();
         userRepository.save(admin);
         UserEntity teacher = UserEntity.builder()
@@ -56,6 +57,7 @@ public class initThingsOnStartUp implements CommandLineRunner {
                 .address("Eygeniou Karavias 2, 11144 Attica")
                 .createdDate(new Date())
                 .role(Role.TEACHER)
+                .activated(true)
                 .build();
         userRepository.save(teacher);
         UserEntity tech = UserEntity.builder()

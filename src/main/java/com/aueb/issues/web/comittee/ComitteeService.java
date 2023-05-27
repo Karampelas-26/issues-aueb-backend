@@ -15,4 +15,9 @@ public class ComitteeService {
                 .name("i m committekghle")
                 .build();
     }
+
+    public CreateUserResponse createUser(CreateUserRequest request) {
+
+        return new CreateUserResponse();
+    }
 }

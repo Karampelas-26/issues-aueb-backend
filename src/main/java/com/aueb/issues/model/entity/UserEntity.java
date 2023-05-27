@@ -35,6 +35,7 @@ public class UserEntity implements UserDetails {
     private Date createdDate;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private boolean activated;
 
 
     @Override
@@ -70,6 +71,6 @@ public class UserEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.activated;
     }
 }

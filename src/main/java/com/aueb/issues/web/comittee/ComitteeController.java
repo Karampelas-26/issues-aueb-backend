@@ -5,9 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author George Karampelas
@@ -32,5 +30,10 @@ public class ComitteeController {
     @GetMapping("/hi")
     public ResponseEntity<String> sayHi(){
         return ResponseEntity.ok("hello from another endpoint");
+    }
+
+    @PostMapping("/create-user")
+    public ResponseEntity<CreateUserResponse> creatUser(@RequestBody CreateUserRequest request) {
+        return ResponseEntity.ok(comitteeService.createUser(request));
     }
 }
