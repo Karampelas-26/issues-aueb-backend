@@ -1,4 +1,4 @@
-package com.aueb.issues.web;
+package com.aueb.issues.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-public class SubmitApplicationResponse {
+public class ApplicationResponse {
     private LocalDateTime timestamp;
     private String responseDescription;
 }

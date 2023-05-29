@@ -1,7 +1,11 @@
 package com.aueb.issues.web.teacher;
 
 import com.aueb.issues.web.*;
+import com.aueb.issues.web.dto.ApplicationDTO;
+import com.aueb.issues.web.dto.ApplicationResponse;
 import com.aueb.issues.web.dto.TeacherApplicationsDTO;
+import com.aueb.issues.web.service.ApplicationsService;
+import com.aueb.issues.web.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +36,12 @@ public class TeacherController {
     }
 
     @PostMapping(value = "/panic")
-    public ResponseEntity<SubmitApplicationResponse> panicButton(@RequestBody String siteId){
+    public ResponseEntity<ApplicationResponse> panicButton(@RequestBody String siteId){
         return notificationService.panicButton(siteId);
     }
 
     @PostMapping(value ="/submit-new-issue")
-    public ResponseEntity<SubmitApplicationResponse> submitApplication(@RequestBody SubmitApplicationDTO requestDTO){
+    public ResponseEntity<ApplicationResponse> submitApplication(@RequestBody ApplicationDTO requestDTO){
         return applicationsService.submitApplication(requestDTO);
     }
 
