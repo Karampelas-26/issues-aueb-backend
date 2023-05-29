@@ -1,6 +1,5 @@
 package com.aueb.issues.web.comittee;
 
-import com.aueb.issues.web.dto.ApplicationsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,11 +18,6 @@ public class CommitteeController {
 
     @Autowired
     CommitteeService committeeService;
-
-    @GetMapping("/applications")
-    public ResponseEntity<ApplicationsResponse> getApplications() {
-        return ResponseEntity.ok(new ApplicationsResponse("hello from committee application"));
-    }
 
     @GetMapping("/hi")
     public ResponseEntity<String> sayHi(){

@@ -2,8 +2,8 @@ package com.aueb.issues.web.comittee;
 
 import com.aueb.issues.email.EmailService;
 import com.aueb.issues.model.entity.ActivationToken;
-import com.aueb.issues.model.entity.Role;
 import com.aueb.issues.model.entity.UserEntity;
+import com.aueb.issues.model.enums.Role;
 import com.aueb.issues.repository.ActivationTokenRepository;
 import com.aueb.issues.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
