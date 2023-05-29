@@ -15,17 +15,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/committee")
 @CrossOrigin(origins = "http://localhost:4200")
 @PreAuthorize("hasRole('ADMIN')")
-public class ComitteeController {
+public class CommitteeController {
 
     @Autowired
-    ComitteeService comitteeService;
+    CommitteeService committeeService;
 
     @GetMapping("/applications")
     public ResponseEntity<ApplicationsResponse> getApplications() {
-        return ResponseEntity.ok(this.comitteeService.getApplications());
+        return ResponseEntity.ok(new ApplicationsResponse("hello from committee application"));
     }
-
-    //TODO
 
     @GetMapping("/hi")
     public ResponseEntity<String> sayHi(){
@@ -34,6 +32,6 @@ public class ComitteeController {
 
     @PostMapping("/create-user")
     public ResponseEntity<CreateUserResponse> creatUser(@RequestBody CreateUserRequest request) {
-        return ResponseEntity.ok(comitteeService.createUser(request));
+        return committeeService.createUser(request);
     }
 }

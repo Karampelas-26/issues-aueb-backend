@@ -17,7 +17,7 @@ public class CreateUserRequest {
     private String phone;
     private String firstname;
     private String lastname;
-    private char gender;
+    private String gender;
     private String address;
     private String role;
 }
