@@ -4,6 +4,8 @@ import lombok.*;
 
 /**
  * @author George Karampelas
+ *
+ * This will transfer data to teacher role. Will contain only the nessecary info.
  */
 @Data
 @Builder

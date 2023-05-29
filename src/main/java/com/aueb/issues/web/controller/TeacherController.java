@@ -1,10 +1,9 @@
-package com.aueb.issues.web.teacher;
+package com.aueb.issues.web.controller;
 
-import com.aueb.issues.web.*;
 import com.aueb.issues.web.dto.ApplicationDTO;
-import com.aueb.issues.web.dto.ApplicationResponse;
+import com.aueb.issues.web.dto.NotificationDTO;
 import com.aueb.issues.web.dto.TeacherApplicationsDTO;
-import com.aueb.issues.web.service.ApplicationsService;
+import com.aueb.issues.web.service.ApplicationService;
 import com.aueb.issues.web.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +23,11 @@ public class TeacherController {
     @Autowired
     NotificationService notificationService;
     @Autowired
-    ApplicationsService applicationsService;
+    ApplicationService applicationService;
 
     @GetMapping(value = "/getApplications", produces = "application/json")
     public ResponseEntity<List<TeacherApplicationsDTO>> getApplications() {
-        return  applicationsService.getTeacherApplications();
+        return  applicationService.getTeacherApplications();
     }
     @GetMapping(value="/notifications", produces = "application/json")
     public ResponseEntity<List<NotificationDTO>> getNotifications(){
@@ -36,13 +35,13 @@ public class TeacherController {
     }
 
     @PostMapping(value = "/panic")
-    public ResponseEntity<ApplicationResponse> panicButton(@RequestBody String siteId){
+    public ResponseEntity<String> panicButton(@RequestBody String siteId){
         return notificationService.panicButton(siteId);
     }
 
     @PostMapping(value ="/submit-new-issue")
-    public ResponseEntity<ApplicationResponse> submitApplication(@RequestBody ApplicationDTO requestDTO){
-        return applicationsService.submitApplication(requestDTO);
+    public ResponseEntity<String> submitApplication(@RequestBody ApplicationDTO requestDTO){
+        return applicationService.submitApplication(requestDTO);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.aueb.issues.web.comittee;
+package com.aueb.issues.web.service;
 
 import com.aueb.issues.email.EmailService;
 import com.aueb.issues.model.entity.ActivationToken;
@@ -6,27 +6,25 @@ import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.model.enums.Role;
 import com.aueb.issues.repository.ActivationTokenRepository;
 import com.aueb.issues.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import com.aueb.issues.web.comittee.CreateUserDTO;
+import com.aueb.issues.web.comittee.CreateUserResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * @author George Karampelas
- */
 @Service
-@RequiredArgsConstructor
-@Slf4j
-public class CommitteeService {
+public class UserService {
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    EmailService emailService;
+    @Autowired
+    ActivationTokenRepository activationTokenRepository;
 
-    private final UserRepository userRepository;
-    private final EmailService emailService;
-    private final ActivationTokenRepository activationTokenRepository;
-
-    public ResponseEntity<CreateUserResponse> createUser(CreateUserRequest request) {
+    public ResponseEntity<CreateUserResponse> createUser(CreateUserDTO request) {
 
         UserEntity user = UserEntity.builder()
                 .id(String.valueOf(UUID.randomUUID()))

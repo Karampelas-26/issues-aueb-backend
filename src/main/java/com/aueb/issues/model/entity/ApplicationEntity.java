@@ -28,7 +28,7 @@ public class ApplicationEntity {
     private String title;
     @OneToOne
     @JoinColumn(name = "sites_entity_id")
-    private SitesEntity sites;
+    private SiteEntity site;
     @OneToOne
     @JoinColumn(name = "building_id")
     private BuildingEntity building;
@@ -37,10 +37,12 @@ public class ApplicationEntity {
     private String description;
     private LocalDateTime createDate;
     private LocalDateTime completionDate;
+    private LocalDateTime dueDate;
     private String creationUserId;
     private String assigneeTechId;
     @Enumerated(EnumType.STRING)
     private Status status;
+
     //create comments
 
 }

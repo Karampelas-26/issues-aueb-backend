@@ -1,4 +1,4 @@
-package com.aueb.issues.web;
+package com.aueb.issues.web.dto;
 
 import jakarta.persistence.Id;
 import lombok.Getter;
