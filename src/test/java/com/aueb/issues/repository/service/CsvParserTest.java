@@ -2,32 +2,24 @@ package com.aueb.issues.repository.service;
 
 import com.aueb.issues.repository.representations.UserRepresentation;
 import jakarta.mail.MessagingException;
-import jakarta.mail.Multipart;
-import jakarta.persistence.Table;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.aueb.issues.model.entity.Role.TEACHER;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.aueb.issues.model.enums.Role.TEACHER;
+
 @Slf4j
 @RunWith(SpringRunner.class)
 @ContextConfiguration(
