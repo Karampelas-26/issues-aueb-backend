@@ -1,5 +1,6 @@
 package com.aueb.issues.model.entity;
 
+import com.aueb.issues.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

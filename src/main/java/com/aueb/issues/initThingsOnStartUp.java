@@ -1,6 +1,6 @@
 package com.aueb.issues;
 
-import com.aueb.issues.model.entity.Role;
+import com.aueb.issues.model.enums.Role;
 import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.repository.UserRepository;
 import org.springframework.context.annotation.Configuration;
