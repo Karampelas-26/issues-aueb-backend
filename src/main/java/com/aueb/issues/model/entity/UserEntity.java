@@ -28,11 +28,12 @@ public class UserEntity implements UserDetails {
     private String phone;
     private String firstname;
     private String lastname;
-    private char gender;
+    private String gender;
     private String address;
     private Date createdDate;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private boolean activated;
 
 
     @Override
@@ -68,6 +69,6 @@ public class UserEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.activated;
     }
 }

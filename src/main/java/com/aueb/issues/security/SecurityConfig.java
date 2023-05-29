@@ -35,7 +35,7 @@ public class SecurityConfig {
                         (authorization) -> authorization
                                 .requestMatchers("/technician/**").authenicated()
                                 .requestMatchers("/auth/**").permitAll()
-                                .requestMatchers("/comittee/**").authenticated()
+                                .requestMatchers("/committee/**").authenticated()
                                 .anyRequest()
                                 .authenticated()
                 )

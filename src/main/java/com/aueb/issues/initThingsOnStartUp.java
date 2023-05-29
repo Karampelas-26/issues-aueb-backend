@@ -84,10 +84,11 @@ public class initThingsOnStartUp implements CommandLineRunner {
                 .phone("6945227237")
                 .firstname("George")
                 .lastname("Karampelas")
-                .gender('M')
+                .gender("M")
                 .address("Eygeniou Karavias 12, 11144 Attica")
                 .createdDate(new Date())
                 .role(Role.ADMIN)
+                .activated(true)
                 .build();
         userRepository.save(admin);
         UserEntity teacher = UserEntity.builder()
@@ -97,10 +98,11 @@ public class initThingsOnStartUp implements CommandLineRunner {
                 .phone("6945227238")
                 .firstname("Steve")
                 .lastname("iDanys")
-                .gender('M')
+                .gender("M")
                 .address("Eygeniou Karavias 2, 11144 Attica")
                 .createdDate(new Date())
                 .role(Role.TEACHER)
+                .activated(true)
                 .build();
         userRepository.save(teacher);
         UserEntity tech = UserEntity.builder()
@@ -110,7 +112,7 @@ public class initThingsOnStartUp implements CommandLineRunner {
                 .phone("6945227238")
                 .firstname("Charalampos")
                 .lastname("Aggelis")
-                .gender('M')
+                .gender("M")
                 .address("Eygeniou Karavias 32, 11144 Attica")
                 .createdDate(new Date())
                 .role(Role.TECHNICIAN)

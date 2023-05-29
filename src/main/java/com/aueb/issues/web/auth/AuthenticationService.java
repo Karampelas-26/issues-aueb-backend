@@ -1,8 +1,10 @@
 package com.aueb.issues.web.auth;
 
 import com.aueb.issues.email.EmailService;
+import com.aueb.issues.model.entity.ActivationToken;
 import com.aueb.issues.model.entity.OTP;
 import com.aueb.issues.model.entity.UserEntity;
+import com.aueb.issues.repository.ActivationTokenRepository;
 import com.aueb.issues.repository.OTPRepository;
 import com.aueb.issues.repository.UserRepository;
 import com.aueb.issues.security.JwtTokenUtil;
@@ -12,15 +14,20 @@ import com.aueb.issues.web.dto.ForgotPasswordRequest;
 import com.aueb.issues.web.dto.ForgotPasswordResponse;
 import com.aueb.issues.web.dto.ResetPasswordRequest;
 import com.aueb.issues.web.dto.ResetPasswordResponse;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
@@ -39,10 +46,11 @@ public class AuthenticationService {
     private final EmailService mailSender;
     private final OTPRepository otpRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ActivationTokenRepository activationTokenRepository;
 
     private static final int EXPIRATION_TIME_OTP = 15;
 
-    public LoginResponse login(LoginRequest request){
+    public ResponseEntity<LoginResponse> login(LoginRequest request){
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -55,35 +63,48 @@ public class AuthenticationService {
 
             String jwtToken = "";
 
-            if(user.isPresent()) jwtToken = jwtTokenUtil.generateAccessToken(user.get());
+            if(user.isPresent()) {
+                jwtToken = jwtTokenUtil.generateAccessToken(user.get());
 
-            return LoginResponse.builder()
+                return ResponseEntity.ok(
+                    LoginResponse.builder()
                     .email(request.getEmail())
                     .accessToken(jwtToken)
+                    .build()
+                );
+            }
+            return ResponseEntity.notFound().build();
+        }
+        catch (DisabledException disabledException) {
+            String errorMessage = "Your account is not activated.";
+            LoginResponse res = LoginResponse.builder()
+                    .message(errorMessage)
                     .build();
-        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(res);
+        }
+        catch (Exception e) {
             log.error(e.toString());
-            return null;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     public ForgotPasswordResponse forgotPassword(ForgotPasswordRequest request) {
-        Optional<UserEntity> user = userRepository.findByEmail(request.getEmail());
         ForgotPasswordResponse response = new ForgotPasswordResponse();
-        if(user.isEmpty()) {
-            response.setMessage("User with this email does not exist");
-        }
+        UserEntity user = userRepository.findByEmail(request.getEmail()).orElseThrow(()-> {
+            response.setMessage("User not found");
+            return new EntityNotFoundException("User not found");
+        });
         String otPassword = generateOTP();
 
         String body = "Hi " +
-                user.get().getFirstname() + "\n" +
+                user.getFirstname() + "\n" +
                 "Reset your password with One-Time Password: " +
                 otPassword;
 
         mailSender.sendEmail(request.getEmail(), "Reset password", body);
         response.setMessage("Email with OTP send successfully");
         OTP otp = OTP.builder()
-                .userId(user.get().getId())
+                .userId(user.getId())
                 .otpPassword(passwordEncoder.encode(otPassword))
                 .otpCreationDateTime(LocalDateTime.now())
                 .expirationMinutes(EXPIRATION_TIME_OTP)
@@ -92,13 +113,6 @@ public class AuthenticationService {
         return response;
     }
 
-
-
-
-
-
-
-
     private String generateOTP(){
         Random random = new Random();
         int otp = 100_000 + random.nextInt(900_000);
@@ -106,19 +120,16 @@ public class AuthenticationService {
     }
 
     public ResetPasswordResponse resetPassword(ResetPasswordRequest request) {
-        Optional<UserEntity> user = userRepository.findByEmail(request.getEmail());
+        UserEntity user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new EntityNotFoundException("User not found"));
         ResetPasswordResponse response = new ResetPasswordResponse();
         boolean validOTP = false;
-        if (user.isPresent()){
-            Optional<OTP> otp = otpRepository.findByUserId(user.get().getId());
-            if (otp.isPresent()){
-                validOTP = isValidOTP(otp.get(), request.getOtp());
-            }
-        }
+
+        OTP otp = otpRepository.findByUserId(user.getId()).orElseThrow(() -> new EntityNotFoundException("OTP not found"));
+        validOTP = isValidOTP(otp, request.getOtp());
         if(validOTP) {
-            user.get().setPassword(passwordEncoder.encode(request.getPassword()));
-            userRepository.save(user.get());
-//            otpRepository.deleteByUserId(user.get().getId());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            userRepository.save(user);
+            otpRepository.delete(otp);
             response.setSuccess(true);
             response.setMessage("Successfully reset password");
             return response;
@@ -132,9 +143,26 @@ public class AuthenticationService {
         LocalDateTime expirationDate = otp.getOtpCreationDateTime().plus(EXPIRATION_TIME_OTP, ChronoUnit.MINUTES);
         LocalDateTime currentTime = LocalDateTime.now();
         boolean isExpired = currentTime.isAfter(expirationDate);
-        log.info("is token expired? " + isExpired);
         boolean validOTP = passwordEncoder.matches(oneTimePassword, otp.getOtpPassword());
-        log.info("is valid otp password? " + validOTP);
         return (!isExpired) && validOTP;
+    }
+
+    public ResponseEntity<ActivationUserResponse> activateUser(ActivationUserRequest request) {
+
+        ActivationToken token = activationTokenRepository.findByActivationToken(request.getActivationToken()).orElseThrow(() -> new EntityNotFoundException("Activation token not found"));
+
+        log.info("activation token: " + token.getActivationToken());
+
+        UserEntity user = userRepository.findById(token.getUserId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        if(request.getActivationToken().equals(token.getActivationToken())) {
+            user.setActivated(true);
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            userRepository.save(user);
+            activationTokenRepository.delete(token);
+            log.info("success");
+            return ResponseEntity.ok(new ActivationUserResponse(user));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
     }
 }
