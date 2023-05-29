@@ -1,4 +1,4 @@
-package com.aueb.issues.model.entity;
+package com.aueb.issues.model.enums;
 
 /**
  * @author George Karampelas
