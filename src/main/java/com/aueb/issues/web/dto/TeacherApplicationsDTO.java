@@ -9,6 +9,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApplicationsResponse {
+public class TeacherApplicationsDTO {
     private String name;//todo change it with array of objects with issues
 }

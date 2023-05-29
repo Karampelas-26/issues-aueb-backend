@@ -1,13 +1,16 @@
 package com.aueb.issues.web.comittee;
 
-import com.aueb.issues.web.dto.ApplicationsResponse;
+import com.aueb.issues.web.dto.ApplicationDTO;
+import com.aueb.issues.web.dto.ApplicationResponse;
+import com.aueb.issues.web.dto.TeacherApplicationsDTO;
+import com.aueb.issues.web.service.ApplicationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author George Karampelas
@@ -20,17 +23,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ComitteeController {
 
     @Autowired
-    ComitteeService comitteeService;
+    ApplicationsService applicationsService;
+
 
     @GetMapping("/applications")
-    public ResponseEntity<ApplicationsResponse> getApplications() {
-        return ResponseEntity.ok(this.comitteeService.getApplications());
+    public ResponseEntity<List<ApplicationDTO>> getApplications() {
+        return applicationsService.getApplications();
     }
 
-    //TODO
-
+    //TODO: Statistics, User import, building import, new application
     @GetMapping("/hi")
     public ResponseEntity<String> sayHi(){
         return ResponseEntity.ok("hello from another endpoint");
+    }
+
+
+    @PostMapping(value ="/submit-new-issue")
+    public ResponseEntity<ApplicationResponse> submitApplication(@RequestBody ApplicationDTO requestDTO){
+        return applicationsService.submitApplication(requestDTO);
     }
 }
