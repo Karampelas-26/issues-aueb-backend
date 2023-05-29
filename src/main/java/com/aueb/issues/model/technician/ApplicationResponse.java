@@ -20,5 +20,5 @@ import java.util.Optional;
 @NoArgsConstructor
 public class ApplicationResponse {
     private List<ApplicationEntity> issuesList;
-    private Optional<ApplicationEntity> issue;
+    //private Optional<ApplicationEntity> issue;
 }

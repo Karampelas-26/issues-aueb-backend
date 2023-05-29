@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import java.util.Optional;
 @Slf4j
 public class TechnicianService {
     private final TechnicianRepository technicianRepository;
+    private  ApplicationEntity applicationentity;
     public ApplicationResponse response(){
         try{
              List<ApplicationEntity> issues = technicianRepository.findAll();
@@ -36,18 +38,38 @@ public class TechnicianService {
             Optional<ApplicationEntity> issue = technicianRepository.findById(id);
             if(issue.isPresent()) {
                 issue.get().setTitle(request.getTitle());
+                /*issue.get().setPriority(request.getPriority());
+                issue.get().setSites(request.getSites());
+                issue.get().setBuilding(request.getBuilding());
+                issue.get().setCreateDate(request.getCreateDate());
+                issue.get().setCompletionDate(request.getCompletionDate());*/
 
-//                issue.get().setPriority(request.getPriority());
-//                issue.get().setSites(request.getSites());
-//                issue.get().setBuilding(request.getBuilding());
-//                issue.get().setCreateDate(request.getCreateDate());
-//                issue.get().setCompletionDate(request.getCompletionDate());
             }
-            return ApplicationResponse.builder().issue(issue).build();
+            List<ApplicationEntity> issues = new ArrayList<>();
+            issues.add(issue.get());
+            return ApplicationResponse.builder().issuesList(issues).build();
 
         }catch (Exception e){
             log.error(e.toString());
             return null;
         }
+    }
+
+    public ApplicationResponse deleteIssue(String id, ApplicationRequest request){
+        try{
+            Optional<ApplicationEntity> issue = technicianRepository.findById(id);
+            if(issue.isPresent() && request.isComplete()){
+                technicianRepository.deleteById(id);
+            }
+
+            List<ApplicationEntity> issues = technicianRepository.findAll();
+            return  ApplicationResponse.builder()
+                    .issuesList(issues)
+                    .build();
+        }catch (Exception e){
+            log.error(e.toString());
+            return null;
+        }
+
     }
 }

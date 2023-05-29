@@ -30,5 +30,10 @@ public class TechnicianController {
         return ResponseEntity.ok(technicianService.update(id, request));
     }
 
+    @DeleteMapping("/{issueid}")
+    public ResponseEntity<ApplicationResponse> completeIssue(@PathVariable("issueid") String id,
+                                                             @RequestBody ApplicationRequest request){
+        return ResponseEntity.ok(technicianService.deleteIssue(id,request));
+    }
 
 }

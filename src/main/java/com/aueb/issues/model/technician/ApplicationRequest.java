@@ -15,11 +15,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApplicationRequest {
-//    private String id;
+   /* private String id;*/
     private String title;
-//    private SitesEntity sites;
-//    private BuildingEntity building;
-//    private Priority priority;
-//    private LocalDateTime createDate;
-//    private LocalDateTime completionDate;
+    private SitesEntity sites;
+    private BuildingEntity building;
+    private Priority priority;
+    private LocalDateTime createDate;
+    private LocalDateTime completionDate;
+    private boolean complete;
 }
