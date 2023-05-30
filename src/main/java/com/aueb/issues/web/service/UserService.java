@@ -34,7 +34,7 @@ public class UserService {
     ActivationTokenRepository activationTokenRepository;
 
     public ResponseEntity<CreateUserResponse> createUser(CreateUserDTO request) {
-
+        log.info("i m in");
         UserEntity user = UserEntity.builder()
                 .id(String.valueOf(UUID.randomUUID()))
                 .firstname(request.getFirstname())
