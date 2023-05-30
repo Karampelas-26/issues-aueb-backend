@@ -33,9 +33,7 @@ public class SecurityConfig {
                 .disable()
                 .authorizeHttpRequests(
                         (authorization) -> authorization
-//                                .requestMatchers(PathRequest.toOptions()).permitAll()
                                 .requestMatchers("/auth/**").permitAll()
-//                                .requestMatchers("/committee/**").hasRole("ADMIN")
                                 .requestMatchers("/committee/**").permitAll()
                                 .requestMatchers("/teacher/**").permitAll()
                                 .anyRequest()
