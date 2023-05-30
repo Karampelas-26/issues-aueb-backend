@@ -4,9 +4,11 @@ import com.aueb.issues.web.comittee.CreateUserDTO;
 import com.aueb.issues.web.comittee.CreateUserResponse;
 import com.aueb.issues.web.dto.ApplicationDTO;
 import com.aueb.issues.web.dto.BuildingDTO;
+import com.aueb.issues.web.dto.EquipmentDTO;
 import com.aueb.issues.web.dto.UserDTO;
 import com.aueb.issues.web.service.ApplicationService;
 import com.aueb.issues.web.service.BuildingsService;
+import com.aueb.issues.web.service.EquipmentService;
 import com.aueb.issues.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,9 @@ public class CommitteeController {
     UserService userService;
     @Autowired
     BuildingsService buildingsService;
+    @Autowired
+    EquipmentService equipmentService;
+
     @GetMapping(value = "/getApplications", produces = "application/json")
     public ResponseEntity<List<ApplicationDTO>> getApplications() {
         return applicationService.getApplications();
@@ -46,12 +51,12 @@ public class CommitteeController {
         return userService.getUsers();
     }
 
-    @PutMapping("/updateuser/{userId}")
+    @PutMapping("/update-user/{userId}")
     public ResponseEntity<String> updateUser(@PathVariable("userId") Long id,
                                              @RequestBody UserDTO request){
         return userService.updateUser(id,request);
     }
-    @DeleteMapping("/deleteuser/{userId}")
+    @DeleteMapping("/delete-user/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable("userId") Long id){
         return userService.deleteUser(id);
     }
@@ -59,7 +64,7 @@ public class CommitteeController {
     public ResponseEntity<String> submitApplication(@RequestBody ApplicationDTO requestDTO){
         return applicationService.submitApplication(requestDTO);
     }
-    @PostMapping("/create-building")
+    @PostMapping("/createBuilding")
     public ResponseEntity<String> createBuilding(@RequestBody BuildingDTO requestDTO){
         return buildingsService.createBuilding(requestDTO);
     }
@@ -69,7 +74,7 @@ public class CommitteeController {
         return buildingsService.getBuildings();
     }
 
-    @PutMapping("/updatebuilding/{buildingId}")
+    @PutMapping("/updateBuilding/{buildingId}")
     public ResponseEntity<String> updateBuilding(@PathVariable("buildingId") int id,
             @RequestBody BuildingDTO request){
         return buildingsService.updateBuilding(id,request);
@@ -78,5 +83,26 @@ public class CommitteeController {
     @DeleteMapping("deleteBuilding/{buildingId}")
     public ResponseEntity<String> deleteBuilding(@PathVariable("buildingId") int id){
         return buildingsService.deleteBuilding(id);
+    }
+
+    @PostMapping("/createEquipment")
+    public ResponseEntity<String> createEquipment(@RequestBody EquipmentDTO request){
+        return equipmentService.createEquipment(request);
+    }
+
+    @GetMapping("/getEquipment")
+    public ResponseEntity<List<EquipmentDTO>> getEquipment(){
+        return equipmentService.getEquipment();
+    }
+
+    @PutMapping("/updateEquipment/{equipmentId}")
+    public ResponseEntity<String> updateEquipment(@PathVariable("equipmentId") String id,
+                                                  @RequestBody EquipmentDTO request){
+        return equipmentService.updateEquipment(id,request);
+    }
+
+    @DeleteMapping("/updateEquipment/{equipmentId}")
+    public ResponseEntity<String> updateEquipment(@PathVariable("equipmentId") String id){
+        return equipmentService.deleteEquipment(id);
     }
 }
