@@ -8,6 +8,7 @@ import com.aueb.issues.repository.ActivationTokenRepository;
 import com.aueb.issues.repository.UserRepository;
 import com.aueb.issues.web.comittee.CreateUserDTO;
 import com.aueb.issues.web.comittee.CreateUserResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class UserService {
     @Autowired
     UserRepository userRepository;
@@ -25,7 +27,7 @@ public class UserService {
     ActivationTokenRepository activationTokenRepository;
 
     public ResponseEntity<CreateUserResponse> createUser(CreateUserDTO request) {
-
+        log.info("i m in");
         UserEntity user = UserEntity.builder()
                 .id(String.valueOf(UUID.randomUUID()))
                 .firstname(request.getFirstname())
