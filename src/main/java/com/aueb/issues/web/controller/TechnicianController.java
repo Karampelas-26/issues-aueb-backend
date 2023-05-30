@@ -2,6 +2,7 @@ package com.aueb.issues.web.controller;
 
 import com.aueb.issues.web.dto.ApplicationDTO;
 import com.aueb.issues.web.service.ApplicationService;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,8 @@ public class TechnicianController {
     ApplicationService applicationService;
 
     @GetMapping
-    public ResponseEntity<List<ApplicationDTO>> getIssues(){
-        return applicationService.getApplications();
+    public ResponseEntity<List<ApplicationDTO>> getIssues(@RequestBody ObjectNode node){
+        return applicationService.getApplications(node);
     }
 
     @PutMapping("{issueid}")

@@ -10,6 +10,7 @@ import com.aueb.issues.web.service.ApplicationService;
 import com.aueb.issues.web.service.BuildingsService;
 import com.aueb.issues.web.service.EquipmentService;
 import com.aueb.issues.web.service.UserService;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,8 +39,8 @@ public class CommitteeController {
     EquipmentService equipmentService;
 
     @GetMapping(value = "/getApplications", produces = "application/json")
-    public ResponseEntity<List<ApplicationDTO>> getApplications() {
-        return applicationService.getApplications();
+    public ResponseEntity<List<ApplicationDTO>> getApplications(@RequestBody ObjectNode requestData) {
+        return applicationService.getApplications(requestData);
     }
     //TODO: Methods for Statistics, getBuildings, getUsers, getEquipment,
     @PostMapping("/create-user")
@@ -101,8 +102,8 @@ public class CommitteeController {
         return equipmentService.updateEquipment(id,request);
     }
 
-    @DeleteMapping("/updateEquipment/{equipmentId}")
-    public ResponseEntity<String> updateEquipment(@PathVariable("equipmentId") String id){
+    @DeleteMapping("/deleteEquipment/{equipmentId}")
+    public ResponseEntity<String> deleteEquipment(@PathVariable("equipmentId") String id){
         return equipmentService.deleteEquipment(id);
     }
 }

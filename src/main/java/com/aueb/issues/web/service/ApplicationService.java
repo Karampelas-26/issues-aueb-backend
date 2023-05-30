@@ -7,6 +7,7 @@ import com.aueb.issues.repository.ApplicationRepository;
 import com.aueb.issues.web.dto.ApplicationDTO;
 import com.aueb.issues.web.dto.TeacherApplicationsDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,9 @@ public class ApplicationService {
         return  ResponseEntity.ok(null);
     }
 
-    public ResponseEntity<List<ApplicationDTO>> getApplications(){
+    public ResponseEntity<List<ApplicationDTO>> getApplications(ObjectNode node){
+        node.has("buildingID");
+        node.get("buid");
         List<ApplicationDTO> ret = new ArrayList<>();
         try{
             List<ApplicationEntity> issues = applicationRepository.findAll();

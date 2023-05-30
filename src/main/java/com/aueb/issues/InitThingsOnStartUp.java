@@ -117,6 +117,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                 .address("Eygeniou Karavias 32, 11144 Attica")
                 .createdDate(new Date())
                 .role(Role.TECHNICIAN)
+                .activated(true)
                 .build();
         userRepository.save(tech);
     }
