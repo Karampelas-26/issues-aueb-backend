@@ -7,6 +7,7 @@ package com.aueb.issues.model.enums;
 public enum Role {
     TEACHER,
     TECHNICIAN,
-    ADMIN
+    ADMIN,
+    SUPER_ADMIN
 
 }

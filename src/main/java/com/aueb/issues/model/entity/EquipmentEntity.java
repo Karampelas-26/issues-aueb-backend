@@ -16,13 +16,8 @@ import java.time.LocalDateTime;
 @Table(name = "equipment")
 public class EquipmentEntity {
     @Id
-    private String id;
-    @OneToOne
-    @JoinColumn(name = "building_id")
-    private BuildingEntity building;
-    @OneToOne
-    @JoinColumn(name = "sites_entity_id")
-    private SiteEntity site;
+    @GeneratedValue
+    private Long id;
     private String typeOfEquipment;
     private LocalDateTime installationDate;
 }

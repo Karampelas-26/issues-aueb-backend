@@ -27,7 +27,7 @@ public class BuildingsService {
             Random rand = new Random();
             int i = rand.nextInt();
             buildingEntity = BuildingEntity.builder()
-                    .id(i)
+//                    .id(i)
                     .name(requestDTO.getName())
                     .address(requestDTO.getAddress())
                     .floors(requestDTO.getFloors())

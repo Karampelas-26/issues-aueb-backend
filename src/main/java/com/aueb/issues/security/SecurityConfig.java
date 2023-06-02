@@ -36,6 +36,7 @@ public class SecurityConfig {
                                 .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/committee/**").permitAll()
                                 .requestMatchers("/teacher/**").permitAll()
+                                .requestMatchers("/technician/**").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )

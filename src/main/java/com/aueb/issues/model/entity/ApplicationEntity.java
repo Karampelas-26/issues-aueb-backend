@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * @author George Karampelas
@@ -26,19 +27,22 @@ public class ApplicationEntity {
     @Id
     private String id;
     private String title;
-    @OneToOne
-    @JoinColumn(name = "sites_entity_id")
+
+    @ManyToOne
     private SiteEntity site;
-    @OneToOne
-    @JoinColumn(name = "building_id")
-    private BuildingEntity building;
+
+//    @ManyToOne
+//    private EquipmentEntity equipment;
+
+    private Long building_id;
     @Enumerated(EnumType.STRING)
     private Priority priority;
     private String description;
     private LocalDateTime createDate;
     private LocalDateTime completionDate;
     private LocalDateTime dueDate;
-    private String creationUserId;
+    @ManyToOne
+    private UserEntity creationUserId;
     private String assigneeTechId;
     @Enumerated(EnumType.STRING)
     private Status status;

@@ -1,10 +1,10 @@
 package com.aueb.issues.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author George Karampelas
@@ -19,9 +19,8 @@ public class BuildingEntity {
 
     @Id
     @GeneratedValue
-    private int id;
+    private Long id;
     private String name;
     private String address;
     private int floors;
-
 }

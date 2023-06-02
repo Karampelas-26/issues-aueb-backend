@@ -34,9 +34,9 @@ public class EquipmentService {
     public ResponseEntity<String> createEquipment(EquipmentDTO request) {
         try{
             EquipmentEntity equipment = EquipmentEntity.builder()
-                    .id(String.valueOf(UUID.randomUUID()))
-                    .building(buildingService.getBuildingById(request.getBuildingId()))
-                    .site(siteService.getSiteBySiteId(request.getSiteId()))
+//                    .id(String.valueOf(UUID.randomUUID()))
+//                    .building(buildingService.getBuildingById(request.getBuildingId()))
+//                    .site(siteService.getSiteBySiteId(request.getSiteId()))
                     .typeOfEquipment(request.getTypeOfEquipment())
                     .installationDate(dateTime)
                     .build();
@@ -71,12 +71,12 @@ public class EquipmentService {
             if(equipment!=null) {
                 return ResponseEntity.badRequest().body("No equipment with such id");
             }
-            if(request.getSiteId()!=null)
-                equipment.setSite(siteService.getSiteBySiteId(request.getSiteId()));
-            if(request.getBuildingId()!=0)
-                equipment.setBuilding(buildingService.getBuildingById((request.getBuildingId())));
-            if(request.getTypeOfEquipment()!=null)
-                equipment.setTypeOfEquipment(request.getTypeOfEquipment());
+//            if(request.getSiteId()!=null)
+////                equipment.setSite(siteService.getSiteBySiteId(request.getSiteId()));
+//            if(request.getBuildingId()!=0)
+////                equipment.setBuilding(buildingService.getBuildingById((request.getBuildingId())));
+//            if(request.getTypeOfEquipment()!=null)
+////                equipment.setTypeOfEquipment(request.getTypeOfEquipment());
             return ResponseEntity.ok(null);
 
         }catch (Exception e){

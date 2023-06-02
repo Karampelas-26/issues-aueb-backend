@@ -84,9 +84,9 @@ public class ApplicationService {
             if(request.getPriority()!=null)
                 issue.setPriority(request.getPriority());
             if(request.getSiteId()!=null)
-                issue.setSite(siteService.getSiteBySiteId(request.getSiteId()));
+//                issue.setSite(siteService.getSiteBySiteId(request.getSiteId()));
             if(request.getBuildingId()!=0)
-                issue.setBuilding(buildingService.getBuildingById((request.getBuildingId())));
+//                issue.setBuilding(buildingService.getBuildingById((request.getBuildingId())));
             if(request.getDueDate()!=null)
                 issue.setCompletionDate(request.getDueDate());
             return ResponseEntity.ok(null);
