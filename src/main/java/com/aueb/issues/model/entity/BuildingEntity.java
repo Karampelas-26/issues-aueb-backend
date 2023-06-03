@@ -23,4 +23,6 @@ public class BuildingEntity {
     private String name;
     private String address;
     private int floors;
+//    @OneToMany(mappedBy = "building")
+//    private List<SiteEntity> sites;
 }

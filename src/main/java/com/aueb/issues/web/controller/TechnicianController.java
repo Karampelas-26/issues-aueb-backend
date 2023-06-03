@@ -1,6 +1,7 @@
 package com.aueb.issues.web.controller;
 
 import com.aueb.issues.model.entity.ApplicationEntity;
+import com.aueb.issues.model.mapper.ApplicationMapper;
 import com.aueb.issues.repository.ApplicationRepository;
 import com.aueb.issues.web.dto.ApplicationDTO;
 import com.aueb.issues.web.service.ApplicationService;
@@ -13,7 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/technician")
@@ -43,11 +47,11 @@ public class TechnicianController {
     }
 
     @GetMapping("/specific")
-    public ResponseEntity<List<ApplicationEntity>> getApplicationsFilters(@RequestParam(value = "building_id", required = false) long building_id) {
+    public ResponseEntity<List<ApplicationDTO>> getApplicationsFilters(@RequestParam(value = "site_name", required = false) String siteName) {
         try {
-            log.info(String.valueOf(building_id));
-            List<ApplicationEntity> ret = applicationRepository.findCustom(building_id);
-
+            log.info(siteName);
+            List<ApplicationEntity> q = applicationRepository.findBySiteName(siteName);
+            List<ApplicationDTO> ret = q.stream().map(ApplicationMapper.INSTANCE::toDTO).collect(Collectors.toList());
             return ResponseEntity.ok(ret);
         }
         catch (Exception e){

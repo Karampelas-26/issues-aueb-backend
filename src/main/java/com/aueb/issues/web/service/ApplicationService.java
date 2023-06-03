@@ -75,20 +75,20 @@ public class ApplicationService {
     public ResponseEntity<String> updateApplication(String id, ApplicationDTO request){
         try{
 
-            ApplicationEntity issue = applicationRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Application not found"));
-            if(issue!=null) {
-                return ResponseEntity.badRequest().body("No issue with such id");
-            }
-            if(request.getTitle()!=null)
-                issue.setTitle(request.getTitle());
-            if(request.getPriority()!=null)
-                issue.setPriority(request.getPriority());
-            if(request.getSiteId()!=null)
-//                issue.setSite(siteService.getSiteBySiteId(request.getSiteId()));
-            if(request.getBuildingId()!=0)
-//                issue.setBuilding(buildingService.getBuildingById((request.getBuildingId())));
-            if(request.getDueDate()!=null)
-                issue.setCompletionDate(request.getDueDate());
+//            ApplicationEntity issue = applicationRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Application not found"));
+//            if(issue!=null) {
+//                return ResponseEntity.badRequest().body("No issue with such id");
+//            }
+//            if(request.getTitle()!=null)
+//                issue.setTitle(request.getTitle());
+//            if(request.getPriority()!=null)
+//                issue.setPriority(request.getPriority());
+//            if(request.getSiteId()!=null)
+////                issue.setSite(siteService.getSiteBySiteId(request.getSiteId()));
+//            if(request.getBuildingId()!=0)
+////                issue.setBuilding(buildingService.getBuildingById((request.getBuildingId())));
+//            if(request.getDueDate()!=null)
+//                issue.setCompletionDate(request.getDueDate());
             return ResponseEntity.ok(null);
 
         }catch (Exception e){

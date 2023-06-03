@@ -15,12 +15,12 @@ public class ApplicationDTO {
 
     private String id;
     private String title;
-    private Priority priority;
-    private int buildingId;
-    private String siteId;
-    private String issueType;
-    private String equipmentId;
+    private String siteName;
+    private String status;
+    private String buildingName;
+    private String priority;
+
     private String description;
+    private String issueType;
     private LocalDateTime dueDate;
-    //todo: fill out the fields
 }

@@ -26,6 +26,7 @@ public class SiteEntity {
     private String floor;
 
     @ManyToOne
+    @JoinColumn(name="buildingId")
     private BuildingEntity building;
 
     @ManyToMany

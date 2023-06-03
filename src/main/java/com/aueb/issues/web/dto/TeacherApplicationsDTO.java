@@ -1,5 +1,6 @@
 package com.aueb.issues.web.dto;
 
+import com.aueb.issues.model.enums.Status;
 import lombok.*;
 
 /**
@@ -12,5 +13,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TeacherApplicationsDTO {
-    private String name;//todo change it with array of objects with issues
+    private String id;
+    private String title;
+    private Status status;
+    private String siteName;
 }
