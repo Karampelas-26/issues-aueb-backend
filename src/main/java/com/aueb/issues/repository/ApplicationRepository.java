@@ -12,9 +12,15 @@ import java.util.List;
 @Repository
 public interface ApplicationRepository extends JpaRepository<ApplicationEntity, String> {
     @Query(value = "select a from ApplicationEntity as a " +
-            "where (:site_name = null or a.site.name = :site_name)  ")
-    public List<ApplicationEntity> findBySiteName(@Param("site_name")String siteName);
-//    @Query("SELECT a FROM ApplicationEntity a WHERE a.building.id = :buildingId")
+            "where (:site_name = null or a.site.name = :site_name)  "+
+            "and (:priority = null or a.priority =:priority)  "+
+            "and (:issue_type = null or a.issueType =:issue_type)  "+
+            "and (:status = null or a.status =:status)  ")
+    public List<ApplicationEntity> findByValues(@Param("site_name")String siteName,
+                                                  @Param("priority")String priority,
+                                                  @Param("issue_type")String issueType,
+                                                  @Param("status")String status);
+
 
     @Query("SELECT a FROM ApplicationEntity a JOIN a.site s JOIN s.building b WHERE b.name = :buildingName")
     List<ApplicationEntity> findByBuildingName(@Param("buildingName") String buildingName);

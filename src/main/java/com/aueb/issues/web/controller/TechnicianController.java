@@ -50,7 +50,7 @@ public class TechnicianController {
     public ResponseEntity<List<ApplicationDTO>> getApplicationsFilters(@RequestParam(value = "site_name", required = false) String siteName) {
         try {
             log.info(siteName);
-            List<ApplicationEntity> q = applicationRepository.findBySiteName(siteName);
+            List<ApplicationEntity> q = applicationRepository.findByValues(siteName,null,null,null);
             List<ApplicationDTO> ret = q.stream().map(ApplicationMapper.INSTANCE::toDTO).collect(Collectors.toList());
             return ResponseEntity.ok(ret);
         }
@@ -59,6 +59,13 @@ public class TechnicianController {
         }
         return ResponseEntity.internalServerError().body(null);
     }
+//    @GetMapping("/body")
+//    public ResponseEntity<List<ApplicationDTO>> getMultipleFilters(@RequestBody ObjectNode objectNode){
+//
+//    }
+
+
+
 
     @GetMapping("/hi")
     public String getHi(){

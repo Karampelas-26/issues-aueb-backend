@@ -1,6 +1,7 @@
 package com.aueb.issues;
 
 import com.aueb.issues.model.entity.*;
+import com.aueb.issues.model.enums.IssueType;
 import com.aueb.issues.model.enums.Priority;
 import com.aueb.issues.model.enums.Role;
 import com.aueb.issues.model.enums.Status;
@@ -208,6 +209,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                     .title("Application: " + String.valueOf(appNum))
                     .site(site)
                     .creationUser(users.get(random.nextInt(users.size())))
+                    .issueType(IssueType.ELECTRICAL)
                     .priority(priorities[random.nextInt(priorities.length)])
                     .createDate(LocalDateTime.now())
                     .status(statuses[random.nextInt(statuses.length)])

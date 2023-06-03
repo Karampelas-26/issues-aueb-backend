@@ -16,8 +16,8 @@ public interface ApplicationMapper {
     ApplicationMapper INSTANCE =Mappers.getMapper(ApplicationMapper.class);
     @Mapping(source = "entity.id", target = "id")
     @Mapping(source = "entity.title", target = "title")
-    @Mapping(source = "entity.site.name", target = "siteName")
-    @Mapping(source = "entity.site.building.name", target = "buildingName")
+    @Mapping(expression= "java(entity.getSite().getName())", target = "siteName")
+    @Mapping(expression = "java(entity.getSite().getBuilding().getName())", target = "buildingName")
     @Mapping(expression = "java(entity.getPriority().name())", target = "priority")
     @Mapping(source = "entity.status", target = "status")
     @Mapping(source = "entity.description", target = "description")

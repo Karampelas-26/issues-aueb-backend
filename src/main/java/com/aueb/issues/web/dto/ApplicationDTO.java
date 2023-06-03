@@ -1,5 +1,6 @@
 package com.aueb.issues.web.dto;
 
+import com.aueb.issues.model.entity.SiteEntity;
 import com.aueb.issues.model.enums.Priority;
 import lombok.Getter;
 import lombok.Setter;

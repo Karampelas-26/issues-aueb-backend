@@ -37,44 +37,4 @@ public class SiteEntity {
             equipmentEntities = new ArrayList<>();
         equipmentEntities.add(equipment);
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getFloor() {
-        return floor;
-    }
-
-    public void setFloor(String floor) {
-        this.floor = floor;
-    }
-
-    public BuildingEntity getBuilding() {
-        return building;
-    }
-
-    public void setBuilding(BuildingEntity building) {
-        this.building = building;
-    }
-
-    public List<EquipmentEntity> getEquipmentEntities() {
-        return equipmentEntities;
-    }
-
-    public void setEquipmentEntities(List<EquipmentEntity> equipmentEntities) {
-        this.equipmentEntities = equipmentEntities;
-    }
 }
