@@ -25,4 +25,37 @@ public class BuildingEntity {
     private int floors;
 //    @OneToMany(mappedBy = "building")
 //    private List<SiteEntity> sites;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getFloors() {
+        return floors;
+    }
+
+    public void setFloors(int floors) {
+        this.floors = floors;
+    }
 }

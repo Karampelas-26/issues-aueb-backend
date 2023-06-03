@@ -18,10 +18,10 @@ public interface ApplicationMapper {
     @Mapping(source = "entity.title", target = "title")
     @Mapping(source = "entity.site.name", target = "siteName")
     @Mapping(source = "entity.site.building.name", target = "buildingName")
-    @Mapping(source = "entity.priority.name", target = "priority")
+    @Mapping(expression = "java(entity.getPriority().name())", target = "priority")
     @Mapping(source = "entity.status", target = "status")
     @Mapping(source = "entity.description", target = "description")
-    @Mapping(expression = "java(issueType.name())", target = "issueType")
+    @Mapping(expression = "java(entity.getIssueType().name())", target = "issueType")
     @Mapping(source ="entity.dueDate" ,target="dueDate")
     public ApplicationDTO toDTO(ApplicationEntity entity);
 
@@ -30,4 +30,5 @@ public interface ApplicationMapper {
     @Mapping(source = "entity.site.name", target = "siteName")
     @Mapping(source = "entity.status", target = "status")
     public TeacherApplicationsDTO toTeacherDTO(ApplicationEntity entity);
+
 }
