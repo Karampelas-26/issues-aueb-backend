@@ -16,7 +16,6 @@ import java.util.Date;
 public class UserDTO {
     private String id;
     private String email;
-    private String password;
     private String phone;
     private String firstname;
     private String lastname;
@@ -24,5 +23,4 @@ public class UserDTO {
     private String address;
     private Date createdDate;
     private Role role;
-    private boolean activated;
 }

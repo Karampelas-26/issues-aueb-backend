@@ -2,10 +2,7 @@ package com.aueb.issues.web.controller;
 
 import com.aueb.issues.web.comittee.CreateUserDTO;
 import com.aueb.issues.web.comittee.CreateUserResponse;
-import com.aueb.issues.web.dto.ApplicationDTO;
-import com.aueb.issues.web.dto.BuildingDTO;
-import com.aueb.issues.web.dto.EquipmentDTO;
-import com.aueb.issues.web.dto.UserDTO;
+import com.aueb.issues.web.dto.*;
 import com.aueb.issues.web.service.ApplicationService;
 import com.aueb.issues.web.service.BuildingsService;
 import com.aueb.issues.web.service.EquipmentService;
@@ -44,7 +41,7 @@ public class CommitteeController {
     }
     //TODO: Methods for Statistics, getBuildings, getUsers, getEquipment,
     @PostMapping("/create-user")
-    public ResponseEntity<CreateUserResponse> createUser(@RequestBody CreateUserDTO request) {
+    public ResponseEntity<ResponseMessageDTO> createUser(@RequestBody CreateUserDTO request) {
         return userService.createUser(request);
     }
     @GetMapping("/getUsers")
@@ -53,12 +50,12 @@ public class CommitteeController {
     }
 
     @PutMapping("/update-user/{userId}")
-    public ResponseEntity<String> updateUser(@PathVariable("userId") Long id,
+    public ResponseEntity<ResponseMessageDTO> updateUser(@PathVariable("userId") Long id,
                                              @RequestBody UserDTO request){
         return userService.updateUser(id,request);
     }
     @DeleteMapping("/delete-user/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable("userId") Long id){
+    public ResponseEntity<ResponseMessageDTO> deleteUser(@PathVariable("userId") Long id){
         return userService.deleteUser(id);
     }
     @PostMapping(value ="/submit-new-issue")
