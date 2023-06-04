@@ -60,7 +60,7 @@ public class EquipmentService {
             log.error(e.toString());
             return null;
         }
-        return (ResponseEntity<List<EquipmentDTO>>) eq;
+        return ResponseEntity.ok(eq);
     }
 
     public ResponseEntity<String> updateEquipment(String id, EquipmentDTO request) {

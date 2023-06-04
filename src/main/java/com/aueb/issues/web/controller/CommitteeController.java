@@ -5,10 +5,7 @@ import com.aueb.issues.model.enums.Priority;
 import com.aueb.issues.model.enums.Status;
 import com.aueb.issues.web.comittee.CreateUserDTO;
 import com.aueb.issues.web.comittee.CreateUserResponse;
-import com.aueb.issues.web.dto.ApplicationDTO;
-import com.aueb.issues.web.dto.BuildingDTO;
-import com.aueb.issues.web.dto.EquipmentDTO;
-import com.aueb.issues.web.dto.UserDTO;
+import com.aueb.issues.web.dto.*;
 import com.aueb.issues.web.service.ApplicationService;
 import com.aueb.issues.web.service.BuildingsService;
 import com.aueb.issues.web.service.EquipmentService;
@@ -19,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.SplittableRandom;
@@ -55,27 +53,35 @@ public class CommitteeController {
 
     //TODO: Methods for Statistics, getBuildings, getUsers, getEquipment,
     @PostMapping("/create-user")
-    public ResponseEntity<CreateUserResponse> createUser(@RequestBody CreateUserDTO request) {
+    public ResponseEntity<ResponseMessageDTO> createUser(@RequestBody CreateUserDTO request) {
         return userService.createUser(request);
     }
-    @GetMapping("/getUsers")
+
+    @PostMapping("/upload-users")
+    public ResponseEntity<ResponseMessageDTO> uploadUsers(@RequestParam("file")MultipartFile file){
+        return userService.createUserCsv(file);
+    }
+
+    @GetMapping("/get-users")
     public ResponseEntity<List<UserDTO>> getUsers(){
         return userService.getUsers();
     }
 
-    @PutMapping("/update-user/{userId}")
-    public ResponseEntity<String> updateUser(@PathVariable("userId") Long id,
-                                             @RequestBody UserDTO request){
-        return userService.updateUser(id,request);
+    @PutMapping("/update-user")
+    public ResponseEntity<ResponseMessageDTO> updateUser(@RequestBody UserDTO request){
+        return userService.updateUser(request);
     }
+
     @DeleteMapping("/delete-user/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable("userId") Long id){
+    public ResponseEntity<ResponseMessageDTO> deleteUser(@PathVariable("userId") String id){
         return userService.deleteUser(id);
     }
+
     @PostMapping(value ="/submit-new-issue")
     public ResponseEntity<String> submitApplication(@RequestBody ApplicationDTO requestDTO){
         return applicationService.submitApplication(requestDTO);
     }
+
     @PostMapping("/createBuilding")
     public ResponseEntity<String> createBuilding(@RequestBody BuildingDTO requestDTO){
         return buildingsService.createBuilding(requestDTO);
