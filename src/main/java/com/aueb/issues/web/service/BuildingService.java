@@ -1,6 +1,6 @@
 package com.aueb.issues.web.service;
-import com.aueb.issues.model.entity.ApplicationEntity;
 import com.aueb.issues.model.entity.BuildingEntity;
+import com.aueb.issues.model.mapper.BuildingMapper;
 import com.aueb.issues.repository.BuildingRepository;
 import com.aueb.issues.web.dto.ApplicationDTO;
 import com.aueb.issues.web.dto.BuildingDTO;
@@ -17,7 +17,7 @@ import java.util.Random;
 
 @Service
 @Slf4j
-public class BuildingsService {
+public class BuildingService {
     @Autowired
     BuildingRepository buildingRepository;
     BuildingEntity buildingEntity;
@@ -78,12 +78,21 @@ public class BuildingsService {
 
     public ResponseEntity<String> deleteBuilding(int id){
         try{
-            buildingRepository.findById(id).orElseThrow(()->new EntityNotFoundException("No such entity found"));
+            buildingRepository.findById(id).orElseThrow(()->{new EntityNotFoundException("No such entity found");
+            return null;});
             buildingRepository.deleteById(id);
             return ResponseEntity.ok(null);
         }catch (Exception e){
             log.error(e.toString());
             return null;
         }
+    }
+
+    public ResponseEntity<List<BuildingDTO>> getAllBuildings(){
+        return ResponseEntity.ok(toDTO(buildingRepository.findAll()));
+    }
+
+    public List<BuildingDTO> toDTO(List<BuildingEntity> entities){
+        return entities.stream().map(BuildingMapper.INSTANCE::toDTO).toList();
     }
 }

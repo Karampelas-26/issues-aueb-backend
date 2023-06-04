@@ -1,6 +1,7 @@
-package com.aueb.issues.web.dto;
+package com.aueb.issues.model.mapper;
 
 import com.aueb.issues.model.entity.UserEntity;
+import com.aueb.issues.web.dto.UserDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

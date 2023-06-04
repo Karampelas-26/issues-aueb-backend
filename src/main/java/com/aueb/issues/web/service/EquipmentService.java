@@ -1,11 +1,6 @@
 package com.aueb.issues.web.service;
 
-import com.aueb.issues.model.entity.ApplicationEntity;
 import com.aueb.issues.model.entity.EquipmentEntity;
-import com.aueb.issues.model.entity.UserEntity;
-import com.aueb.issues.model.enums.Role;
-import com.aueb.issues.model.services.BuildingService;
-import com.aueb.issues.model.services.SiteService;
 import com.aueb.issues.repository.EquipmentRepository;
 import com.aueb.issues.web.dto.EquipmentDTO;
 import com.aueb.issues.web.dto.TeacherApplicationsDTO;
@@ -19,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -86,7 +80,8 @@ public class EquipmentService {
 
     public ResponseEntity<String> deleteEquipment(String id) {
         try{
-            equipmentRepository.findById(id).orElseThrow(()->new EntityNotFoundException("No such entity found"));
+            equipmentRepository.findById(id).orElseThrow(()->{new EntityNotFoundException("No such entity found");
+            return null;});
             equipmentRepository.deleteById(id);
             return ResponseEntity.ok(null);
         }catch (Exception e){

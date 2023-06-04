@@ -1,13 +1,9 @@
 package com.aueb.issues.web.controller;
 
-import com.aueb.issues.model.enums.IssueType;
-import com.aueb.issues.model.enums.Priority;
-import com.aueb.issues.model.enums.Status;
 import com.aueb.issues.web.comittee.CreateUserDTO;
-import com.aueb.issues.web.comittee.CreateUserResponse;
 import com.aueb.issues.web.dto.*;
 import com.aueb.issues.web.service.ApplicationService;
-import com.aueb.issues.web.service.BuildingsService;
+import com.aueb.issues.web.service.BuildingService;
 import com.aueb.issues.web.service.EquipmentService;
 import com.aueb.issues.web.service.UserService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -19,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.SplittableRandom;
 
 /**
  * @author George Karampelas
@@ -35,20 +30,21 @@ public class CommitteeController {
     @Autowired
     UserService userService;
     @Autowired
-    BuildingsService buildingsService;
+    BuildingService buildingsService;
     @Autowired
     EquipmentService equipmentService;
 
     @GetMapping(value = "/getAllApplications", produces = "application/json")
     public ResponseEntity<List<ApplicationDTO>> getAllApplications(@RequestBody ObjectNode requestData) {
-        return applicationService.getAllApplications();//requestData);
+        return applicationService.getAllApplications();
     }
     @GetMapping("/filtered-applications-s-values")
     public ResponseEntity<List<ApplicationDTO>> getFilteredApplicationsBySignleValues(@RequestParam(value = "site_name", required = false) String siteName,
                                                                                       @RequestParam(value = "priority", required=false) String priority,
                                                                                       @RequestParam(value= "issue_type", required = false) String issueType,
-                                                                                      @RequestParam(value = "status",required = false) String status) {
-        return applicationService.getApplicationsBySingleValues(siteName, priority, issueType, status);
+                                                                                      @RequestParam(value = "status",required = false) String status,
+                                                                                      @RequestParam(value = "buildingName",required = false)String buildingName) {
+        return applicationService.getApplicationsBySingleValues(siteName, priority, issueType, status,buildingName);
     }
 
     //TODO: Methods for Statistics, getBuildings, getUsers, getEquipment,
