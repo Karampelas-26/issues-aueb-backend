@@ -1,6 +1,7 @@
 package com.aueb.issues;
 
 import com.aueb.issues.model.entity.*;
+import com.aueb.issues.model.enums.IssueType;
 import com.aueb.issues.model.enums.Priority;
 import com.aueb.issues.model.enums.Role;
 import com.aueb.issues.model.enums.Status;
@@ -162,14 +163,14 @@ public class InitThingsOnStartUp implements CommandLineRunner {
         List<BuildingEntity> buildings = buildingRepository.findAll();
 
         EquipmentEntity[] equipmentEntities = new EquipmentEntity[8];
-        equipmentEntities[0] = EquipmentEntity.builder().typeOfEquipment("Προτζεκτορας").installationDate(LocalDateTime.now()).build();
-        equipmentEntities[1] = EquipmentEntity.builder().typeOfEquipment("Πίνακας").installationDate(LocalDateTime.now()).build();
-        equipmentEntities[2] = EquipmentEntity.builder().typeOfEquipment("Ethernet").installationDate(LocalDateTime.now()).build();
-        equipmentEntities[3] = EquipmentEntity.builder().typeOfEquipment("Wifi").installationDate(LocalDateTime.now()).build();
-        equipmentEntities[4] = EquipmentEntity.builder().typeOfEquipment("HDMI").installationDate(LocalDateTime.now()).build();
-        equipmentEntities[5] = EquipmentEntity.builder().typeOfEquipment("Πόρτα").installationDate(LocalDateTime.now()).build();
-        equipmentEntities[6] = EquipmentEntity.builder().typeOfEquipment("Κλιματιστικό").installationDate(LocalDateTime.now()).build();
-        equipmentEntities[7] = EquipmentEntity.builder().typeOfEquipment("Παράθυρα").installationDate(LocalDateTime.now()).build();
+        equipmentEntities[0] = EquipmentEntity.builder().typeOfEquipment("Προτζεκτορας").build();
+        equipmentEntities[1] = EquipmentEntity.builder().typeOfEquipment("Πίνακας").build();
+        equipmentEntities[2] = EquipmentEntity.builder().typeOfEquipment("Ethernet").build();
+        equipmentEntities[3] = EquipmentEntity.builder().typeOfEquipment("Wifi").build();
+        equipmentEntities[4] = EquipmentEntity.builder().typeOfEquipment("HDMI").build();
+        equipmentEntities[5] = EquipmentEntity.builder().typeOfEquipment("Πόρτα").build();
+        equipmentEntities[6] = EquipmentEntity.builder().typeOfEquipment("Κλιματιστικό").build();
+        equipmentEntities[7] = EquipmentEntity.builder().typeOfEquipment("Παράθυρα").build();
 
         for(EquipmentEntity equipment: equipmentEntities){
             equipmentRepository.save(equipment);
@@ -207,9 +208,8 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                     .id(UUID.randomUUID().toString())
                     .title("Application: " + String.valueOf(appNum))
                     .site(site)
-                    .building_id(site.getBuilding().getId())
-//                    .equipment(equipments.get(random.nextInt(equipments.size())))
-                    .creationUserId(users.get(random.nextInt(users.size())))
+                    .creationUser(users.get(random.nextInt(users.size())))
+                    .issueType(IssueType.ELECTRICAL)
                     .priority(priorities[random.nextInt(priorities.length)])
                     .createDate(LocalDateTime.now())
                     .status(statuses[random.nextInt(statuses.length)])

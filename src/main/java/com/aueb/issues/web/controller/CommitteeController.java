@@ -1,5 +1,8 @@
 package com.aueb.issues.web.controller;
 
+import com.aueb.issues.model.enums.IssueType;
+import com.aueb.issues.model.enums.Priority;
+import com.aueb.issues.model.enums.Status;
 import com.aueb.issues.web.comittee.CreateUserDTO;
 import com.aueb.issues.web.comittee.CreateUserResponse;
 import com.aueb.issues.web.dto.ApplicationDTO;
@@ -38,10 +41,18 @@ public class CommitteeController {
     @Autowired
     EquipmentService equipmentService;
 
-    @GetMapping(value = "/getApplications", produces = "application/json")
-    public ResponseEntity<List<ApplicationDTO>> getApplications(@RequestBody ObjectNode requestData) {
-        return applicationService.getApplications(requestData);
+    @GetMapping(value = "/getAllApplications", produces = "application/json")
+    public ResponseEntity<List<ApplicationDTO>> getAllApplications(@RequestBody ObjectNode requestData) {
+        return applicationService.getAllApplications();//requestData);
     }
+    @GetMapping("/filtered-applications-s-values")
+    public ResponseEntity<List<ApplicationDTO>> getFilteredApplicationsBySignleValues(@RequestParam(value = "site_name", required = false) String siteName,
+                                                                                      @RequestParam(value = "priority", required=false) String priority,
+                                                                                      @RequestParam(value= "issue_type", required = false) String issueType,
+                                                                                      @RequestParam(value = "status",required = false) String status) {
+        return applicationService.getApplicationsBySingleValues(siteName, priority, issueType, status);
+    }
+
     //TODO: Methods for Statistics, getBuildings, getUsers, getEquipment,
     @PostMapping("/create-user")
     public ResponseEntity<CreateUserResponse> createUser(@RequestBody CreateUserDTO request) {

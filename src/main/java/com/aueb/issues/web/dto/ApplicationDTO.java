@@ -1,5 +1,6 @@
 package com.aueb.issues.web.dto;
 
+import com.aueb.issues.model.entity.SiteEntity;
 import com.aueb.issues.model.enums.Priority;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,12 +16,12 @@ public class ApplicationDTO {
 
     private String id;
     private String title;
-    private Priority priority;
-    private int buildingId;
-    private String siteId;
-    private String issueType;
-    private String equipmentId;
+    private String siteName;
+    private String status;
+    private String buildingName;
+    private String priority;
+    private LocalDateTime createDate;
     private String description;
+    private String issueType;
     private LocalDateTime dueDate;
-    //todo: fill out the fields
 }

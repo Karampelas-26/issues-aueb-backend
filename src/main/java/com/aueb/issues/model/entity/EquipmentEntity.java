@@ -19,5 +19,7 @@ public class EquipmentEntity {
     @GeneratedValue
     private Long id;
     private String typeOfEquipment;
-    private LocalDateTime installationDate;
+    @ManyToOne
+    @JoinColumn(name="siteId")
+    private SiteEntity site;
 }

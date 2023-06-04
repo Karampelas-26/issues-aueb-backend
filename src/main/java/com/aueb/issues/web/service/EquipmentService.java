@@ -38,7 +38,6 @@ public class EquipmentService {
 //                    .building(buildingService.getBuildingById(request.getBuildingId()))
 //                    .site(siteService.getSiteBySiteId(request.getSiteId()))
                     .typeOfEquipment(request.getTypeOfEquipment())
-                    .installationDate(dateTime)
                     .build();
             equipmentRepository.save(equipment);
 
