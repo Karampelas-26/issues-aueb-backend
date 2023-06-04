@@ -5,9 +5,12 @@ import com.aueb.issues.model.enums.IssueType;
 import com.aueb.issues.model.enums.Priority;
 import com.aueb.issues.model.enums.Status;
 import com.aueb.issues.model.mapper.ApplicationMapper;
+import com.aueb.issues.model.services.SiteService;
 import com.aueb.issues.repository.ApplicationRepository;
+import com.aueb.issues.repository.SitesRepository;
 import com.aueb.issues.web.dto.ApplicationDTO;
 import com.aueb.issues.web.service.ApplicationService;
+import com.aueb.issues.web.service.BuildingsService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +33,13 @@ import java.util.stream.Collectors;
 @PreAuthorize("hasRole('TECHNICIAN')")
 @Slf4j
 public class TechnicianController {
+
     @Autowired
     ApplicationService applicationService;
-    private final ApplicationRepository applicationRepository;
+    @Autowired
+    SiteService siteService;
+    @Autowired
+    BuildingsService buildingsService;
 
     @GetMapping("/getAllApplications")
     public ResponseEntity<List<ApplicationDTO>> getAllΑpplications(){
@@ -58,13 +65,14 @@ public class TechnicianController {
         return applicationService.getApplicationsBySingleValues(siteName,priority,issueType,status);
     }
 
+    @GetMapping("/getSitesName")
+    public ResponseEntity<List<String>> getSitesName(){
+        return siteService.getAllSitesName();
+    }
 
-
-
-
-    @GetMapping("/hi")
-    public String getHi(){
-        return "hi";
+    @GetMapping("/getBuildingsName")
+    public ResponseEntity<List<String>> getBuildingsName(){
+        return buildingsService.getAllBuildingsName();
     }
 
 }

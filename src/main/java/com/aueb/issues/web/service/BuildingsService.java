@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -85,5 +86,14 @@ public class BuildingsService {
             log.error(e.toString());
             return null;
         }
+    }
+
+    public ResponseEntity<List<String>> getAllBuildingsName(){
+        List<BuildingEntity> buildingEntities = buildingRepository.findAll();
+        if(buildingEntities.isEmpty()) return ResponseEntity.badRequest().build();
+        List<String> names = buildingEntities.stream()
+                .map(BuildingEntity::getName)
+                .toList();
+        return ResponseEntity.ok(names);
     }
 }
