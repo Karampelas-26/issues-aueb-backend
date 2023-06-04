@@ -11,7 +11,7 @@ import com.aueb.issues.repository.service.CsvParser;
 import com.aueb.issues.web.comittee.CreateUserDTO;
 import com.aueb.issues.web.dto.ResponseMessageDTO;
 import com.aueb.issues.web.dto.UserDTO;
-import com.aueb.issues.web.dto.UserMapper;
+import com.aueb.issues.model.mapper.UserMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
