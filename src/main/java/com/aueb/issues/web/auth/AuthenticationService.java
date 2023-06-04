@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -81,8 +82,10 @@ public class AuthenticationService {
                     .message(errorMessage)
                     .build();
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(res);
-        }
-        catch (Exception e) {
+        } catch (BadCredentialsException e) {
+            log.error(e.toString());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse().builder().message("Invalid credentials").build());
+        } catch (Exception e) {
             log.error(e.toString());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

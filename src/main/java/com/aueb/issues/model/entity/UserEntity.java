@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -30,7 +31,7 @@ public class UserEntity implements UserDetails {
     private String lastname;
     private String gender;
     private String address;
-    private Date createdDate;
+    private LocalDateTime createdDate;
     @Enumerated(EnumType.STRING)
     private Role role;
     private boolean activated;

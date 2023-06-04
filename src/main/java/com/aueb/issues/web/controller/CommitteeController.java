@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.SplittableRandom;
@@ -44,24 +45,32 @@ public class CommitteeController {
     public ResponseEntity<ResponseMessageDTO> createUser(@RequestBody CreateUserDTO request) {
         return userService.createUser(request);
     }
-    @GetMapping("/getUsers")
+
+    @PostMapping("/upload-users")
+    public ResponseEntity<ResponseMessageDTO> uploadUsers(@RequestParam("file")MultipartFile file){
+        return userService.createUserCsv(file);
+    }
+
+    @GetMapping("/get-users")
     public ResponseEntity<List<UserDTO>> getUsers(){
         return userService.getUsers();
     }
 
-    @PutMapping("/update-user/{userId}")
-    public ResponseEntity<ResponseMessageDTO> updateUser(@PathVariable("userId") Long id,
-                                             @RequestBody UserDTO request){
-        return userService.updateUser(id,request);
+    @PutMapping("/update-user")
+    public ResponseEntity<ResponseMessageDTO> updateUser(@RequestBody UserDTO request){
+        return userService.updateUser(request);
     }
+
     @DeleteMapping("/delete-user/{userId}")
-    public ResponseEntity<ResponseMessageDTO> deleteUser(@PathVariable("userId") Long id){
+    public ResponseEntity<ResponseMessageDTO> deleteUser(@PathVariable("userId") String id){
         return userService.deleteUser(id);
     }
+
     @PostMapping(value ="/submit-new-issue")
     public ResponseEntity<String> submitApplication(@RequestBody ApplicationDTO requestDTO){
         return applicationService.submitApplication(requestDTO);
     }
+
     @PostMapping("/createBuilding")
     public ResponseEntity<String> createBuilding(@RequestBody BuildingDTO requestDTO){
         return buildingsService.createBuilding(requestDTO);

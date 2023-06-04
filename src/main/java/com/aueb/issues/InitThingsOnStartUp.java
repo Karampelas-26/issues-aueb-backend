@@ -91,7 +91,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                 .lastname("Karampelas")
                 .gender("M")
                 .address("Eygeniou Karavias 12, 11144 Attica")
-                .createdDate(new Date())
+                .createdDate(LocalDateTime.now())
                 .role(Role.ADMIN)
                 .activated(true)
                 .build();
@@ -105,7 +105,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                 .lastname("iDanys")
                 .gender("M")
                 .address("Eygeniou Karavias 2, 11144 Attica")
-                .createdDate(new Date())
+                .createdDate(LocalDateTime.now())
                 .role(Role.TEACHER)
                 .activated(true)
                 .build();
@@ -119,25 +119,12 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                 .lastname("Aggelis")
                 .gender("M")
                 .address("Eygeniou Karavias 32, 11144 Attica")
-                .createdDate(new Date())
+                .createdDate(LocalDateTime.now())
                 .role(Role.TECHNICIAN)
                 .activated(true)
                 .build();
         userRepository.save(tech);
-        UserEntity sudo = UserEntity.builder()
-                .id(String.valueOf(UUID.randomUUID()))
-                .email("admin")
-                .password(passwordEncoder.encode("pass"))
-                .phone("6945227238")
-                .firstname("sudo")
-                .lastname("root")
-                .gender("-")
-                .address("cloud")
-                .createdDate(new Date())
-                .role(Role.SUPER_ADMIN)
-                .activated(true)
-                .build();
-        userRepository.save(sudo);
+
 
         createBuildins();
         createApplications(300);
