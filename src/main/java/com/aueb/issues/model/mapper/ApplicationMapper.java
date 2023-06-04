@@ -23,11 +23,12 @@ public interface ApplicationMapper {
     @Mapping(source = "entity.description", target = "description")
     @Mapping(expression = "java(entity.getIssueType().name())", target = "issueType")
     @Mapping(source ="entity.dueDate" ,target="dueDate")
+    @Mapping(source = "entity.createDate", target ="createDate")
     public ApplicationDTO toDTO(ApplicationEntity entity);
 
     @Mapping(source = "entity.id", target = "id")
     @Mapping(source = "entity.title", target = "title")
-    @Mapping(source = "entity.site.name", target = "siteName")
+    @Mapping(expression= "java(entity.getSite().getName())", target = "siteName")
     @Mapping(source = "entity.status", target = "status")
     public TeacherApplicationsDTO toTeacherDTO(ApplicationEntity entity);
 

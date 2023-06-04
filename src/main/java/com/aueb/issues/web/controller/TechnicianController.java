@@ -1,6 +1,9 @@
 package com.aueb.issues.web.controller;
 
 import com.aueb.issues.model.entity.ApplicationEntity;
+import com.aueb.issues.model.enums.IssueType;
+import com.aueb.issues.model.enums.Priority;
+import com.aueb.issues.model.enums.Status;
 import com.aueb.issues.model.mapper.ApplicationMapper;
 import com.aueb.issues.repository.ApplicationRepository;
 import com.aueb.issues.web.dto.ApplicationDTO;
@@ -10,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +34,9 @@ public class TechnicianController {
     ApplicationService applicationService;
     private final ApplicationRepository applicationRepository;
 
-    @GetMapping
-    public ResponseEntity<List<ApplicationDTO>> getIssues(@RequestBody ObjectNode node){
-        return applicationService.getApplications(node);
+    @GetMapping("/getAllApplications")
+    public ResponseEntity<List<ApplicationDTO>> getAllΑpplications(){
+        return applicationService.getAllApplications();
     }
 
     @PutMapping("{issueid}")
@@ -46,23 +50,14 @@ public class TechnicianController {
         return applicationService.deleteIssue(id);
     }
 
-    @GetMapping("/specific")
-    public ResponseEntity<List<ApplicationDTO>> getApplicationsFilters(@RequestParam(value = "site_name", required = false) String siteName) {
-        try {
-            log.info(siteName);
-            List<ApplicationEntity> q = applicationRepository.findByValues(siteName,null,null,null);
-            List<ApplicationDTO> ret = q.stream().map(ApplicationMapper.INSTANCE::toDTO).collect(Collectors.toList());
-            return ResponseEntity.ok(ret);
-        }
-        catch (Exception e){
-            log.error(e.toString());
-        }
-        return ResponseEntity.internalServerError().body(null);
+    @GetMapping("/filtered-applications-s-values")
+    public ResponseEntity<List<ApplicationDTO>> getFilteredApplicationsBySignleValues(@RequestParam(value = "site_name", required = false) String siteName,
+                                                                       @RequestParam(value = "priority", required=false) String priority,
+                                                                       @RequestParam(value= "issue_type", required = false)String issueType,
+                                                                       @RequestParam(value = "status",required = false) String status){
+        return applicationService.getApplicationsBySingleValues(siteName,priority,issueType,status);
     }
-//    @GetMapping("/body")
-//    public ResponseEntity<List<ApplicationDTO>> getMultipleFilters(@RequestBody ObjectNode objectNode){
-//
-//    }
+
 
 
 

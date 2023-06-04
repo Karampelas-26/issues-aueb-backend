@@ -22,5 +22,4 @@ public class EquipmentEntity {
     @ManyToOne
     @JoinColumn(name="siteId")
     private SiteEntity site;
-    private LocalDateTime installationDate;
 }

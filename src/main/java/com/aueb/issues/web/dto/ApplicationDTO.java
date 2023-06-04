@@ -20,7 +20,7 @@ public class ApplicationDTO {
     private String status;
     private String buildingName;
     private String priority;
-
+    private LocalDateTime createDate;
     private String description;
     private String issueType;
     private LocalDateTime dueDate;
