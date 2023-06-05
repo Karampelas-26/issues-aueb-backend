@@ -77,7 +77,7 @@ public class TechnicianController {
         return buildingService.getAllBuildingsName();
     }
 
-    @GetMapping("/getBuildinsSitesName")
+    @GetMapping("/getBuildingsSitesName")
     public ResponseEntity<Map<String, List<String>>> getBuildingSitesName(){
         return buildingService.getBuildinsSitesName();
     }

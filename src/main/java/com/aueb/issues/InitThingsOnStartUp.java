@@ -93,7 +93,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                 .gender("M")
                 .address("Eygeniou Karavias 12, 11144 Attica")
                 .createdDate(LocalDateTime.now())
-                .role(Role.ADMIN)
+                .role(Role.COMMITTEE)
                 .activated(true)
                 .build();
         userRepository.save(admin);
@@ -113,8 +113,8 @@ public class InitThingsOnStartUp implements CommandLineRunner {
         userRepository.save(teacher);
         UserEntity tech = UserEntity.builder()
                 .id(String.valueOf(UUID.randomUUID()))
-                .email("haralabos13aggelis@hotmail.com")
                 .password(passwordEncoder.encode("pass"))
+                .email("haralabos13aggelis@hotmail.com")
                 .phone("6945227238")
                 .firstname("Charalampos")
                 .lastname("Aggelis")

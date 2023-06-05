@@ -23,7 +23,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/committee")
 @CrossOrigin(origins = "http://localhost:4200/")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('COMMITTEE')")
 public class CommitteeController {
     @Autowired
     ApplicationService applicationService;
