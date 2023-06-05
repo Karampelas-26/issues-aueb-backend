@@ -20,4 +20,9 @@ public interface SitesRepository extends JpaRepository<SiteEntity, String> {
 //    @Query(value = "select s from SiteEntity as s"+
 //    "where(:buildingId=null or s.building.id=:buildingId)")
 //    public List<SiteEntity> getSitesOfBuilding(@Param("buildingId")Long buildingId);
+
+    @Query(value="select s "+
+            "from SiteEntity as s"+
+    " where (:buildingId = null or s.building.id = :buildingId)")
+    public List<SiteEntity> getsAllSitesOfBuilding(@Param("buildingId") Long buildingId);
 }

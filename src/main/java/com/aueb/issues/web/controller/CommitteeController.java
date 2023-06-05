@@ -1,11 +1,9 @@
 package com.aueb.issues.web.controller;
 
+import com.aueb.issues.model.entity.BuildingEntity;
 import com.aueb.issues.web.comittee.CreateUserDTO;
 import com.aueb.issues.web.dto.*;
-import com.aueb.issues.web.service.ApplicationService;
-import com.aueb.issues.web.service.BuildingService;
-import com.aueb.issues.web.service.EquipmentService;
-import com.aueb.issues.web.service.UserService;
+import com.aueb.issues.web.service.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +31,8 @@ public class CommitteeController {
     BuildingService buildingsService;
     @Autowired
     EquipmentService equipmentService;
+    @Autowired
+    SiteService siteService;
 
     @GetMapping(value = "/getAllApplications", produces = "application/json")
     public ResponseEntity<List<ApplicationDTO>> getAllApplications(@RequestBody ObjectNode requestData) {
@@ -87,6 +87,10 @@ public class CommitteeController {
     public ResponseEntity<List<BuildingDTO>> getBuildings(){
         return buildingsService.getBuildings();
     }
+//    @GetMapping("/getBuildingsWithSites")
+//    public ResponseEntity<List<BuildingDTO>> getBuildingsWithSites(){
+//        return buildingsService.getBuildingsWithSites();
+//    }
 
     @PutMapping("/updateBuilding/{buildingId}")
     public ResponseEntity<String> updateBuilding(@PathVariable("buildingId") int id,
@@ -119,4 +123,9 @@ public class CommitteeController {
     public ResponseEntity<String> deleteEquipment(@PathVariable("equipmentId") String id){
         return equipmentService.deleteEquipment(id);
     }
+
+//    @GetMapping("/getSites")
+//    public ResponseEntity<List<SiteDTO>> getSites(){
+//        return siteService.getSites();
+//    }
 }
