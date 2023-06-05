@@ -8,10 +8,7 @@ import com.aueb.issues.web.dto.CommentDTO;
 import com.aueb.issues.web.dto.TeacherApplicationsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ApplicationMapper {
@@ -22,7 +19,7 @@ public interface ApplicationMapper {
     @Mapping(expression = "java(entity.getSite().getBuilding().getName())", target = "buildingName")
     @Mapping(expression = "java(entity.getPriority().name())", target = "priority")
     @Mapping(source = "entity.status", target = "status")
-    @Mapping(expression = "java(MapperUtils.mapUserName(entity.getAssigneeTech()))",target ="assigneeTechName" )
+    @Mapping(expression = "java(entity.getAssigneeTech().getId()))",target ="assigneeTechId" )
     @Mapping(expression = "java(MapperUtils.mapCommentList(entity.getComments()))", target = "comments")
     @Mapping(source = "entity.description", target = "description")
     @Mapping(expression = "java(entity.getIssueType().name())", target = "issueType")

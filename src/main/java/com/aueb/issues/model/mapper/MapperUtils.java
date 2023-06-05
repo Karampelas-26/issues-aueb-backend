@@ -4,12 +4,9 @@ import com.aueb.issues.model.entity.BuildingEntity;
 import com.aueb.issues.model.entity.CommentEntity;
 import com.aueb.issues.model.entity.SiteEntity;
 import com.aueb.issues.model.entity.UserEntity;
-import com.aueb.issues.web.dto.ApplicationDTO;
 import com.aueb.issues.web.dto.BuildingDTO;
 import com.aueb.issues.web.dto.CommentDTO;
 import com.aueb.issues.web.dto.SiteDTO;
-import com.opencsv.bean.function.AccessorInvoker;
-import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

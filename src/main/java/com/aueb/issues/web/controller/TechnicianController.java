@@ -40,9 +40,8 @@ public class TechnicianController {
     }
 
     @PutMapping("{issueid}")
-    public ResponseEntity<String> updateIssue(@PathVariable("issueid") String id,
-                                                           @RequestBody ApplicationDTO request){
-        return applicationService.updateApplication(id,request);
+    public ResponseEntity<ApplicationDTO> updateIssue(@RequestBody ApplicationDTO request){
+        return applicationService.updateApplication(request);
     }
 
     @DeleteMapping("{issueid}")

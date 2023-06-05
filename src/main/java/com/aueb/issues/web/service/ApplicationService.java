@@ -1,11 +1,14 @@
 package com.aueb.issues.web.service;
 
 import com.aueb.issues.model.entity.ApplicationEntity;
+import com.aueb.issues.model.entity.SiteEntity;
+import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.model.enums.IssueType;
 import com.aueb.issues.model.enums.Priority;
 import com.aueb.issues.model.enums.Status;
 import com.aueb.issues.model.mapper.ApplicationMapper;
 import com.aueb.issues.repository.ApplicationRepository;
+import com.aueb.issues.repository.UserRepository;
 import com.aueb.issues.web.dto.ApplicationDTO;
 import com.aueb.issues.web.dto.TeacherApplicationsDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +27,8 @@ import java.util.stream.Collectors;
 public class ApplicationService {
     @Autowired
     ApplicationRepository applicationRepository;
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     SiteService siteService;
     @Autowired
@@ -111,25 +116,23 @@ public class ApplicationService {
         }
     }
 
-    public ResponseEntity<String> updateApplication(String id, ApplicationDTO request){
+    public ResponseEntity<ApplicationDTO> updateApplication(ApplicationDTO applicationDTO){
         try{
-
-//            ApplicationEntity issue = applicationRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Application not found"));
-//            if(issue!=null) {
-//                return ResponseEntity.badRequest().body("No issue with such id");
-//            }
-//            if(request.getTitle()!=null)
-//                issue.setTitle(request.getTitle());
-//            if(request.getPriority()!=null)
-//                issue.setPriority(request.getPriority());
-//            if(request.getSiteId()!=null)
-////                issue.setSite(siteService.getSiteBySiteId(request.getSiteId()));
-//            if(request.getBuildingId()!=0)
-////                issue.setBuilding(buildingService.getBuildingById((request.getBuildingId())));
-//            if(request.getDueDate()!=null)
-//                issue.setCompletionDate(request.getDueDate());
-            return ResponseEntity.ok(null);
-
+            ApplicationEntity issue = applicationRepository.findById(applicationDTO.getId()).orElseThrow(()->
+                {new EntityNotFoundException("Application not found"); return null;});
+            issue.setDueDate(applicationDTO.getDueDate());
+            issue.setPriority(Priority.valueOf(applicationDTO.getPriority()));
+            issue.setDescription(applicationDTO.getDescription());
+            issue.setTitle(applicationDTO.getTitle());
+            issue.setStatus(Status.valueOf(applicationDTO.getStatus()));
+            Optional<UserEntity> newAssignee =userRepository.findById(applicationDTO.getAssigneeTechId());
+            if(newAssignee.isPresent())
+                issue.setAssigneeTech(newAssignee.get());
+            else {
+                log.error("assignee not found in Database");
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            }
+            return ResponseEntity.ok(applicationDTO);
         }catch (Exception e){
             log.error(e.toString());
             return null;
