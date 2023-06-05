@@ -163,10 +163,12 @@ public class InitThingsOnStartUp implements CommandLineRunner {
             equipmentRepository.save(equipment);
         }
         Random random = new Random();
+        int prefix = 0;
         for(BuildingEntity b: buildings){
+            prefix++;
             for(int i=0; i<=5;i++){
                 for(int j = 1; j <= b.getFloors(); j++){
-                    SiteEntity site = SiteEntity.builder().name(b.getName().substring(0,1)+String.valueOf(j)+String.valueOf(i)).floor(String.valueOf(j)).building(b).build();
+                    SiteEntity site = SiteEntity.builder().name(prefix + b.getName().substring(0,1)+String.valueOf(j)+String.valueOf(i)).floor(String.valueOf(j)).building(b).build();
 //                    site.addEquipment(equipmentEntities[random.nextInt(8)]);
                     for(EquipmentEntity equipment: equipmentEntities){
                         site.addEquipment(equipment);

@@ -1,20 +1,12 @@
 package com.aueb.issues.web.controller;
 
+
 import com.aueb.issues.web.service.BuildingService;
 import com.aueb.issues.web.service.SiteService;
-import com.aueb.issues.model.entity.ApplicationEntity;
-import com.aueb.issues.model.enums.IssueType;
-import com.aueb.issues.model.enums.Priority;
-import com.aueb.issues.model.enums.Status;
-import com.aueb.issues.model.mapper.ApplicationMapper;
-import com.aueb.issues.model.services.SiteService;
-import com.aueb.issues.repository.ApplicationRepository;
-import com.aueb.issues.repository.SitesRepository;
 import com.aueb.issues.web.dto.ApplicationDTO;
 import com.aueb.issues.web.dto.BuildingDTO;
 import com.aueb.issues.web.dto.SiteDTO;
 import com.aueb.issues.web.service.ApplicationService;
-import com.aueb.issues.web.service.BuildingsService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,12 +32,6 @@ public class TechnicianController {
     SiteService siteService;
     @Autowired
     BuildingService buildingService;
-
-    private final ApplicationRepository applicationRepository;
-    @Autowired
-    SiteService siteService;
-    @Autowired
-    BuildingsService buildingsService;
 
     @GetMapping("/getAllApplications")
     public ResponseEntity<List<ApplicationDTO>> getAllΑpplications(){
@@ -87,8 +73,15 @@ public class TechnicianController {
     }
 
     @GetMapping("/getBuildingsName")
-    public ResponseEntity<List<String>> getBuildingsName(){
-        return buildingsService.getAllBuildingsName();
+    public ResponseEntity<List<String>> getBuildingsName() {
+        return buildingService.getAllBuildingsName();
+    }
+
+    @GetMapping("/getBuildinsSitesName")
+    public ResponseEntity<Map<String, List<String>>> getBuildingSitesName(){
+        return buildingService.getBuildinsSitesName();
+    }
+
     @GetMapping("/staticEnums")
     public ResponseEntity<Map<String,List<String>>> getStaticData(){
         return applicationService.getStaticData();

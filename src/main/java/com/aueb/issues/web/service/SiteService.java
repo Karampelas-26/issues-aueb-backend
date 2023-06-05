@@ -27,4 +27,16 @@ public class SiteService {
     public List<SiteDTO> toDto(List<SiteEntity> entities){
         return entities.stream().map(SiteMapper.INSTANCE::toDTO).toList();
     }
+
+    public ResponseEntity<List<String>> getAllSitesName(){
+        List<SiteEntity> sites = sitesRepository.findAll();
+        if(sites.isEmpty()){
+            return ResponseEntity.badRequest().build();
+        }
+        List<String> names = sites.stream()
+                .map(SiteEntity::getName)
+                .toList();
+
+        return ResponseEntity.ok(names);
+    }
 }
