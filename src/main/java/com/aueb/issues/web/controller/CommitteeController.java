@@ -1,5 +1,6 @@
 package com.aueb.issues.web.controller;
 
+import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.web.comittee.CreateUserDTO;
 import com.aueb.issues.web.dto.*;
 import com.aueb.issues.web.service.ApplicationService;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +37,7 @@ public class CommitteeController {
     EquipmentService equipmentService;
 
     @GetMapping(value = "/getAllApplications", produces = "application/json")
-    public ResponseEntity<List<ApplicationDTO>> getAllApplications(@RequestBody ObjectNode requestData) {
+    public ResponseEntity<List<ApplicationDTO>> getAllApplications() {
         return applicationService.getAllApplications();
     }
     @GetMapping("/filtered-applications-s-values")
@@ -43,8 +45,10 @@ public class CommitteeController {
                                                                                       @RequestParam(value = "priority", required=false) String priority,
                                                                                       @RequestParam(value= "issue_type", required = false) String issueType,
                                                                                       @RequestParam(value = "status",required = false) String status,
-                                                                                      @RequestParam(value = "buildingName",required = false)String buildingName) {
-        return applicationService.getApplicationsBySingleValues(siteName, priority, issueType, status,buildingName);
+                                                                                      @RequestParam(value = "buildingName",required = false)String buildingName,
+                                                                                      Authentication authentication) {
+        UserEntity userReq = (UserEntity) authentication.getPrincipal();
+        return applicationService.getApplicationsBySingleValues("COMMITTEE" ,userReq,siteName, priority, issueType, status,buildingName);
     }
 
     //TODO: Methods for Statistics, getBuildings, getUsers, getEquipment,

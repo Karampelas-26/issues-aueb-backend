@@ -1,5 +1,6 @@
 package com.aueb.issues.web.controller;
 
+import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.web.service.BuildingService;
 import com.aueb.issues.web.service.SiteService;
 import com.aueb.issues.repository.ApplicationRepository;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,8 +57,10 @@ public class TechnicianController {
                                                                        @RequestParam(value = "priority", required=false) String priority,
                                                                        @RequestParam(value= "issue_type", required = false)String issueType,
                                                                        @RequestParam(value = "status",required = false) String status,
-                                                                        @RequestParam(value = "buildingName",required = false)String buildingName){
-        return applicationService.getApplicationsBySingleValues(siteName,priority,issueType,status,buildingName);
+                                                                        @RequestParam(value = "buildingName",required = false)String buildingName,
+                                                                                      Authentication authentication){
+        UserEntity userReq = (UserEntity) authentication.getPrincipal();
+        return applicationService.getApplicationsBySingleValues("TECHNICIAN",userReq, siteName,priority,issueType,status,buildingName);
     }
 
     @GetMapping("/all-sites")

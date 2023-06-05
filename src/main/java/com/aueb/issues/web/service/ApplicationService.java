@@ -1,8 +1,10 @@
 package com.aueb.issues.web.service;
 
 import com.aueb.issues.model.entity.ApplicationEntity;
+import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.model.enums.IssueType;
 import com.aueb.issues.model.enums.Priority;
+import com.aueb.issues.model.enums.Role;
 import com.aueb.issues.model.enums.Status;
 import com.aueb.issues.model.mapper.ApplicationMapper;
 import com.aueb.issues.repository.ApplicationRepository;
@@ -59,32 +61,53 @@ public class ApplicationService {
         }
         return new ResponseEntity<>(ret,HttpStatus.OK);
     }
-
-    public ResponseEntity<List<ApplicationDTO>> getApplicationsBySingleValues( String siteName, String priority, String issueType, String status,String buildingName){
+    //todo: include calling user in parameeters and find issueType and assignee tech from there
+    //discuss if createdUser should be found by name or by ID
+    public ResponseEntity<List<ApplicationDTO>> getApplicationsBySingleValues(String role, UserEntity userEntity, String siteName, String priority, String issueType, String status, String buildingName){
         try {
 
-//            if(priority==null|| !(priority.equals(Priority.LOW)||priority.equals(Priority.HIGH)||priority.equals(Priority.MEDIUM))){
-//                log.error("Incorrect Priority");
-//                return new ResponseEntity(HttpStatus.BAD_REQUEST);
-//            }
-//            if(issueType==null|| !(issueType.equals(IssueType.CLIMATE_CONTROL)||issueType.equals(IssueType.ELECTRICAL)||
-//                    issueType.equals(IssueType.EQUIPMENT)||issueType.equals(IssueType.INFRASTRUCTURE))){
-//                log.error("Incorrect IssueType");
-//                return new ResponseEntity(HttpStatus.BAD_REQUEST);
-//            }
-//            if(status==null|| !(status.equals(Status.CREATED)||status.equals(Status.REJECTED)||
-//                    status.equals(Status.VALIDATED)||status.equals(Status.ASSIGNED)||status.equals(Status.COMPLETED)
-//                    ||status.equals(Status.ARCHIVED))){
-//                log.error("Incorrect Status");
-//                return new ResponseEntity(HttpStatus.BAD_REQUEST);
-//            }
+            if(priority!=null && !(priority.equals(Priority.LOW.name())||priority.equals(Priority.HIGH.name())||priority.equals(Priority.MEDIUM.name()))){
+                log.error("Incorrect Priority");
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            }
+
+            if(issueType!=null  && ! (issueType.equals(IssueType.CLIMATE_CONTROL.name())||issueType.equals(IssueType.ELECTRICAL.name())||
+                    issueType.equals(IssueType.EQUIPMENT.name())||issueType.equals(IssueType.INFRASTRUCTURE.name()))){
+                log.error("Incorrect IssueType");
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            }
+            if(status!=null && !(status.equals(Status.CREATED.name())||status.equals(Status.REJECTED.name())||
+                    status.equals(Status.VALIDATED.name())||status.equals(Status.ASSIGNED.name())||status.equals(Status.COMPLETED.name())
+                    ||status.equals(Status.ARCHIVED.name()))){
+                log.error("Incorrect Status");
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            }
+            List<Status> exStatus=new ArrayList<>();
+            if(userEntity.getRole().equals(Role.TECHNICIAN)&&userEntity.getTechnicalTeam()!=null){
+                issueType=userEntity.getTechnicalTeam().name();
+            }
+            switch (role){
+                case "TECHNICIAN":
+                    exStatus.add(Status.REJECTED);
+                    exStatus.add(Status.CREATED);
+                    exStatus.add(Status.ARCHIVED);
+                    break;
+                case "COMMITTEE":
+                    exStatus=null;
+                    break;
+                default:
+                    exStatus.add(Status.ARCHIVED);
+                    break;
+            }
 
 
             List<ApplicationEntity> q = applicationRepository.findByValues(siteName,
                     priority==null?null:Priority.valueOf(priority),
                     issueType==null?null:IssueType.valueOf(issueType),
+                    ,
+                    ,
                     status==null?null:Status.valueOf(status),
-                    buildingName);
+                    buildingName,exStatus);
 
             return ResponseEntity.ok(toDTO(q));
         }
