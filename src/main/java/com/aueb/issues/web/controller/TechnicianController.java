@@ -43,7 +43,6 @@ public class TechnicianController {
                                                                                       @RequestParam(value= "issue_type", required = false)String issueType,
                                                                                       @RequestParam(value = "status",required = false) String status,
                                                                                       @RequestParam(value = "buildingName",required = false)String buildingName,
-                                                                                      @RequestParam(value = "assigneeUserId", required = false)String assigneeUserId,
                                                                                       Authentication authentication){
         return applicationService.getApplicationsBySingleValues((UserEntity) authentication.getPrincipal(),siteName, priority,issueType,status,buildingName);
     }
