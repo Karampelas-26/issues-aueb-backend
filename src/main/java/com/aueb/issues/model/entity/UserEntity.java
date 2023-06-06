@@ -1,5 +1,6 @@
 package com.aueb.issues.model.entity;
 
+import com.aueb.issues.model.enums.IssueType;
 import com.aueb.issues.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,6 +35,8 @@ public class UserEntity implements UserDetails {
     private LocalDateTime createdDate;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @Enumerated(EnumType.STRING)
+    private IssueType technicalTeam;
     private boolean activated;
 
 

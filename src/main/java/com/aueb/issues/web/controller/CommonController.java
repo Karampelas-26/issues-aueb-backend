@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -35,11 +36,19 @@ public class CommonController {
 
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
     @GetMapping("/getAllApplications")
-    public ResponseEntity<List<ApplicationDTO>> getAllΑpplications(Authentication authentication){
-        UserEntity userReq = (UserEntity) authentication.getPrincipal();
-        return applicationService.getAllApplications();
+    public ResponseEntity<List<ApplicationDTO>> getApplications(Authentication authentication){
+        return applicationService.getAllApplications((UserEntity) authentication.getPrincipal());
     }
-
+    @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
+    @GetMapping("/filtered-applications-s-values")
+    public ResponseEntity<List<ApplicationDTO>> getFilteredApplicationsBySingleValues(@RequestParam(value = "site_name", required = false) String siteName,
+                                                                                      @RequestParam(value = "priority", required=false) String priority,
+                                                                                      @RequestParam(value= "issue_type", required = false)String issueType,
+                                                                                      @RequestParam(value = "status",required = false) String status,
+                                                                                      @RequestParam(value = "buildingName",required = false)String buildingName,
+                                                                                      Authentication authentication){
+        return applicationService.getApplicationsBySingleValues((UserEntity) authentication.getPrincipal(),siteName, priority,issueType,status,buildingName);
+    }
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
     @PostMapping("/completeApplication")
     public ResponseEntity<ResponseMessageDTO> completeApplication(@RequestParam(value = "id") String id){

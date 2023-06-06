@@ -19,12 +19,14 @@ public interface ApplicationRepository extends JpaRepository<ApplicationEntity, 
             "and (:priority = null or a.priority =:priority)  "+
             "and (:issue_type = null or a.issueType =:issue_type)  "+
             "and (:status = null or a.status =:status)  "+
-            "and (:buildingName = null or b.name=:buildingName)")
+            "and (:buildingName = null or b.name=:buildingName) "+
+            "and (:excludedStatuses=null or a.status NOT IN (:excludedStatuses))")
     public List<ApplicationEntity> findByValues(@Param("site_name")String siteName,
-                                                  @Param("priority") Priority priority,
-                                                  @Param("issue_type") IssueType issueType,
-                                                  @Param("status") Status status,
-                                                @Param("buildingName")String buildingName);
+                                                @Param("priority") Priority priority,
+                                                @Param("issue_type") IssueType issueType,
+                                                @Param("status") Status status,
+                                                @Param("buildingName")String buildingName,
+                                                @Param("excludedStatuses")List<Status> excludedStatuses);
 
 
     @Query("SELECT a FROM ApplicationEntity a JOIN a.site s JOIN s.building b WHERE b.name = :buildingName")

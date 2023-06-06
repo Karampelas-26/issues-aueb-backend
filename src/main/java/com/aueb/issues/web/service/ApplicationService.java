@@ -6,6 +6,7 @@ import com.aueb.issues.model.entity.SiteEntity;
 import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.model.enums.IssueType;
 import com.aueb.issues.model.enums.Priority;
+import com.aueb.issues.model.enums.Role;
 import com.aueb.issues.model.enums.Status;
 import com.aueb.issues.model.mapper.ApplicationMapper;
 import com.aueb.issues.repository.ApplicationRepository;
@@ -17,23 +18,21 @@ import com.aueb.issues.web.dto.ResponseMessageDTO;
 import com.aueb.issues.web.dto.TeacherApplicationsDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sun.jdi.request.InvalidRequestStateException;
-import io.jsonwebtoken.InvalidClaimException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @Service
 @Slf4j
 public class ApplicationService {
+    private final String UN_ASSIGN_COMMAND="un_assign";
     @Autowired
     ApplicationRepository applicationRepository;
     @Autowired
@@ -88,45 +87,53 @@ public class ApplicationService {
         return  ResponseEntity.ok(null);
     }
 
-    public ResponseEntity<List<ApplicationDTO>> getAllApplications(){
-        List<ApplicationDTO> ret = new ArrayList<>();
-        try{
-            List<ApplicationEntity> issues = applicationRepository.findAll();
-            ret=issues.stream().map(ApplicationMapper.INSTANCE::toDTO).toList();
-        }catch (Exception e){
-            log.error(e.toString());
-            return null;
-        }
-        return new ResponseEntity<>(ret,HttpStatus.OK);
+    public ResponseEntity<List<ApplicationDTO>> getAllApplications(UserEntity userEntity){
+        return getApplicationsBySingleValues(userEntity,null,null,null,null,null);
     }
-
-    public ResponseEntity<List<ApplicationDTO>> getApplicationsBySingleValues( String siteName, String priority, String issueType, String status,String buildingName){
+    public ResponseEntity<List<ApplicationDTO>> getApplicationsBySingleValues(UserEntity userEntity, String siteName, String priority, String issueType, String status, String buildingName){
         try {
 
-//            if(priority==null|| !(priority.equals(Priority.LOW)||priority.equals(Priority.HIGH)||priority.equals(Priority.MEDIUM))){
-//                log.error("Incorrect Priority");
-//                return new ResponseEntity(HttpStatus.BAD_REQUEST);
-//            }
-//            if(issueType==null|| !(issueType.equals(IssueType.CLIMATE_CONTROL)||issueType.equals(IssueType.ELECTRICAL)||
-//                    issueType.equals(IssueType.EQUIPMENT)||issueType.equals(IssueType.INFRASTRUCTURE))){
-//                log.error("Incorrect IssueType");
-//                return new ResponseEntity(HttpStatus.BAD_REQUEST);
-//            }
-//            if(status==null|| !(status.equals(Status.CREATED)||status.equals(Status.REJECTED)||
-//                    status.equals(Status.VALIDATED)||status.equals(Status.ASSIGNED)||status.equals(Status.COMPLETED)
-//                    ||status.equals(Status.ARCHIVED))){
-//                log.error("Incorrect Status");
-//                return new ResponseEntity(HttpStatus.BAD_REQUEST);
-//            }
+            if(priority!=null && !(priority.equals(Priority.LOW.name())||priority.equals(Priority.HIGH.name())||priority.equals(Priority.MEDIUM.name()))){
+                log.error("Incorrect Priority");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
 
+            if(issueType!=null  && ! (issueType.equals(IssueType.CLIMATE_CONTROL.name())||issueType.equals(IssueType.ELECTRICAL.name())||
+                    issueType.equals(IssueType.EQUIPMENT.name())||issueType.equals(IssueType.INFRASTRUCTURE.name()))){
+                log.error("Incorrect IssueType");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            if(status!=null && !(status.equals(Status.CREATED.name())||status.equals(Status.REJECTED.name())||
+                    status.equals(Status.VALIDATED.name())||status.equals(Status.ASSIGNED.name())||status.equals(Status.COMPLETED.name())
+                    ||status.equals(Status.ARCHIVED.name()))){
+                log.error("Incorrect Status");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            List<Status> exStatus=new ArrayList<>();
+            if(issueType==null&&userEntity.getRole().equals(Role.TECHNICIAN)&&userEntity.getTechnicalTeam()!=null){
+                issueType=userEntity.getTechnicalTeam().name();
+            }
+            switch (userEntity.getRole()){
+                case TECHNICIAN:
+                    exStatus.add(Status.REJECTED);
+                    exStatus.add(Status.CREATED);
+                    exStatus.add(Status.ARCHIVED);
+                    break;
+                case COMMITTEE:
+                    exStatus=null;
+                    break;
+                default:
+                    exStatus.add(Status.ARCHIVED);
+                    break;
+            }
 
-            List<ApplicationEntity> q = applicationRepository.findByValues(siteName,
+            List<ApplicationEntity> results = applicationRepository.findByValues(siteName,
                     priority==null?null:Priority.valueOf(priority),
                     issueType==null?null:IssueType.valueOf(issueType),
                     status==null?null:Status.valueOf(status),
-                    buildingName);
+                    buildingName,exStatus);
 
-            return ResponseEntity.ok(toDTO(q));
+            return ResponseEntity.ok(toDTO(results));
         }
         catch (Exception e){
             log.error(e.toString());
@@ -164,8 +171,13 @@ public class ApplicationService {
             Status newStatus=Status.valueOf(applicationDTO.getStatus());
             String result =changeStatusCheck(issue.getStatus(),newStatus);
             if(result!=null){
-                log.error(result);
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                if(!result.equals(UN_ASSIGN_COMMAND)) {
+                    log.error(result);
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }else {
+                    issue.setIssueType(null);
+                    issue.setAssigneeTech(null);
+                }
             }
             issue.setStatus(newStatus);
             if(applicationDTO.getAssigneeTechId()!=null){
@@ -221,6 +233,7 @@ public class ApplicationService {
                 if (status == Status.REJECTED || status == Status.CREATED)
                     return ("Invalid status change: Can't go back to creation or rejection" +
                             "from Completed");
+                else return (UN_ASSIGN_COMMAND);
             }
             case ARCHIVED, REJECTED ->
             {
@@ -230,7 +243,6 @@ public class ApplicationService {
                 return null;
             }
         }
-        return null;
     }
 
     public List<ApplicationDTO> toDTO(List<ApplicationEntity> entities){
