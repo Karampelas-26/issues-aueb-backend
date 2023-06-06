@@ -39,9 +39,8 @@ public class TechnicianController {
     }
 
     @PutMapping("{issueid}")
-    public ResponseEntity<String> updateIssue(@PathVariable("issueid") String id,
-                                                           @RequestBody ApplicationDTO request){
-        return applicationService.updateApplication(id,request);
+    public ResponseEntity<ApplicationDTO> updateIssue(@RequestBody ApplicationDTO request){
+        return applicationService.updateApplication(request);
     }
 
     @DeleteMapping("{issueid}")
@@ -87,24 +86,9 @@ public class TechnicianController {
         return applicationService.getStaticData();
     }
 
-    /**
-     *
-     * use method on postman, write the body as such
-     * {
-     *     "siteName": "Mikhs",
-     *     "priority" : "maoys"
-     * }
-     * and it works
-     */
-    @GetMapping("/testNodes")
-    public ResponseEntity<String> testNodes(@RequestBody ObjectNode node ){
-        String siteN="",pri="";
-        if(node.get("siteName")!=null) {
-            siteN=node.get("siteName").asText();
-        }
-        if(node.get("priority")!=null)
-            pri=node.get("priority").asText();
-        return ResponseEntity.ok("siteName "+ siteN+ "\nPriority "+ pri) ;
+    @PostMapping("/completeApplication")
+    public ResponseEntity<String> completeApplication(@RequestParam String id){
+        return applicationService.completeApplication(id);
     }
 
 

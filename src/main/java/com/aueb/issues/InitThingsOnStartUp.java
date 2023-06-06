@@ -16,10 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author George Karampelasd
@@ -200,9 +197,15 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                     .creationUser(users.get(random.nextInt(users.size())))
                     .issueType(IssueType.ELECTRICAL)
                     .priority(priorities[random.nextInt(priorities.length)])
+                    .comments(new ArrayList<>())
                     .createDate(LocalDateTime.now())
                     .status(statuses[random.nextInt(statuses.length)])
                     .build();
+            app.getComments().add(CommentEntity.builder()
+                    .content("Yello")
+                    .dateTime(LocalDateTime.now())
+                    .userName(users.get(random.nextInt(users.size())).getId())
+                    .build());
 
 //            System.err.println(app.toString());
             applicationRepository.save(app);
