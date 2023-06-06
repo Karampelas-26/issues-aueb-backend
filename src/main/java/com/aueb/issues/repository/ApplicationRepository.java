@@ -18,16 +18,12 @@ public interface ApplicationRepository extends JpaRepository<ApplicationEntity, 
             "where (:site_name = null or a.site.name = :site_name)  "+
             "and (:priority = null or a.priority =:priority)  "+
             "and (:issue_type = null or a.issueType =:issue_type)  "+
-            "and (:createdUserId = null or a.creation_user_id=:createdUserId "+
-            "and (:assigneeTechId = null or a.assignee_tech_id=:assigneeTechId "+
             "and (:status = null or a.status =:status)  "+
             "and (:buildingName = null or b.name=:buildingName) "+
             "and (:excludedStatuses=null or a.status NOT IN (:excludedStatuses))")
     public List<ApplicationEntity> findByValues(@Param("site_name")String siteName,
                                                 @Param("priority") Priority priority,
                                                 @Param("issue_type") IssueType issueType,
-                                                @Param("createdUserId")String userId,
-                                                @Param("assigneeTechId")String assigneeTechId,
                                                 @Param("status") Status status,
                                                 @Param("buildingName")String buildingName,
                                                 @Param("excludedStatuses")List<Status> excludedStatuses);

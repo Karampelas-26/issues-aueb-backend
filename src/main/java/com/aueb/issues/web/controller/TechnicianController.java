@@ -1,18 +1,21 @@
 package com.aueb.issues.web.controller;
 
 
+import com.aueb.issues.model.entity.UserEntity;
+import com.aueb.issues.web.dto.UserDTO;
 import com.aueb.issues.web.service.BuildingService;
 import com.aueb.issues.web.service.SiteService;
 import com.aueb.issues.web.dto.ApplicationDTO;
 import com.aueb.issues.web.dto.BuildingDTO;
 import com.aueb.issues.web.dto.SiteDTO;
 import com.aueb.issues.web.service.ApplicationService;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.aueb.issues.web.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,20 +35,22 @@ public class TechnicianController {
     SiteService siteService;
     @Autowired
     BuildingService buildingService;
-
-    @GetMapping("/getAllApplications")
-    public ResponseEntity<List<ApplicationDTO>> getAllΑpplications(){
-        return applicationService.getAllApplications();
-    }
-
-
+    @Autowired
+    UserService userService;
     @GetMapping("/filtered-applications-s-values")
     public ResponseEntity<List<ApplicationDTO>> getFilteredApplicationsBySingleValues(@RequestParam(value = "site_name", required = false) String siteName,
-                                                                       @RequestParam(value = "priority", required=false) String priority,
-                                                                       @RequestParam(value= "issue_type", required = false)String issueType,
-                                                                       @RequestParam(value = "status",required = false) String status,
-                                                                        @RequestParam(value = "buildingName",required = false)String buildingName){
-        return applicationService.getApplicationsBySingleValues(siteName,priority,issueType,status,buildingName);
+                                                                                      @RequestParam(value = "priority", required=false) String priority,
+                                                                                      @RequestParam(value= "issue_type", required = false)String issueType,
+                                                                                      @RequestParam(value = "status",required = false) String status,
+                                                                                      @RequestParam(value = "buildingName",required = false)String buildingName,
+                                                                                      @RequestParam(value = "assigneeUserId", required = false)String assigneeUserId,
+                                                                                      Authentication authentication){
+        return applicationService.getApplicationsBySingleValues((UserEntity) authentication.getPrincipal(),siteName, priority,issueType,status,buildingName);
+    }
+
+    @GetMapping("/getUsersByTechTeam")
+    public ResponseEntity<List<UserDTO>> getUsersByTechTeam(@RequestParam(value= "issue_type", required = true) String issueType){
+        return userService.getUserByTechTeam(issueType);
     }
 
     @GetMapping("/getSitesName")

@@ -3,6 +3,7 @@ package com.aueb.issues.web.service;
 import com.aueb.issues.email.EmailService;
 import com.aueb.issues.model.entity.ActivationToken;
 import com.aueb.issues.model.entity.UserEntity;
+import com.aueb.issues.model.enums.IssueType;
 import com.aueb.issues.model.enums.Role;
 import com.aueb.issues.repository.ActivationTokenRepository;
 import com.aueb.issues.repository.UserRepository;
@@ -15,6 +16,7 @@ import com.aueb.issues.model.mapper.UserMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -138,14 +140,22 @@ public class UserService {
 
             List<UserEntity> filteredUsers = users.stream()
                     .filter(UserEntity::isEnabled)
-                    .collect(Collectors.toList());
+                    .toList();
 
-            List<UserDTO> userDTOS = filteredUsers.stream().map(UserMapper.INSTANCE::toDto).collect(Collectors.toList());
+            List<UserDTO> userDTOS = filteredUsers.stream().map(UserMapper.INSTANCE::toDto).toList();
             return ResponseEntity.ok(userDTOS);
         }catch (Exception e){
             log.error(e.toString());
             return ResponseEntity.internalServerError().body(null);
         }
+    }
+    public ResponseEntity<List<UserDTO>> getUserByTechTeam(String issueType){
+        if(issueType!=null  && ! (issueType.equals(IssueType.CLIMATE_CONTROL.name())||issueType.equals(IssueType.ELECTRICAL.name())||
+                issueType.equals(IssueType.EQUIPMENT.name())||issueType.equals(IssueType.INFRASTRUCTURE.name()))){
+            log.error("Incorrect IssueType");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(userRepository.findByTechTeam(IssueType.valueOf(issueType)).stream().map(UserMapper.INSTANCE::toDto).toList(),HttpStatus.OK);
     }
 
     public ResponseEntity<ResponseMessageDTO> updateUser(UserDTO request) {

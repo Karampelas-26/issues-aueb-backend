@@ -119,6 +119,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                 .address("Eygeniou Karavias 32, 11144 Attica")
                 .createdDate(LocalDateTime.now())
                 .role(Role.TECHNICIAN)
+                .technicalTeam(IssueType.ELECTRICAL)
                 .activated(true)
                 .build();
         userRepository.save(tech);
