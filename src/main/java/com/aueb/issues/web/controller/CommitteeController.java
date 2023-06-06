@@ -34,19 +34,6 @@ public class CommitteeController {
     @Autowired
     EquipmentService equipmentService;
 
-    @GetMapping(value = "/getAllApplications", produces = "application/json")
-    public ResponseEntity<List<ApplicationDTO>> getAllApplications(@RequestBody ObjectNode requestData) {
-        return applicationService.getAllApplications();
-    }
-    @GetMapping("/filtered-applications-s-values")
-    public ResponseEntity<List<ApplicationDTO>> getFilteredApplicationsBySignleValues(@RequestParam(value = "site_name", required = false) String siteName,
-                                                                                      @RequestParam(value = "priority", required=false) String priority,
-                                                                                      @RequestParam(value= "issue_type", required = false) String issueType,
-                                                                                      @RequestParam(value = "status",required = false) String status,
-                                                                                      @RequestParam(value = "buildingName",required = false)String buildingName) {
-        return applicationService.getApplicationsBySingleValues(siteName, priority, issueType, status,buildingName);
-    }
-
     //TODO: Methods for Statistics, getBuildings, getUsers, getEquipment,
     @PostMapping("/create-user")
     public ResponseEntity<ResponseMessageDTO> createUser(@RequestBody CreateUserDTO request) {
@@ -71,11 +58,6 @@ public class CommitteeController {
     @DeleteMapping("/delete-user/{userId}")
     public ResponseEntity<ResponseMessageDTO> deleteUser(@PathVariable("userId") String id){
         return userService.deleteUser(id);
-    }
-
-    @PostMapping(value ="/submit-new-issue")
-    public ResponseEntity<String> submitApplication(@RequestBody ObjectNode node){
-        return applicationService.submitApplication(node);
     }
 
     @PostMapping("/createBuilding")

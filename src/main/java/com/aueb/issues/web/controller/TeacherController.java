@@ -28,11 +28,6 @@ public class TeacherController {
     @Autowired
     ApplicationService applicationService;
 
-    @GetMapping("/getString")
-    public String getString(){
-        return "HELLO form server";
-    }
-
     @GetMapping(value = "/getApplications", produces = "application/json")
     public ResponseEntity<List<TeacherApplicationsDTO>> getApplications() {
         return  applicationService.getTeacherApplications();
@@ -45,11 +40,6 @@ public class TeacherController {
     @PostMapping(value = "/panic")
     public ResponseEntity<String> panicButton(@RequestBody String siteId){
         return notificationService.panicButton(siteId);
-    }
-
-    @PostMapping(value ="/submit-new-issue")
-    public ResponseEntity<String> submitApplication(@RequestBody ObjectNode node){
-        return applicationService.submitApplication(node);
     }
 
 }

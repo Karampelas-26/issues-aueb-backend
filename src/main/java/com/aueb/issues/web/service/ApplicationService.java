@@ -1,6 +1,7 @@
 package com.aueb.issues.web.service;
 
 import com.aueb.issues.model.entity.ApplicationEntity;
+import com.aueb.issues.model.entity.EquipmentEntity;
 import com.aueb.issues.model.entity.SiteEntity;
 import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.model.enums.IssueType;
@@ -8,6 +9,8 @@ import com.aueb.issues.model.enums.Priority;
 import com.aueb.issues.model.enums.Status;
 import com.aueb.issues.model.mapper.ApplicationMapper;
 import com.aueb.issues.repository.ApplicationRepository;
+import com.aueb.issues.repository.EquipmentRepository;
+import com.aueb.issues.repository.SitesRepository;
 import com.aueb.issues.repository.UserRepository;
 import com.aueb.issues.web.dto.ApplicationDTO;
 import com.aueb.issues.web.dto.TeacherApplicationsDTO;
@@ -20,8 +23,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,7 +40,11 @@ public class ApplicationService {
     @Autowired
     SiteService siteService;
     @Autowired
+    SitesRepository sitesRepository;
+    @Autowired
     BuildingService buildingService;
+    @Autowired
+    EquipmentRepository equipmentRepository;
 
     public ResponseEntity<List<TeacherApplicationsDTO>> getTeacherApplications(){
         List<TeacherApplicationsDTO> ret = new ArrayList<>();
@@ -51,10 +60,30 @@ public class ApplicationService {
         }
         return (ResponseEntity<List<TeacherApplicationsDTO>>) ret;
     }
-    public ResponseEntity<String> submitApplication(ObjectNode node){
-        node.get("title");
-        node.get("siteName");//or id
+    public ResponseEntity<String> submitApplication(ObjectNode node, UserEntity user){
+
+        String title =(node.get("title"))!=null?node.get("title").asText():null;
+        String siteId =(node.get("siteId"))!=null?node.get("siteId").asText():null;
+        Optional<SiteEntity> site=sitesRepository.findSiteById(String.valueOf(siteId));
+        IssueType issueType =(node.get("issueType"))!=null?IssueType.valueOf(node.get("issueType").asText()):null;
+        String equipmentId =(node.get("equipment"))!=null?node.get("equipment").asText():null;
+        node.get("siteName");
         node.get("issueType");
+        node.get("equipment");
+
+        Optional<EquipmentEntity> equipmentEntity=equipmentRepository.findById(equipmentId);
+        ApplicationEntity newEntity=ApplicationEntity.builder()
+                .id(UUID.randomUUID().toString())
+                .title(title)
+                .creationUser(user)
+                .createDate(LocalDateTime.now())
+                .status(Status.CREATED)
+                .priority(Priority.MEDIUM)
+                .site(site.orElse(null))
+                .issueType(issueType)
+//                .equipment(equipmentEntity.orElse(null))
+                .build();
+        applicationRepository.save(newEntity);
         return  ResponseEntity.ok(null);
     }
 
@@ -132,15 +161,22 @@ public class ApplicationService {
             issue.setTitle(applicationDTO.getTitle());
             issue.setIssueType(IssueType.valueOf(applicationDTO.getIssueType()));
             Status newStatus=Status.valueOf(applicationDTO.getStatus());
-            changeStatusCheck(issue.getStatus(),newStatus);
-            issue.setStatus(newStatus);
-            Optional<UserEntity> newAssignee =userRepository.findById(applicationDTO.getAssigneeTechId());
-            if(newAssignee.isPresent())
-                issue.setAssigneeTech(newAssignee.get());
-            else {
-                log.error("Assignee not found in Database");
+            String result =changeStatusCheck(issue.getStatus(),newStatus);
+            if(result!=null){
+                log.error(result);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
+            issue.setStatus(newStatus);
+            if(applicationDTO.getAssigneeTechId()!=null){
+                Optional<UserEntity> newAssignee =userRepository.findById(applicationDTO.getAssigneeTechId());
+                if(newAssignee.isPresent())
+                    issue.setAssigneeTech(newAssignee.get());
+                else {
+                    log.error("Assignee not found in Database");
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+            }else
+                issue.setAssigneeTech(null);
             applicationRepository.save(issue);
             return ResponseEntity.ok(applicationDTO);
         }catch (Exception e){
@@ -152,7 +188,11 @@ public class ApplicationService {
         ApplicationEntity issue = applicationRepository.findById(id).orElseThrow(()->
             new EntityNotFoundException("Application not found")
         );
-        changeStatusCheck(issue.getStatus(), Status.COMPLETED);
+        String result=changeStatusCheck(issue.getStatus(), Status.COMPLETED);
+        if(result!=null) {
+            log.error(result);
+            return new ResponseEntity<>(result,HttpStatus.BAD_REQUEST);
+        }
         issue.setStatus(Status.COMPLETED);
         applicationRepository.save(issue);
         return ResponseEntity.ok("Completed");
@@ -168,19 +208,22 @@ public class ApplicationService {
 
     }
 
-    private void changeStatusCheck(Status current, Status status){
+    private String changeStatusCheck(Status current, Status status){
         switch (current) {
             case COMPLETED -> {
                 if (status == Status.REJECTED || status == Status.CREATED)
-                    throw new RuntimeException("Invalid status change: Can't go back to creation or rejection" +
+                    return ("Invalid status change: Can't go back to creation or rejection" +
                             "from Completed");
             }
             case ARCHIVED, REJECTED ->
-                    throw new RuntimeException("Invalid status change: Can't change status from Rejected or Archived");
+            {
+                return ("Invalid status change: Can't change status from Rejected or Archived");
+            }
             default -> {
-                return;
+                return null;
             }
         }
+        return null;
     }
 
     public List<ApplicationDTO> toDTO(List<ApplicationEntity> entities){

@@ -38,15 +38,6 @@ public class TechnicianController {
         return applicationService.getAllApplications();
     }
 
-    @PutMapping("{issueid}")
-    public ResponseEntity<ApplicationDTO> updateIssue(@RequestBody ApplicationDTO request){
-        return applicationService.updateApplication(request);
-    }
-
-    @DeleteMapping("{issueid}")
-    public ResponseEntity<String> completeIssue(@PathVariable("issueid") String id){
-        return applicationService.deleteIssue(id);
-    }
 
     @GetMapping("/filtered-applications-s-values")
     public ResponseEntity<List<ApplicationDTO>> getFilteredApplicationsBySingleValues(@RequestParam(value = "site_name", required = false) String siteName,
@@ -80,16 +71,5 @@ public class TechnicianController {
     public ResponseEntity<Map<String, List<String>>> getBuildingSitesName(){
         return buildingService.getBuildinsSitesName();
     }
-
-    @GetMapping("/staticEnums")
-    public ResponseEntity<Map<String,List<String>>> getStaticData(){
-        return applicationService.getStaticData();
-    }
-
-    @PostMapping("/completeApplication")
-    public ResponseEntity<String> completeApplication(@RequestParam String id){
-        return applicationService.completeApplication(id);
-    }
-
 
 }
