@@ -13,6 +13,7 @@ import com.aueb.issues.repository.EquipmentRepository;
 import com.aueb.issues.repository.SitesRepository;
 import com.aueb.issues.repository.UserRepository;
 import com.aueb.issues.web.dto.ApplicationDTO;
+import com.aueb.issues.web.dto.ResponseMessageDTO;
 import com.aueb.issues.web.dto.TeacherApplicationsDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -184,18 +185,24 @@ public class ApplicationService {
             return null;
         }
     }
-    public ResponseEntity<String> completeApplication(String id){
-        ApplicationEntity issue = applicationRepository.findById(id).orElseThrow(()->
-            new EntityNotFoundException("Application not found")
-        );
-        String result=changeStatusCheck(issue.getStatus(), Status.COMPLETED);
-        if(result!=null) {
-            log.error(result);
-            return new ResponseEntity<>(result,HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ResponseMessageDTO> completeApplication(String id){
+        try {
+
+            ApplicationEntity issue = applicationRepository.findById(id).orElseThrow(()->
+                new EntityNotFoundException("Application not found")
+            );
+            String result = changeStatusCheck(issue.getStatus(), Status.COMPLETED);
+            if (result != null) {
+                log.error(result);
+                return new ResponseEntity<>(new ResponseMessageDTO(result), HttpStatus.BAD_REQUEST);
+            }
+            issue.setStatus(Status.COMPLETED);
+            applicationRepository.save(issue);
+            return ResponseEntity.ok(new ResponseMessageDTO("Completed"));
+        } catch (Exception e) {
+            log.error(e.toString());
+            return ResponseEntity.badRequest().body(new ResponseMessageDTO(e.getMessage()));
         }
-        issue.setStatus(Status.COMPLETED);
-        applicationRepository.save(issue);
-        return ResponseEntity.ok("Completed");
     }
 
     public ResponseEntity<Map<String,List<String>>> getStaticData(){
