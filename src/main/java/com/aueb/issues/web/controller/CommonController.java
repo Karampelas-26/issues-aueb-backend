@@ -42,7 +42,7 @@ public class CommonController {
 
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
     @PostMapping("/completeApplication")
-    public ResponseEntity<ResponseMessageDTO> completeApplication(@RequestParam String id){
+    public ResponseEntity<ResponseMessageDTO> completeApplication(@RequestParam(value = "id") String id){
         return applicationService.completeApplication(id);
     }
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN', 'TEACHER')")
