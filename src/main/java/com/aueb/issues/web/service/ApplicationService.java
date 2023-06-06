@@ -12,6 +12,9 @@ import com.aueb.issues.repository.UserRepository;
 import com.aueb.issues.web.dto.ApplicationDTO;
 import com.aueb.issues.web.dto.TeacherApplicationsDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.sun.jdi.request.InvalidRequestStateException;
+import io.jsonwebtoken.InvalidClaimException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +51,10 @@ public class ApplicationService {
         }
         return (ResponseEntity<List<TeacherApplicationsDTO>>) ret;
     }
-    public ResponseEntity<String> submitApplication(ApplicationDTO requestDTO){
-        //TODO: Valdidate request and create new entity
+    public ResponseEntity<String> submitApplication(ObjectNode node){
+        node.get("title");
+        node.get("siteName");//or id
+        node.get("issueType");
         return  ResponseEntity.ok(null);
     }
 
@@ -120,23 +125,37 @@ public class ApplicationService {
         try{
             ApplicationEntity issue = applicationRepository.findById(applicationDTO.getId()).orElseThrow(()->
                 {new EntityNotFoundException("Application not found"); return null;});
+
             issue.setDueDate(applicationDTO.getDueDate());
             issue.setPriority(Priority.valueOf(applicationDTO.getPriority()));
             issue.setDescription(applicationDTO.getDescription());
             issue.setTitle(applicationDTO.getTitle());
-            issue.setStatus(Status.valueOf(applicationDTO.getStatus()));
+            issue.setIssueType(IssueType.valueOf(applicationDTO.getIssueType()));
+            Status newStatus=Status.valueOf(applicationDTO.getStatus());
+            changeStatusCheck(issue.getStatus(),newStatus);
+            issue.setStatus(newStatus);
             Optional<UserEntity> newAssignee =userRepository.findById(applicationDTO.getAssigneeTechId());
             if(newAssignee.isPresent())
                 issue.setAssigneeTech(newAssignee.get());
             else {
-                log.error("assignee not found in Database");
-                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+                log.error("Assignee not found in Database");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
+            applicationRepository.save(issue);
             return ResponseEntity.ok(applicationDTO);
         }catch (Exception e){
             log.error(e.toString());
             return null;
         }
+    }
+    public ResponseEntity<String> completeApplication(String id){
+        ApplicationEntity issue = applicationRepository.findById(id).orElseThrow(()->
+            new EntityNotFoundException("Application not found")
+        );
+        changeStatusCheck(issue.getStatus(), Status.COMPLETED);
+        issue.setStatus(Status.COMPLETED);
+        applicationRepository.save(issue);
+        return ResponseEntity.ok("Completed");
     }
 
     public ResponseEntity<Map<String,List<String>>> getStaticData(){
@@ -147,6 +166,21 @@ public class ApplicationService {
         ret.put("Priotity",mapper.convertValue(Priority.values(), List.class));
         return ResponseEntity.ok(ret);
 
+    }
+
+    private void changeStatusCheck(Status current, Status status){
+        switch (current) {
+            case COMPLETED -> {
+                if (status == Status.REJECTED || status == Status.CREATED)
+                    throw new RuntimeException("Invalid status change: Can't go back to creation or rejection" +
+                            "from Completed");
+            }
+            case ARCHIVED, REJECTED ->
+                    throw new RuntimeException("Invalid status change: Can't change status from Rejected or Archived");
+            default -> {
+                return;
+            }
+        }
     }
 
     public List<ApplicationDTO> toDTO(List<ApplicationEntity> entities){

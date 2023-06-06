@@ -74,8 +74,8 @@ public class CommitteeController {
     }
 
     @PostMapping(value ="/submit-new-issue")
-    public ResponseEntity<String> submitApplication(@RequestBody ApplicationDTO requestDTO){
-        return applicationService.submitApplication(requestDTO);
+    public ResponseEntity<String> submitApplication(@RequestBody ObjectNode node){
+        return applicationService.submitApplication(node);
     }
 
     @PostMapping("/createBuilding")
