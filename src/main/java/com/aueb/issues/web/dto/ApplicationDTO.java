@@ -22,7 +22,8 @@ public class ApplicationDTO {
     private String buildingName;
     private String priority;
     private LocalDateTime createDate;
-    private String assigneeUser;
+    private String assigneeTechId;
+    private List<CommentDTO> comments;
     private String description;
     private String issueType;
     private LocalDateTime dueDate;

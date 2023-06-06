@@ -25,7 +25,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/committee")
 @CrossOrigin(origins = "http://localhost:4200/")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('COMMITTEE')")
 public class CommitteeController {
     @Autowired
     ApplicationService applicationService;
@@ -35,21 +35,6 @@ public class CommitteeController {
     BuildingService buildingsService;
     @Autowired
     EquipmentService equipmentService;
-
-    @GetMapping(value = "/getAllApplications", produces = "application/json")
-    public ResponseEntity<List<ApplicationDTO>> getAllApplications() {
-        return applicationService.getAllApplications();
-    }
-    @GetMapping("/filtered-applications-s-values")
-    public ResponseEntity<List<ApplicationDTO>> getFilteredApplicationsBySignleValues(@RequestParam(value = "site_name", required = false) String siteName,
-                                                                                      @RequestParam(value = "priority", required=false) String priority,
-                                                                                      @RequestParam(value= "issue_type", required = false) String issueType,
-                                                                                      @RequestParam(value = "status",required = false) String status,
-                                                                                      @RequestParam(value = "buildingName",required = false)String buildingName,
-                                                                                      Authentication authentication) {
-        UserEntity userReq = (UserEntity) authentication.getPrincipal();
-        return applicationService.getApplicationsBySingleValues("COMMITTEE" ,userReq,siteName, priority, issueType, status,buildingName);
-    }
 
     //TODO: Methods for Statistics, getBuildings, getUsers, getEquipment,
     @PostMapping("/create-user")
@@ -75,11 +60,6 @@ public class CommitteeController {
     @DeleteMapping("/delete-user/{userId}")
     public ResponseEntity<ResponseMessageDTO> deleteUser(@PathVariable("userId") String id){
         return userService.deleteUser(id);
-    }
-
-    @PostMapping(value ="/submit-new-issue")
-    public ResponseEntity<String> submitApplication(@RequestBody ApplicationDTO requestDTO){
-        return applicationService.submitApplication(requestDTO);
     }
 
     @PostMapping("/createBuilding")

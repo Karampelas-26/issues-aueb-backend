@@ -5,6 +5,7 @@ import com.aueb.issues.web.dto.NotificationDTO;
 import com.aueb.issues.web.dto.TeacherApplicationsDTO;
 import com.aueb.issues.web.service.ApplicationService;
 import com.aueb.issues.web.service.NotificationService;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +28,6 @@ public class TeacherController {
     @Autowired
     ApplicationService applicationService;
 
-    @GetMapping("/getString")
-    public String getString(){
-        return "HELLO form server";
-    }
-
     @GetMapping(value = "/getApplications", produces = "application/json")
     public ResponseEntity<List<TeacherApplicationsDTO>> getApplications() {
         return  applicationService.getTeacherApplications();
@@ -44,11 +40,6 @@ public class TeacherController {
     @PostMapping(value = "/panic")
     public ResponseEntity<String> panicButton(@RequestBody String siteId){
         return notificationService.panicButton(siteId);
-    }
-
-    @PostMapping(value ="/submit-new-issue")
-    public ResponseEntity<String> submitApplication(@RequestBody ApplicationDTO requestDTO){
-        return applicationService.submitApplication(requestDTO);
     }
 
 }
