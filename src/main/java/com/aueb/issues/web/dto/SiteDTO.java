@@ -1,5 +1,6 @@
 package com.aueb.issues.web.dto;
 
+import com.aueb.issues.model.entity.BuildingEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

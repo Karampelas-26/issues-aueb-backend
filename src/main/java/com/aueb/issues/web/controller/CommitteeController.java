@@ -5,6 +5,7 @@ import com.aueb.issues.web.comittee.CreateUserDTO;
 import com.aueb.issues.web.dto.*;
 import com.aueb.issues.web.service.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -124,6 +125,15 @@ public class CommitteeController {
         return equipmentService.deleteEquipment(id);
     }
 
+    @PostMapping("/createSites")
+    public ResponseEntity<String> createSites(@RequestBody SiteDTO request){
+        return siteService.createSites(request);
+    }
+
+    @GetMapping("/all-sites")
+    public ResponseEntity<List<SiteDTO>> getAllSites(){
+        return siteService.getAllSites();
+    }
 //    @GetMapping("/getSites")
 //    public ResponseEntity<List<SiteDTO>> getSites(){
 //        return siteService.getSites();
