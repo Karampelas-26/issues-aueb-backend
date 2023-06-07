@@ -126,7 +126,7 @@ public class CommitteeController {
     }
 
     @PostMapping("/createSites")
-    public ResponseEntity<ResponseMessageDTO> createSites(@RequestBody SiteDTO request){
+    public ResponseEntity<ResponseMessageDTO> createSites(@RequestBody CreateBuildingRequest request){
         return siteService.createSites(request);
     }
 

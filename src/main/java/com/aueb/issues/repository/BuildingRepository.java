@@ -16,7 +16,7 @@ public interface BuildingRepository extends JpaRepository<BuildingEntity, Intege
         return findById(Math.toIntExact(id));
     }
 
-    @Query(value="select b from BuildingEntity as b"+
-    " where (:name = null or b.name=:name)")
-    public List<BuildingEntity> findByName(@Param("name")String name);
+    Optional<BuildingEntity> findByName(String name);
+
+
 }

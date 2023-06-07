@@ -5,15 +5,14 @@ import com.aueb.issues.model.entity.SiteEntity;
 import com.aueb.issues.model.mapper.SiteMapper;
 import com.aueb.issues.repository.BuildingRepository;
 import com.aueb.issues.repository.SitesRepository;
-import com.aueb.issues.web.dto.BuildingDTO;
-import com.aueb.issues.web.dto.ResponseMessageDTO;
-import com.aueb.issues.web.dto.SiteDTO;
+import com.aueb.issues.web.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -36,51 +35,26 @@ public class SiteService {
         return entities.stream().map(SiteMapper.INSTANCE::toDTO).toList();
     }
 
-    public ResponseEntity<ResponseMessageDTO> createSites(SiteDTO requestDTO) {
+    public ResponseEntity<ResponseMessageDTO> createSites(CreateBuildingRequest request) {
         try{
-                String buildingName = requestDTO.getBuilding().getName();
-                String siteName = requestDTO.getName();
-                List<BuildingEntity> bui = buildingRepository.findByName(buildingName);
-                for(BuildingEntity b :bui){
-                    if(!buildingName.equals(b.getName())){
-                        BuildingEntity buildingEntity = BuildingEntity.builder()
-                                .name(buildingName)
-                                .address(requestDTO.getFloor())
-                                .floors(Integer.parseInt(requestDTO.getFloor()))
-                                .build();
-                        buildingRepository.save(buildingEntity);
-                        SiteEntity siteEntity = SiteEntity.builder()
-                                .name(requestDTO.getName())
-                                .floor(requestDTO.getFloor())
-                                .building(buildingEntity)
-                                .build();
-                        sitesRepository.save(siteEntity);
-
-                    }
-                    else {
-                        List<SiteEntity> sites = sitesRepository.findByName(siteName);
-                        for(SiteEntity s:sites){
-                            if(!s.getName().equals(siteName)){
-                                BuildingEntity building = BuildingEntity.builder()
-                                        .name(buildingName)
-                                        .address(requestDTO.getFloor())
-                                        .floors(Integer.parseInt(requestDTO.getFloor()))
-                                        .build();
-                                SiteEntity siteEntity = SiteEntity.builder()
-                                        .name(requestDTO.getName())
-                                        .floor(requestDTO.getFloor())
-                                        .building(building)
-                                        .build();
-                                sitesRepository.save(siteEntity);
-                            }
-                        }
-                    }
-                }
-
-
-
-
-
+            Optional<BuildingEntity> isBuilding = buildingRepository.findByName(request.getName());
+            if(isBuilding.isPresent()){
+                return ResponseEntity.badRequest().body(new ResponseMessageDTO("Building with name: " + request.getName() + " already exists"));
+            }
+            BuildingEntity building = BuildingEntity.builder()
+                    .name(request.getName())
+                    .address(request.getAddress())
+                    .floors(request.getFloors())
+                    .build();
+            buildingRepository.save(building);
+            for(CreateSiteRequest site: request.getSites()){
+                SiteEntity siteEntity = SiteEntity.builder()
+                        .name(site.getName())
+                        .floor(site.getFloor())
+                        .building(building)
+                        .build();
+                sitesRepository.save(siteEntity);
+            }
         }catch (Exception e){
             log.error(e.toString());
             return null;
