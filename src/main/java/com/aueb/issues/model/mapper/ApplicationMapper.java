@@ -37,4 +37,8 @@ public interface ApplicationMapper {
     @Mapping(source = "dateTime", target = "dateTime")
     @Mapping(source = "userName", target = "user")
     public CommentDTO toCommentDTO(CommentEntity entity);
+    @Mapping(source = "content", target = "content")
+    @Mapping(source = "dateTime", target = "dateTime")
+    @Mapping(source = "user", target = "userName")
+    public CommentEntity toEntity(CommentDTO dto);
 }
