@@ -6,6 +6,7 @@ import com.aueb.issues.model.mapper.SiteMapper;
 import com.aueb.issues.repository.BuildingRepository;
 import com.aueb.issues.repository.SitesRepository;
 import com.aueb.issues.web.dto.BuildingDTO;
+import com.aueb.issues.web.dto.ResponseMessageDTO;
 import com.aueb.issues.web.dto.SiteDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class SiteService {
         return entities.stream().map(SiteMapper.INSTANCE::toDTO).toList();
     }
 
-    public ResponseEntity<String> createSites(SiteDTO requestDTO) {
+    public ResponseEntity<ResponseMessageDTO> createSites(SiteDTO requestDTO) {
         try{
                 String buildingName = requestDTO.getBuilding().getName();
                 String siteName = requestDTO.getName();
