@@ -131,7 +131,7 @@ public class ApplicationService {
                     priority==null?null:Priority.valueOf(priority),
                     issueType==null?null:IssueType.valueOf(issueType),
                     status==null?null:Status.valueOf(status),
-                    buildingName,exStatus);
+                    buildingName);
 
             return ResponseEntity.ok(toDTO(results));
         }
