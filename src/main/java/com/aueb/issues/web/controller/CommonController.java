@@ -82,6 +82,10 @@ public class CommonController {
         return applicationService.deleteIssue(id);
     }
 
+    @GetMapping("/getUsersByTechTeam")
+    public ResponseEntity<List<UserDTO>> getUsersByTechTeam(@RequestParam(value= "issue_type", required = true) String issueType){
+        return userService.getUserByTechTeam(issueType);
+    }
     //get Static Data
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN', 'TEACHER')")
     @GetMapping("/getSitesName")
