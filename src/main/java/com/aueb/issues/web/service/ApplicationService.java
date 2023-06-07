@@ -109,29 +109,14 @@ public class ApplicationService {
                 log.error("Incorrect Status");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
-            List<Status> exStatus=new ArrayList<>();
             if(issueType==null&&userEntity.getRole().equals(Role.TECHNICIAN)&&userEntity.getTechnicalTeam()!=null){
                 issueType=userEntity.getTechnicalTeam().name();
             }
-            switch (userEntity.getRole()){
-                case TECHNICIAN:
-                    exStatus.add(Status.REJECTED);
-                    exStatus.add(Status.CREATED);
-                    exStatus.add(Status.ARCHIVED);
-                    break;
-                case COMMITTEE:
-                    exStatus=null;
-                    break;
-                default:
-                    exStatus.add(Status.ARCHIVED);
-                    break;
-            }
-
             List<ApplicationEntity> results = applicationRepository.findByValues(siteName,
                     priority==null?null:Priority.valueOf(priority),
                     issueType==null?null:IssueType.valueOf(issueType),
                     status==null?null:Status.valueOf(status),
-                    buildingName,exStatus);
+                    buildingName);
 
             return ResponseEntity.ok(toDTO(results));
         }
@@ -199,7 +184,6 @@ public class ApplicationService {
     }
     public ResponseEntity<ResponseMessageDTO> completeApplication(String id){
         try {
-
             ApplicationEntity issue = applicationRepository.findById(id).orElseThrow(()->
                 new EntityNotFoundException("Application not found")
             );

@@ -4,9 +4,11 @@ import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.web.dto.ApplicationDTO;
 import com.aueb.issues.web.dto.ResponseMessageDTO;
 import com.aueb.issues.web.dto.SiteDTO;
+import com.aueb.issues.web.dto.UserDTO;
 import com.aueb.issues.web.service.ApplicationService;
 import com.aueb.issues.web.service.BuildingService;
 import com.aueb.issues.web.service.SiteService;
+import com.aueb.issues.web.service.UserService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,8 @@ public class CommonController {
     SiteService siteService;
     @Autowired
     BuildingService buildingService;
+    @Autowired
+    UserService userService;
 
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
     @GetMapping("/getAllApplications")
@@ -50,7 +54,7 @@ public class CommonController {
         return applicationService.getApplicationsBySingleValues((UserEntity) authentication.getPrincipal(),siteName, priority,issueType,status,buildingName);
     }
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
-    @PostMapping("/completeApplication")
+    @GetMapping("/completeApplication")
     public ResponseEntity<ResponseMessageDTO> completeApplication(@RequestParam(value = "id") String id){
         return applicationService.completeApplication(id);
     }
@@ -60,6 +64,12 @@ public class CommonController {
         return applicationService.submitApplication(node, (UserEntity) authentication.getPrincipal());
     }
 
+
+    @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
+    @GetMapping("/getUsersByIds")
+    public ResponseEntity<List<UserDTO>> getUsers(@RequestParam(value = "usersIds") List<String> usersIds) {
+        return userService.getUser(usersIds);
+    }
 
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
     @PutMapping("/update")

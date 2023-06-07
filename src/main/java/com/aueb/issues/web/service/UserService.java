@@ -32,6 +32,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserService {
     @Autowired
+    private UserMapper userMapper;
+    @Autowired
     UserRepository userRepository;
     @Autowired
     EmailService emailService;
@@ -183,6 +185,17 @@ public class UserService {
         }catch (Exception e){
             log.error(e.toString());
             return ResponseEntity.badRequest().body(new ResponseMessageDTO(e.getMessage()));
+        }
+    }
+
+    public ResponseEntity<List<UserDTO>> getUser(List<String> userIds) {
+        try {
+            List<UserEntity> user = userRepository.findByIdIn(userIds).orElseThrow(() -> new EntityNotFoundException("User does not exist"));
+            List<UserDTO> userDTOS = user.stream().map(UserMapper.INSTANCE::toDto).toList();
+            return ResponseEntity.ok(userDTOS);
+        } catch (EntityNotFoundException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 }
