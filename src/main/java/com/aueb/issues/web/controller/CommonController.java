@@ -1,14 +1,9 @@
 package com.aueb.issues.web.controller;
 
+import com.aueb.issues.model.entity.EquipmentEntity;
 import com.aueb.issues.model.entity.UserEntity;
-import com.aueb.issues.web.dto.ApplicationDTO;
-import com.aueb.issues.web.dto.ResponseMessageDTO;
-import com.aueb.issues.web.dto.SiteDTO;
-import com.aueb.issues.web.dto.UserDTO;
-import com.aueb.issues.web.service.ApplicationService;
-import com.aueb.issues.web.service.BuildingService;
-import com.aueb.issues.web.service.SiteService;
-import com.aueb.issues.web.service.UserService;
+import com.aueb.issues.web.dto.*;
+import com.aueb.issues.web.service.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +32,8 @@ public class CommonController {
     BuildingService buildingService;
     @Autowired
     UserService userService;
+    @Autowired
+    EquipmentService equipmentService;
 
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
     @GetMapping("/getAllApplications")
@@ -53,6 +50,13 @@ public class CommonController {
                                                                                       Authentication authentication){
         return applicationService.getApplicationsBySingleValues((UserEntity) authentication.getPrincipal(),siteName, priority,issueType,status,buildingName);
     }
+
+    @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN', 'TEACHER')")
+    @GetMapping("/getEquipment")
+    public ResponseEntity<List<EquipmentEntity>> getEquipment(){
+        return equipmentService.getEquipment();
+    }
+
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
     @GetMapping("/completeApplication")
     public ResponseEntity<ResponseMessageDTO> completeApplication(@RequestParam(value = "id") String id){

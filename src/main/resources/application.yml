@@ -25,3 +25,5 @@ spring:
             starttls:
               enable: true
               required: true
+application:
+  title: "Athens University Technical Issues Support System"

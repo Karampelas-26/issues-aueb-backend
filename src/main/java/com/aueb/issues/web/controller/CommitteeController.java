@@ -1,5 +1,6 @@
 package com.aueb.issues.web.controller;
 
+import com.aueb.issues.model.entity.EquipmentEntity;
 import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.web.comittee.CreateUserDTO;
 import com.aueb.issues.web.dto.*;
@@ -89,7 +90,7 @@ public class CommitteeController {
     }
 
     @GetMapping("/getEquipment")
-    public ResponseEntity<List<EquipmentDTO>> getEquipment(){
+    public ResponseEntity<List<EquipmentEntity>> getEquipment(){
         return equipmentService.getEquipment();
     }
 
