@@ -80,6 +80,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
 //                .build();
 //        applicationRepository.save(issue2);
 
+
         UserEntity admin = UserEntity.builder()
                 .id(String.valueOf(UUID.randomUUID()))
                 .email("george.karampelas.26@gmail.com")
@@ -107,7 +108,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                 .role(Role.TEACHER)
                 .activated(true)
                 .build();
-        userRepository.save(teacher);
+
         UserEntity tech = UserEntity.builder()
                 .id(String.valueOf(UUID.randomUUID()))
                 .password(passwordEncoder.encode("pass"))
@@ -127,7 +128,12 @@ public class InitThingsOnStartUp implements CommandLineRunner {
 
         createBuildins();
         createApplications(300);
-
+        HashSet<Long> pref= new HashSet<>();
+        pref.add(1L);
+        pref.add(2L);
+        pref.add(3L);
+        teacher.setPreferences(pref);
+        userRepository.save(teacher);
     }
 
     private void createBuildins(){
@@ -177,7 +183,10 @@ public class InitThingsOnStartUp implements CommandLineRunner {
             }
             buildingRepository.save(b);
         }
+
+
     }
+
 
     @Transactional
     public void createApplications(int num) {

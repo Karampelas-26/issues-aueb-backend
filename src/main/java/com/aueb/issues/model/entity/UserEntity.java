@@ -4,6 +4,7 @@ import com.aueb.issues.model.enums.IssueType;
 import com.aueb.issues.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,7 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Slf4j
 @Table(name = "_user")
 public class UserEntity implements UserDetails {
 
@@ -32,6 +34,7 @@ public class UserEntity implements UserDetails {
     private String lastname;
     private String gender;
     private String address;
+    private HashSet<Long> preferences; //Sites' id
     private LocalDateTime createdDate;
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -39,6 +42,21 @@ public class UserEntity implements UserDetails {
     private IssueType technicalTeam;
     private boolean activated;
 
+    public void addPreference(Long siteId){
+        if (preferences==null)
+            preferences=new HashSet<>();
+        preferences.add(siteId);
+    }
+
+    public boolean updatePreferences(HashSet<Long> siteIds){
+        try{
+            preferences=siteIds;
+            return true;
+        }catch (Exception e){
+            log.error("Exception at setting preferences \n" + e.getMessage());
+        }
+        return false;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -44,19 +44,22 @@ public class ApplicationService {
     @Autowired
     EquipmentRepository equipmentRepository;
 
-    public ResponseEntity<List<TeacherApplicationsDTO>> getTeacherApplications(){
-        List<TeacherApplicationsDTO> ret = new ArrayList<>();
+    public ResponseEntity<List<TeacherApplicationsDTO>> getTeacherApplications(UserEntity user){
+        List<TeacherApplicationsDTO> ret;
         try{
-            List<ApplicationEntity> issues = applicationRepository.findAll();
-            ObjectMapper mapper = new ObjectMapper();
-            for (ApplicationEntity issue: issues){
-                mapper.convertValue(issue,TeacherApplicationsDTO.class);
-            }
+
+            List<ApplicationEntity> results = applicationRepository.findAll();
+            List<ApplicationEntity> resFiltered=results.stream()
+                    .filter(res-> !res.getStatus().equals(Status.ARCHIVED))
+                    .filter(res->user.getPreferences().contains(res.getSite().getId()))
+                    .toList();
+
+             ret=resFiltered.stream().map(ApplicationMapper.INSTANCE::toTeacherDTO).toList();
         }catch (Exception e){
             log.error(e.toString());
             return null;
         }
-        return (ResponseEntity<List<TeacherApplicationsDTO>>) ret;
+        return new ResponseEntity<>(ret,HttpStatus.OK);
     }
     public ResponseEntity<String> submitApplication(ObjectNode node, UserEntity user){
 
@@ -82,6 +85,9 @@ public class ApplicationService {
 //                .equipment(equipmentEntity.orElse(null))
                 .build();
         applicationRepository.save(newEntity);
+        if(user.getRole().equals(Role.TEACHER)&& site.isPresent()){
+            user.addPreference(site.get().getId());
+        }
         return  ResponseEntity.ok(null);
     }
 
