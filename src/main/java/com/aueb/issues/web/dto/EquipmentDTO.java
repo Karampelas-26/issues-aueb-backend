@@ -13,5 +13,4 @@ public class EquipmentDTO {
     private String typeOfEquipment;
     private int buildingId;
     private String siteId;
-
 }

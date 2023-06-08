@@ -47,11 +47,6 @@ public class TechnicianController {
         return applicationService.getApplicationsBySingleValues((UserEntity) authentication.getPrincipal(),siteName, priority,issueType,status,buildingName);
     }
 
-    @GetMapping("/getUsersByTechTeam")
-    public ResponseEntity<List<UserDTO>> getUsersByTechTeam(@RequestParam(value= "issue_type", required = true) String issueType){
-        return userService.getUserByTechTeam(issueType);
-    }
-
     @GetMapping("/getSitesName")
     public ResponseEntity<List<String>> getSitesName(){
         return siteService.getAllSitesName();

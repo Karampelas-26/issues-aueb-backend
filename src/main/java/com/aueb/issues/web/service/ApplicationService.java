@@ -197,7 +197,6 @@ public class ApplicationService {
     }
     public ResponseEntity<ResponseMessageDTO> completeApplication(String id){
         try {
-
             ApplicationEntity issue = applicationRepository.findById(id).orElseThrow(()->
                 new EntityNotFoundException("Application not found")
             );

@@ -42,19 +42,15 @@ public class EquipmentService {
         return ResponseEntity.ok(null);
     }
 
-    public ResponseEntity<List<EquipmentDTO>> getEquipment() {
+    public ResponseEntity<List<EquipmentEntity>> getEquipment() {
         List<EquipmentDTO> eq = new ArrayList<>();
         try{
             List<EquipmentEntity> equipment = equipmentRepository.findAll();
-            ObjectMapper mapper = new ObjectMapper();
-            for (EquipmentEntity equip: equipment){
-                mapper.convertValue(equip,TeacherApplicationsDTO.class);
-            }
+            return ResponseEntity.ok(equipment);
         }catch (Exception e){
             log.error(e.toString());
-            return null;
+            return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.ok(eq);
     }
 
     public ResponseEntity<String> updateEquipment(String id, EquipmentDTO request) {
