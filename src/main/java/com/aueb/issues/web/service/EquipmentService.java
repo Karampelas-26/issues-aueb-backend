@@ -1,6 +1,7 @@
 package com.aueb.issues.web.service;
 
 import com.aueb.issues.model.entity.EquipmentEntity;
+import com.aueb.issues.model.mapper.EquipmentMapper;
 import com.aueb.issues.repository.EquipmentRepository;
 import com.aueb.issues.web.dto.EquipmentDTO;
 import com.aueb.issues.web.dto.TeacherApplicationsDTO;
@@ -43,18 +44,14 @@ public class EquipmentService {
     }
 
     public ResponseEntity<List<EquipmentDTO>> getEquipment() {
-        List<EquipmentDTO> eq = new ArrayList<>();
         try{
-            List<EquipmentEntity> equipment = equipmentRepository.findAll();
-            ObjectMapper mapper = new ObjectMapper();
-            for (EquipmentEntity equip: equipment){
-                mapper.convertValue(equip,TeacherApplicationsDTO.class);
-            }
+           List<EquipmentEntity> eq = equipmentRepository.findAll();
+           return ResponseEntity.ok(toDTO(eq));
         }catch (Exception e){
             log.error(e.toString());
             return null;
         }
-        return ResponseEntity.ok(eq);
+
     }
 
     public ResponseEntity<String> updateEquipment(String id, EquipmentDTO request) {
@@ -88,5 +85,9 @@ public class EquipmentService {
             log.error(e.toString());
             return null;
         }
+    }
+
+    public List<EquipmentDTO> toDTO(List<EquipmentEntity> entities){
+        return entities.stream().map(EquipmentMapper.INSTANCE::toDTO).toList();
     }
 }
