@@ -2,6 +2,7 @@ package com.aueb.issues.web.controller;
 
 import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.web.dto.ApplicationDTO;
+import com.aueb.issues.web.dto.CommentDTO;
 import com.aueb.issues.web.dto.ResponseMessageDTO;
 import com.aueb.issues.web.dto.SiteDTO;
 import com.aueb.issues.web.service.ApplicationService;
@@ -60,7 +61,6 @@ public class CommonController {
         return applicationService.submitApplication(node, (UserEntity) authentication.getPrincipal());
     }
 
-
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
     @PutMapping("/update")
     public ResponseEntity<ApplicationDTO> updateIssue(@RequestBody ApplicationDTO request){
@@ -71,7 +71,12 @@ public class CommonController {
     public ResponseEntity<String> completeIssue(@PathVariable("issueid") String id){
         return applicationService.deleteIssue(id);
     }
-
+    //comments
+    @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
+    @PostMapping("/add_comment")
+    public ResponseEntity<CommentDTO> addComment(@RequestParam(value = "issue_id",required = true)String issueId,@RequestBody CommentDTO commentDto){
+        return applicationService.createComment(issueId,commentDto);
+    }
     //get Static Data
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN', 'TEACHER')")
     @GetMapping("/getSitesName")
