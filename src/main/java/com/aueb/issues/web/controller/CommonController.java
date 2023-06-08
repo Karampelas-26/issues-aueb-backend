@@ -60,7 +60,7 @@ public class CommonController {
 
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN', 'TEACHER')")
     @GetMapping("/getEquipment")
-    public ResponseEntity<List<EquipmentEntity>> getEquipment(){
+    public ResponseEntity<List<EquipmentDTO>> getEquipment(){
         return equipmentService.getEquipment();
     }
 

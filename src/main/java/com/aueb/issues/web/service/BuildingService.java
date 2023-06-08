@@ -6,10 +6,7 @@ import com.aueb.issues.model.mapper.BuildingMapper;
 import com.aueb.issues.model.mapper.UserMapper;
 import com.aueb.issues.repository.BuildingRepository;
 import com.aueb.issues.repository.SitesRepository;
-import com.aueb.issues.web.dto.ApplicationDTO;
-import com.aueb.issues.web.dto.BuildingDTO;
-import com.aueb.issues.web.dto.SiteDTO;
-import com.aueb.issues.web.dto.UserDTO;
+import com.aueb.issues.web.dto.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -34,24 +31,19 @@ public class BuildingService {
     @Autowired
     SiteService siteService;
 
-    public ResponseEntity<String> createBuilding(BuildingDTO requestDTO){
+    public ResponseEntity<ResponseMessageDTO> createBuilding(BuildingDTO requestDTO){
         try{
             BuildingEntity buildingEntity = BuildingEntity.builder()
-            Random rand = new Random();
-            int i = rand.nextInt();
-            BuildingEntity buildingEntity = BuildingEntity.builder()
-//                    .id(i)
                     .name(requestDTO.getName())
                     .address(requestDTO.getAddress())
                     .floors(requestDTO.getFloors())
                     .build();
             buildingRepository.save(buildingEntity);
-
+            return ResponseEntity.ok(new ResponseMessageDTO("Buildings created successfully"));
         }catch (Exception e){
             log.error(e.toString());
-            return null;
+            return ResponseEntity.internalServerError().body(new ResponseMessageDTO(e.getMessage()));
         }
-        return ResponseEntity.ok(null);
     }
 
     public ResponseEntity<List<BuildingDTO>> getBuildings() {

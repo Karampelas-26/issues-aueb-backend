@@ -17,31 +17,29 @@ import java.util.List;
 
 @Component
 public  class MapperUtils {
-    static
-    BuildingMapper buildingMapper;
-    static
-    SiteMapper siteMapper;
-    static
-    EquipmentMapper equipmentMapper;
-    public String map(Object object){
     static BuildingMapper buildingMapper;
     static SiteMapper siteMapper;
+    static EquipmentMapper equipmentMapper;
     static ApplicationMapper applicationMapper;
+
     public static String map(Object object){
         if(object!=null)
             return object.toString();
         return null;
     }
+
     public static EquipmentDTO mapEquipment(EquipmentEntity entity){
         if(equipmentMapper != null)
             return equipmentMapper.toDTO(entity);
         return null;
     }
+
     public static BuildingDTO mapBuilding(BuildingEntity entity){
         if(buildingMapper!=null)
             return buildingMapper.toDTO(entity);
         return null;
     }
+
     public static String mapUserName(UserEntity entity){
         if(entity==null) return null;
         return entity.getFirstname() + " " + entity.getLastname();
@@ -63,6 +61,7 @@ public  class MapperUtils {
         }
         return null;
     }
+
     @Autowired
     public void init(BuildingMapper buildingMapper, SiteMapper siteMapper,ApplicationMapper applicationMapper){
        MapperUtils.siteMapper=siteMapper;

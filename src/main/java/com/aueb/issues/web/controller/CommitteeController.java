@@ -65,7 +65,7 @@ public class CommitteeController {
     }
 
     @PostMapping("/createBuilding")
-    public ResponseEntity<String> createBuilding(@RequestBody BuildingDTO requestDTO){
+    public ResponseEntity<ResponseMessageDTO> createBuilding(@RequestBody BuildingDTO requestDTO){
         return buildingsService.createBuilding(requestDTO);
     }
 
@@ -91,7 +91,7 @@ public class CommitteeController {
     }
 
     @GetMapping("/getEquipment")
-    public ResponseEntity<List<EquipmentEntity>> getEquipment(){
+    public ResponseEntity<List<EquipmentDTO>> getEquipment(){
         return equipmentService.getEquipment();
     }
 
