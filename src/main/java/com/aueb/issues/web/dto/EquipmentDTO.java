@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EquipmentDTO {
+    private Long id;
     private String typeOfEquipment;
-    private String buildingName;
-    private String siteName;
 }
