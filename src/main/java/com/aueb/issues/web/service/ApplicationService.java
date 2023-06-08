@@ -212,6 +212,7 @@ public class ApplicationService {
                 return new ResponseEntity<>(new ResponseMessageDTO(result), HttpStatus.BAD_REQUEST);
             }
             issue.setStatus(Status.COMPLETED);
+            issue.setCompletionDate(LocalDateTime.now());
             applicationRepository.save(issue);
             return ResponseEntity.ok(new ResponseMessageDTO("Completed"));
         } catch (Exception e) {
