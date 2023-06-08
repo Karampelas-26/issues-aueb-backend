@@ -1,0 +1,12 @@
+     _   _   _     _____         _
+    / \ | | | |   |_   _|__  ___| |__
+   / _ \| | | |_____| |/ _ \/ __| '_ \
+  / ___ \ |_| |_____| |  __/ (__| | | |
+ /_/   \_\___/      |_|\___|\___|_| |_|
+
+${application.title} ${application.version}
+Powered by Spring Boot ${spring-boot.version}
+Created by:
+ -Sotiris Kotrotsos
+ -Steve Meidanis
+ -George Karampelas

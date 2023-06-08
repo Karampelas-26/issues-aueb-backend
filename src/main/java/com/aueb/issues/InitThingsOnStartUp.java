@@ -16,10 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author George Karampelasd
@@ -93,7 +90,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                 .gender("M")
                 .address("Eygeniou Karavias 12, 11144 Attica")
                 .createdDate(LocalDateTime.now())
-                .role(Role.ADMIN)
+                .role(Role.COMMITTEE)
                 .activated(true)
                 .build();
         userRepository.save(admin);
@@ -113,8 +110,8 @@ public class InitThingsOnStartUp implements CommandLineRunner {
         userRepository.save(teacher);
         UserEntity tech = UserEntity.builder()
                 .id(String.valueOf(UUID.randomUUID()))
-                .email("haralabos13aggelis@hotmail.com")
                 .password(passwordEncoder.encode("pass"))
+                .email("haralabos13aggelis@hotmail.com")
                 .phone("6945227238")
                 .firstname("Charalampos")
                 .lastname("Aggelis")
@@ -122,6 +119,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                 .address("Eygeniou Karavias 32, 11144 Attica")
                 .createdDate(LocalDateTime.now())
                 .role(Role.TECHNICIAN)
+                .technicalTeam(IssueType.ELECTRICAL)
                 .activated(true)
                 .build();
         userRepository.save(tech);
@@ -163,10 +161,12 @@ public class InitThingsOnStartUp implements CommandLineRunner {
             equipmentRepository.save(equipment);
         }
         Random random = new Random();
+        int prefix = 0;
         for(BuildingEntity b: buildings){
+            prefix++;
             for(int i=0; i<=5;i++){
                 for(int j = 1; j <= b.getFloors(); j++){
-                    SiteEntity site = SiteEntity.builder().name(b.getName().substring(0,1)+String.valueOf(j)+String.valueOf(i)).floor(String.valueOf(j)).building(b).build();
+                    SiteEntity site = SiteEntity.builder().name(prefix + b.getName().substring(0,1)+String.valueOf(j)+String.valueOf(i)).floor(String.valueOf(j)).building(b).build();
 //                    site.addEquipment(equipmentEntities[random.nextInt(8)]);
                     for(EquipmentEntity equipment: equipmentEntities){
                         site.addEquipment(equipment);
@@ -198,9 +198,15 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                     .creationUser(users.get(random.nextInt(users.size())))
                     .issueType(IssueType.ELECTRICAL)
                     .priority(priorities[random.nextInt(priorities.length)])
+                    .comments(new ArrayList<>())
                     .createDate(LocalDateTime.now())
                     .status(statuses[random.nextInt(statuses.length)])
                     .build();
+            app.getComments().add(CommentEntity.builder()
+                    .content("Yello")
+                    .dateTime(LocalDateTime.now())
+                    .userName(users.get(random.nextInt(users.size())).getId())
+                    .build());
 
 //            System.err.println(app.toString());
             applicationRepository.save(app);

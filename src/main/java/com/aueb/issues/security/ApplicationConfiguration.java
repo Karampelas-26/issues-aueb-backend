@@ -1,5 +1,6 @@
 package com.aueb.issues.security;
 
+import com.aueb.issues.model.mapper.UserMapper;
 import com.aueb.issues.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.filters.CorsFilter;
@@ -47,5 +48,10 @@ public class ApplicationConfiguration {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserMapper userMapper() {
+        return UserMapper.INSTANCE;
     }
 }

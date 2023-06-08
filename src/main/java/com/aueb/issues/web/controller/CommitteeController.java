@@ -1,6 +1,8 @@
 package com.aueb.issues.web.controller;
 
 import com.aueb.issues.model.entity.BuildingEntity;
+import com.aueb.issues.model.entity.EquipmentEntity;
+import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.web.comittee.CreateUserDTO;
 import com.aueb.issues.web.dto.*;
 import com.aueb.issues.web.service.*;
@@ -9,6 +11,7 @@ import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +25,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/committee")
 @CrossOrigin(origins = "http://localhost:4200/")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('COMMITTEE')")
 public class CommitteeController {
     @Autowired
     ApplicationService applicationService;
@@ -34,19 +37,6 @@ public class CommitteeController {
     EquipmentService equipmentService;
     @Autowired
     SiteService siteService;
-
-    @GetMapping(value = "/getAllApplications", produces = "application/json")
-    public ResponseEntity<List<ApplicationDTO>> getAllApplications(@RequestBody ObjectNode requestData) {
-        return applicationService.getAllApplications();
-    }
-    @GetMapping("/filtered-applications-s-values")
-    public ResponseEntity<List<ApplicationDTO>> getFilteredApplicationsBySignleValues(@RequestParam(value = "site_name", required = false) String siteName,
-                                                                                      @RequestParam(value = "priority", required=false) String priority,
-                                                                                      @RequestParam(value= "issue_type", required = false) String issueType,
-                                                                                      @RequestParam(value = "status",required = false) String status,
-                                                                                      @RequestParam(value = "buildingName",required = false)String buildingName) {
-        return applicationService.getApplicationsBySingleValues(siteName, priority, issueType, status,buildingName);
-    }
 
     //TODO: Methods for Statistics, getBuildings, getUsers, getEquipment,
     @PostMapping("/create-user")
@@ -74,11 +64,6 @@ public class CommitteeController {
         return userService.deleteUser(id);
     }
 
-    @PostMapping(value ="/submit-new-issue")
-    public ResponseEntity<String> submitApplication(@RequestBody ApplicationDTO requestDTO){
-        return applicationService.submitApplication(requestDTO);
-    }
-
     @PostMapping("/createBuilding")
     public ResponseEntity<String> createBuilding(@RequestBody BuildingDTO requestDTO){
         return buildingsService.createBuilding(requestDTO);
@@ -88,10 +73,6 @@ public class CommitteeController {
     public ResponseEntity<List<BuildingDTO>> getBuildings(){
         return buildingsService.getBuildings();
     }
-//    @GetMapping("/getBuildingsWithSites")
-//    public ResponseEntity<List<BuildingDTO>> getBuildingsWithSites(){
-//        return buildingsService.getBuildingsWithSites();
-//    }
 
     @PutMapping("/updateBuilding/{buildingId}")
     public ResponseEntity<String> updateBuilding(@PathVariable("buildingId") int id,
@@ -110,7 +91,7 @@ public class CommitteeController {
     }
 
     @GetMapping("/getEquipment")
-    public ResponseEntity<List<EquipmentDTO>> getEquipment(){
+    public ResponseEntity<List<EquipmentEntity>> getEquipment(){
         return equipmentService.getEquipment();
     }
 
@@ -134,8 +115,4 @@ public class CommitteeController {
     public ResponseEntity<List<SiteDTO>> getAllSites(){
         return siteService.getAllSites();
     }
-//    @GetMapping("/getSites")
-//    public ResponseEntity<List<SiteDTO>> getSites(){
-//        return siteService.getSites();
-//    }
 }

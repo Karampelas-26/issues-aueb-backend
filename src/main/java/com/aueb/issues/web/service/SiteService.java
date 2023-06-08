@@ -61,4 +61,16 @@ public class SiteService {
         }
         return ResponseEntity.ok(null);
     }
+
+    public ResponseEntity<List<String>> getAllSitesName(){
+        List<SiteEntity> sites = sitesRepository.findAll();
+        if(sites.isEmpty()){
+            return ResponseEntity.badRequest().build();
+        }
+        List<String> names = sites.stream()
+                .map(SiteEntity::getName)
+                .toList();
+
+        return ResponseEntity.ok(names);
+    }
 }
