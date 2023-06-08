@@ -1,9 +1,6 @@
 package com.aueb.issues.web.service;
 
-import com.aueb.issues.model.entity.ApplicationEntity;
-import com.aueb.issues.model.entity.EquipmentEntity;
-import com.aueb.issues.model.entity.SiteEntity;
-import com.aueb.issues.model.entity.UserEntity;
+import com.aueb.issues.model.entity.*;
 import com.aueb.issues.model.enums.IssueType;
 import com.aueb.issues.model.enums.Priority;
 import com.aueb.issues.model.enums.Role;
@@ -14,6 +11,7 @@ import com.aueb.issues.repository.EquipmentRepository;
 import com.aueb.issues.repository.SitesRepository;
 import com.aueb.issues.repository.UserRepository;
 import com.aueb.issues.web.dto.ApplicationDTO;
+import com.aueb.issues.web.dto.CommentDTO;
 import com.aueb.issues.web.dto.ResponseMessageDTO;
 import com.aueb.issues.web.dto.TeacherApplicationsDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -109,16 +107,31 @@ public class ApplicationService {
                 log.error("Incorrect Status");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
+            List<Status> exStatus=new ArrayList<>();
             if(issueType==null&&userEntity.getRole().equals(Role.TECHNICIAN)&&userEntity.getTechnicalTeam()!=null){
                 issueType=userEntity.getTechnicalTeam().name();
             }
+            switch (userEntity.getRole()){
+                case TECHNICIAN:
+                    exStatus.add(Status.REJECTED);
+                    exStatus.add(Status.CREATED);
+                    exStatus.add(Status.ARCHIVED);
+                    break;
+                case COMMITTEE:
+                    break;
+                default:
+                    exStatus.add(Status.ARCHIVED);
+                    break;
+            }
+
             List<ApplicationEntity> results = applicationRepository.findByValues(siteName,
                     priority==null?null:Priority.valueOf(priority),
                     issueType==null?null:IssueType.valueOf(issueType),
                     status==null?null:Status.valueOf(status),
                     buildingName);
 
-            return ResponseEntity.ok(toDTO(results));
+            List<ApplicationEntity> resWithStatus = results.stream().filter(res -> !exStatus.contains(res.getStatus())).toList();
+            return ResponseEntity.ok(toDTO(resWithStatus));
         }
         catch (Exception e){
             log.error(e.toString());
@@ -200,6 +213,24 @@ public class ApplicationService {
             return ResponseEntity.badRequest().body(new ResponseMessageDTO(e.getMessage()));
         }
     }
+
+    //COMMENTS
+    public  ResponseEntity<CommentDTO> createComment(String issueId, CommentDTO commentDTO){
+        ApplicationEntity issue = applicationRepository.findById(issueId).orElseThrow(()->
+        new EntityNotFoundException("Application not found"));
+        List<CommentEntity> commentsOfIssue=issue.getComments();
+        CommentEntity newComment=ApplicationMapper.INSTANCE.toEntity(commentDTO);
+        try{
+            commentsOfIssue.add(newComment);
+            applicationRepository.save(issue);
+            return new ResponseEntity<>(ApplicationMapper.INSTANCE.toCommentDTO(newComment),HttpStatus.OK);
+        }catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
+
+    //UTILITIES
 
     public ResponseEntity<Map<String,List<String>>> getStaticData(){
         Map<String,List<String>> ret=new HashMap<>();

@@ -2,6 +2,13 @@ package com.aueb.issues.web.controller;
 
 import com.aueb.issues.model.entity.EquipmentEntity;
 import com.aueb.issues.model.entity.UserEntity;
+import com.aueb.issues.web.dto.ApplicationDTO;
+import com.aueb.issues.web.dto.CommentDTO;
+import com.aueb.issues.web.dto.ResponseMessageDTO;
+import com.aueb.issues.web.dto.SiteDTO;
+import com.aueb.issues.web.service.ApplicationService;
+import com.aueb.issues.web.service.BuildingService;
+import com.aueb.issues.web.service.SiteService;
 import com.aueb.issues.web.dto.*;
 import com.aueb.issues.web.service.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -89,6 +96,12 @@ public class CommonController {
     @GetMapping("/getUsersByTechTeam")
     public ResponseEntity<List<UserDTO>> getUsersByTechTeam(@RequestParam(value= "issue_type", required = true) String issueType){
         return userService.getUserByTechTeam(issueType);
+    }
+    //comments
+    @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
+    @PostMapping("/add_comment")
+    public ResponseEntity<CommentDTO> addComment(@RequestParam(value = "issue_id",required = true)String issueId,@RequestBody CommentDTO commentDto){
+        return applicationService.createComment(issueId,commentDto);
     }
     //get Static Data
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN', 'TEACHER')")
