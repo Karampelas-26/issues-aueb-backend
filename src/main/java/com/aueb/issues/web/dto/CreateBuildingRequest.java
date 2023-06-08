@@ -1,16 +1,17 @@
 package com.aueb.issues.web.dto;
 
-import com.aueb.issues.model.entity.BuildingEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
-public class SiteDTO {
-    private Long id;
+public class CreateBuildingRequest {
     private String name;
-    private String floor;
-    private BuildingDTO building;
+    private String address;
+    private int floors;
+    private List<CreateSiteRequest> sites;
 }

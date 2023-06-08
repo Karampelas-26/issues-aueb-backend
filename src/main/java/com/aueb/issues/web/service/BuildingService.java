@@ -3,10 +3,10 @@ import com.aueb.issues.model.entity.ApplicationEntity;
 import com.aueb.issues.model.entity.BuildingEntity;
 import com.aueb.issues.model.entity.SiteEntity;
 import com.aueb.issues.model.mapper.BuildingMapper;
+import com.aueb.issues.model.mapper.UserMapper;
 import com.aueb.issues.repository.BuildingRepository;
 import com.aueb.issues.repository.SitesRepository;
-import com.aueb.issues.web.dto.ApplicationDTO;
-import com.aueb.issues.web.dto.BuildingDTO;
+import com.aueb.issues.web.dto.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -25,41 +25,36 @@ import java.util.stream.Collectors;
 public class BuildingService {
     @Autowired
     BuildingRepository buildingRepository;
+
     @Autowired
     SitesRepository sitesRepository;
+    @Autowired
+    SiteService siteService;
 
-    public ResponseEntity<String> createBuilding(BuildingDTO requestDTO){
+    public ResponseEntity<ResponseMessageDTO> createBuilding(BuildingDTO requestDTO){
         try{
-            Random rand = new Random();
-            int i = rand.nextInt();
             BuildingEntity buildingEntity = BuildingEntity.builder()
-//                    .id(i)
                     .name(requestDTO.getName())
                     .address(requestDTO.getAddress())
                     .floors(requestDTO.getFloors())
                     .build();
             buildingRepository.save(buildingEntity);
-
+            return ResponseEntity.ok(new ResponseMessageDTO("Buildings created successfully"));
         }catch (Exception e){
             log.error(e.toString());
-            return null;
+            return ResponseEntity.internalServerError().body(new ResponseMessageDTO(e.getMessage()));
         }
-        return ResponseEntity.ok(null);
     }
 
     public ResponseEntity<List<BuildingDTO>> getBuildings() {
-        List<BuildingDTO> ret = new ArrayList<>();
         try{
-            List<BuildingEntity> issues = buildingRepository.findAll();
-            ObjectMapper mapper = new ObjectMapper();
-            for (BuildingEntity issue: issues){
-                mapper.convertValue(issue,ApplicationDTO.class);
-            }
+            List<BuildingEntity> buildings = buildingRepository.findAll();
+
+            return ResponseEntity.ok(toDTOWithSites(buildings));
         }catch (Exception e){
             log.error(e.toString());
-            return null;
+            return ResponseEntity.internalServerError().build();
         }
-        return (ResponseEntity<List<BuildingDTO>>) ret;
     }
 
 
@@ -98,6 +93,18 @@ public class BuildingService {
         return ResponseEntity.ok(toDTO(buildingRepository.findAll()));
     }
 
+    public List<BuildingDTO> toDTOWithSites(List<BuildingEntity> buildings){
+        List<BuildingDTO> ret = new ArrayList<>();
+        for(BuildingEntity i: buildings){
+            Long id = i.getId();
+            List<SiteDTO> sites = siteService.toDto(sitesRepository.getsAllSitesOfBuilding(id));
+
+            BuildingDTO s = BuildingMapper.INSTANCE.toDTOWithSites(i,sites);
+            ret.add(s);
+        }
+        return ret;
+    }
+
     public List<BuildingDTO> toDTO(List<BuildingEntity> entities){
         return entities.stream().map(BuildingMapper.INSTANCE::toDTO).toList();
     }
@@ -120,4 +127,5 @@ public class BuildingService {
                 ));
         return ResponseEntity.ok(buildingSitesMap);
     }
+
 }

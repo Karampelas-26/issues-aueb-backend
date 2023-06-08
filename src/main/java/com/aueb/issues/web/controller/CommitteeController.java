@@ -1,14 +1,13 @@
 package com.aueb.issues.web.controller;
 
+import com.aueb.issues.model.entity.BuildingEntity;
 import com.aueb.issues.model.entity.EquipmentEntity;
 import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.web.comittee.CreateUserDTO;
 import com.aueb.issues.web.dto.*;
-import com.aueb.issues.web.service.ApplicationService;
-import com.aueb.issues.web.service.BuildingService;
-import com.aueb.issues.web.service.EquipmentService;
-import com.aueb.issues.web.service.UserService;
+import com.aueb.issues.web.service.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,6 +35,8 @@ public class CommitteeController {
     BuildingService buildingsService;
     @Autowired
     EquipmentService equipmentService;
+    @Autowired
+    SiteService siteService;
 
     //TODO: Methods for Statistics, getBuildings, getUsers, getEquipment,
     @PostMapping("/create-user")
@@ -64,7 +65,7 @@ public class CommitteeController {
     }
 
     @PostMapping("/createBuilding")
-    public ResponseEntity<String> createBuilding(@RequestBody BuildingDTO requestDTO){
+    public ResponseEntity<ResponseMessageDTO> createBuilding(@RequestBody BuildingDTO requestDTO){
         return buildingsService.createBuilding(requestDTO);
     }
 
@@ -90,7 +91,7 @@ public class CommitteeController {
     }
 
     @GetMapping("/getEquipment")
-    public ResponseEntity<List<EquipmentEntity>> getEquipment(){
+    public ResponseEntity<List<EquipmentDTO>> getEquipment(){
         return equipmentService.getEquipment();
     }
 
@@ -103,5 +104,15 @@ public class CommitteeController {
     @DeleteMapping("/deleteEquipment/{equipmentId}")
     public ResponseEntity<String> deleteEquipment(@PathVariable("equipmentId") String id){
         return equipmentService.deleteEquipment(id);
+    }
+
+    @PostMapping("/createSites")
+    public ResponseEntity<ResponseMessageDTO> createSites(@RequestBody CreateBuildingRequest request){
+        return siteService.createSites(request);
+    }
+
+    @GetMapping("/all-sites")
+    public ResponseEntity<List<SiteDTO>> getAllSites(){
+        return siteService.getAllSites();
     }
 }
