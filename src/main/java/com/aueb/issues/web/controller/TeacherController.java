@@ -38,6 +38,10 @@ public class TeacherController {
     public ResponseEntity<List<TeacherApplicationsDTO>> getApplications(Authentication authentication) {
         return  applicationService.getTeacherApplications((UserEntity) authentication.getPrincipal());
     }
+    @GetMapping(value="/getApplicationsByStatus")
+    public ResponseEntity<List<TeacherApplicationsDTO>> getApplicationsByStatus(@RequestParam(value = "status", required = true)String status, Authentication authentication){
+        return  applicationService.getTeacherApplicationsByStatus((UserEntity) authentication.getPrincipal(),status);
+    }
     @GetMapping(value="/notifications", produces = "application/json")
     public ResponseEntity<List<NotificationDTO>> getNotifications(){
         return notificationService.getNotifications();

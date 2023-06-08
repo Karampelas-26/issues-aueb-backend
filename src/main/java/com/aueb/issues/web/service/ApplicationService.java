@@ -45,16 +45,25 @@ public class ApplicationService {
     EquipmentRepository equipmentRepository;
 
     public ResponseEntity<List<TeacherApplicationsDTO>> getTeacherApplications(UserEntity user){
+        return getTeacherApplicationsByStatus(user, null);
+    }
+    public ResponseEntity<List<TeacherApplicationsDTO>> getTeacherApplicationsByStatus(UserEntity user, String status){
         List<TeacherApplicationsDTO> ret;
         try{
-
-            List<ApplicationEntity> results = applicationRepository.findAll();
+            if(status!=null && !(status.equals(Status.CREATED.name())||status.equals(Status.REJECTED.name())||
+                    status.equals(Status.VALIDATED.name())||status.equals(Status.ASSIGNED.name())||status.equals(Status.COMPLETED.name())
+                    ||status.equals(Status.ARCHIVED.name()))){
+                log.error("Incorrect Status");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            List<ApplicationEntity> results = applicationRepository.findByValues(null,null,null,
+                    status==null?null:Status.valueOf(status),null);
             List<ApplicationEntity> resFiltered=results.stream()
                     .filter(res-> !res.getStatus().equals(Status.ARCHIVED))
                     .filter(res->user.getPreferences().contains(res.getSite().getId()))
                     .toList();
 
-             ret=resFiltered.stream().map(ApplicationMapper.INSTANCE::toTeacherDTO).toList();
+            ret=resFiltered.stream().map(ApplicationMapper.INSTANCE::toTeacherDTO).toList();
         }catch (Exception e){
             log.error(e.toString());
             return null;
