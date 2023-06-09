@@ -9,6 +9,7 @@ import com.aueb.issues.web.service.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -113,8 +114,10 @@ public class CommitteeController {
     //stats
     @GetMapping("/statistics/getApplicationsByMonth")
     public ResponseEntity<List<Map<String, Object>>> getApplicationsByMonth(@RequestParam(value = "buildingId",required = false) Long buildingId,
-                                                                            @RequestParam(value = "createStart",required = false) LocalDateTime createStart,
-                                                                            @RequestParam(value = "createEnd",required = false) LocalDateTime createEnd,
+                                                                            @RequestParam(value = "createStart",required = false)
+                                                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createStart,
+                                                                            @RequestParam(value = "createEnd",required = false)
+                                                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createEnd,
                                                                             @RequestParam(value = "issueType",required = false)String issueType){
         return statisticsService.getAllStatsByMonth(buildingId,issueType,createStart,createEnd);
     }
