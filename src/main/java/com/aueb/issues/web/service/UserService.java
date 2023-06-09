@@ -198,4 +198,8 @@ public class UserService {
             return ResponseEntity.notFound().build();
         }
     }
+
+    public ResponseEntity<UserDTO> getPersonalInfo(UserEntity user) {
+        return ResponseEntity.ok( UserMapper.INSTANCE.toDto(user));
+    }
 }

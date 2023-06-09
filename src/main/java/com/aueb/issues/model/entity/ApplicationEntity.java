@@ -43,11 +43,9 @@ public class ApplicationEntity {
     @ManyToOne
     @JoinColumn(name = "creation_user_id")
     private UserEntity creationUser;
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "application_id")
     private List<CommentEntity> comments;
-
     @ManyToOne
     @JoinColumn(name = "assignee_tech_id")
     private UserEntity assigneeTech;

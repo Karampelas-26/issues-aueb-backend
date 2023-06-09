@@ -58,31 +58,35 @@ public class ApplicationService {
         }
         return (ResponseEntity<List<TeacherApplicationsDTO>>) ret;
     }
-    public ResponseEntity<String> submitApplication(ObjectNode node, UserEntity user){
-
-        String title =(node.get("title"))!=null?node.get("title").asText():null;
-        String siteId =(node.get("siteId"))!=null?node.get("siteId").asText():null;
-        Optional<SiteEntity> site=sitesRepository.findSiteById(String.valueOf(siteId));
-        IssueType issueType =(node.get("issueType"))!=null?IssueType.valueOf(node.get("issueType").asText()):null;
-        String equipmentId =(node.get("equipment"))!=null?node.get("equipment").asText():null;
-        node.get("siteName");
-        node.get("issueType");
-        node.get("equipment");
-
-        Optional<EquipmentEntity> equipmentEntity=equipmentRepository.findById(equipmentId);
-        ApplicationEntity newEntity=ApplicationEntity.builder()
-                .id(UUID.randomUUID().toString())
-                .title(title)
-                .creationUser(user)
-                .createDate(LocalDateTime.now())
-                .status(Status.CREATED)
-                .priority(Priority.MEDIUM)
-                .site(site.orElse(null))
-                .issueType(issueType)
-//                .equipment(equipmentEntity.orElse(null))
-                .build();
-        applicationRepository.save(newEntity);
-        return  ResponseEntity.ok(null);
+    public ResponseEntity<ResponseMessageDTO> submitApplication(ObjectNode node, UserEntity user){
+        try {
+            String siteName = node.get("siteName").asText();
+            String title =(node.get("title"))!=null?node.get("title").asText():null;
+            SiteEntity site=sitesRepository.findSiteEntitiesByName(siteName).orElseThrow(() -> new EntityNotFoundException("Site with name: " + node.get("siteName").asText() + " not found"));
+            IssueType issueType =(node.get("issueType"))!=null?IssueType.valueOf(node.get("issueType").asText()):null;
+            String equipmentId =(node.get("equipment"))!=null?node.get("equipment").asText():null;
+            if(equipmentId != null) {
+                EquipmentEntity equipmentEntity=equipmentRepository.findById(equipmentId).orElseThrow(() -> new EntityNotFoundException("Equipment with id: " + equipmentId + " not found"));
+            }
+            ApplicationEntity newEntity=ApplicationEntity.builder()
+                    .id(UUID.randomUUID().toString())
+                    .title(title)
+                    .creationUser(user)
+                    .createDate(LocalDateTime.now())
+                    .status(Status.CREATED)
+                    .priority(Priority.MEDIUM)
+                    .site(site)
+                    .issueType(issueType)
+                    .build();
+            applicationRepository.save(newEntity);
+            return  ResponseEntity.ok(new ResponseMessageDTO("Successfully created new issue for site: " + site.getName()));
+        } catch (EntityNotFoundException e) {
+            log.error(e.toString());
+            return ResponseEntity.badRequest().body(new ResponseMessageDTO(e.getMessage()));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(new ResponseMessageDTO(e.getMessage()));
+        }
     }
 
     public ResponseEntity<List<ApplicationDTO>> getAllApplications(UserEntity userEntity){
@@ -215,17 +219,22 @@ public class ApplicationService {
     }
 
     //COMMENTS
-    public  ResponseEntity<CommentDTO> createComment(String issueId, CommentDTO commentDTO){
-        ApplicationEntity issue = applicationRepository.findById(issueId).orElseThrow(()->
-        new EntityNotFoundException("Application not found"));
-        List<CommentEntity> commentsOfIssue=issue.getComments();
-        CommentEntity newComment=ApplicationMapper.INSTANCE.toEntity(commentDTO);
+    public  ResponseEntity<CommentDTO> createComment(String issueId, String comment, UserEntity user){
         try{
+            ApplicationEntity issue = applicationRepository.findById(issueId).orElseThrow(()-> new EntityNotFoundException("Application not found"));
+            List<CommentEntity> commentsOfIssue=issue.getComments();
+//            CommentEntity newComment=ApplicationMapper.INSTANCE.toEntity(commentDTO);
+            CommentEntity newComment = CommentEntity.builder()
+                    .content(comment)
+                    .dateTime(LocalDateTime.now())
+                    .userName(user.getLastname() + " " + user.getFirstname())
+                    .build();
             commentsOfIssue.add(newComment);
             applicationRepository.save(issue);
             return new ResponseEntity<>(ApplicationMapper.INSTANCE.toCommentDTO(newComment),HttpStatus.OK);
-        }catch (Exception e) {
-            throw new RuntimeException();
+        } catch (EntityNotFoundException e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
