@@ -44,19 +44,31 @@ public class ApplicationService {
     @Autowired
     EquipmentRepository equipmentRepository;
 
-    public ResponseEntity<List<TeacherApplicationsDTO>> getTeacherApplications(){
-        List<TeacherApplicationsDTO> ret = new ArrayList<>();
+    public ResponseEntity<List<TeacherApplicationsDTO>> getTeacherApplications(UserEntity user){
+        return getTeacherApplicationsByStatus(user, null);
+    }
+    public ResponseEntity<List<TeacherApplicationsDTO>> getTeacherApplicationsByStatus(UserEntity user, String status){
+        List<TeacherApplicationsDTO> ret;
         try{
-            List<ApplicationEntity> issues = applicationRepository.findAll();
-            ObjectMapper mapper = new ObjectMapper();
-            for (ApplicationEntity issue: issues){
-                mapper.convertValue(issue,TeacherApplicationsDTO.class);
+            if(status!=null && !(status.equals(Status.CREATED.name())||status.equals(Status.REJECTED.name())||
+                    status.equals(Status.VALIDATED.name())||status.equals(Status.ASSIGNED.name())||status.equals(Status.COMPLETED.name())
+                    ||status.equals(Status.ARCHIVED.name()))){
+                log.error("Incorrect Status");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
+            List<ApplicationEntity> results = applicationRepository.findByValues(null,null,null,
+                    status==null?null:Status.valueOf(status),null);
+            List<ApplicationEntity> resFiltered=results.stream()
+                    .filter(res-> !res.getStatus().equals(Status.ARCHIVED))
+                    .filter(res->user.getPreferences().contains(res.getSite().getId()))
+                    .toList();
+
+            ret=resFiltered.stream().map(ApplicationMapper.INSTANCE::toTeacherDTO).toList();
         }catch (Exception e){
             log.error(e.toString());
             return null;
         }
-        return (ResponseEntity<List<TeacherApplicationsDTO>>) ret;
+        return new ResponseEntity<>(ret,HttpStatus.OK);
     }
     public ResponseEntity<ResponseMessageDTO> submitApplication(ObjectNode node, UserEntity user){
         try {
@@ -87,6 +99,34 @@ public class ApplicationService {
             log.error(e.getMessage());
             return ResponseEntity.internalServerError().body(new ResponseMessageDTO(e.getMessage()));
         }
+    public ResponseEntity<String> submitApplication(ObjectNode node, UserEntity user){
+
+        String title =(node.get("title"))!=null?node.get("title").asText():null;
+        String siteId =(node.get("siteId"))!=null?node.get("siteId").asText():null;
+        Optional<SiteEntity> site=sitesRepository.findSiteById(String.valueOf(siteId));
+        IssueType issueType =(node.get("issueType"))!=null?IssueType.valueOf(node.get("issueType").asText()):null;
+        String equipmentId =(node.get("equipment"))!=null?node.get("equipment").asText():null;
+        node.get("siteName");
+        node.get("issueType");
+        node.get("equipment");
+
+        Optional<EquipmentEntity> equipmentEntity=equipmentRepository.findById(equipmentId);
+        ApplicationEntity newEntity=ApplicationEntity.builder()
+                .id(UUID.randomUUID().toString())
+                .title(title)
+                .creationUser(user)
+                .createDate(LocalDateTime.now())
+                .status(Status.CREATED)
+                .priority(Priority.MEDIUM)
+                .site(site.orElse(null))
+                .issueType(issueType)
+//                .equipment(equipmentEntity.orElse(null))
+                .build();
+        applicationRepository.save(newEntity);
+        if(user.getRole().equals(Role.TEACHER)&& site.isPresent()){
+            user.addPreference(site.get().getId());
+        }
+        return  ResponseEntity.ok(null);
     }
 
     public ResponseEntity<List<ApplicationDTO>> getAllApplications(UserEntity userEntity){
@@ -210,6 +250,7 @@ public class ApplicationService {
                 return new ResponseEntity<>(new ResponseMessageDTO(result), HttpStatus.BAD_REQUEST);
             }
             issue.setStatus(Status.COMPLETED);
+            issue.setCompletionDate(LocalDateTime.now());
             applicationRepository.save(issue);
             return ResponseEntity.ok(new ResponseMessageDTO("Completed"));
         } catch (Exception e) {

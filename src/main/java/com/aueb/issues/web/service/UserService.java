@@ -23,9 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -188,6 +186,25 @@ public class UserService {
         }
     }
 
+    public ResponseEntity<ResponseMessageDTO>setPreferences(UserEntity user, String  sitesList){
+        String[] numberStrings=sitesList.split(",");
+        HashSet<Long> sites=new HashSet<>();
+        for(String n:numberStrings){
+            sites.add(Long.parseLong(n.trim()));
+        }
+        try {
+            if(user.updatePreferences(sites))
+                return new ResponseEntity<>(new ResponseMessageDTO("True"),HttpStatus.OK);
+
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+          return new ResponseEntity<>(new ResponseMessageDTO("False"),HttpStatus.BAD_REQUEST);
+    }
+
+    public ResponseEntity<List<Long>> getPreferences(UserEntity user){
+        return new ResponseEntity<>(user.getPreferences().stream().toList(),HttpStatus.OK);
+    }
     public ResponseEntity<List<UserDTO>> getUser(List<String> userIds) {
         try {
             List<UserEntity> user = userRepository.findByIdIn(userIds).orElseThrow(() -> new EntityNotFoundException("User does not exist"));
