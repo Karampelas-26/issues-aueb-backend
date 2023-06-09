@@ -76,7 +76,7 @@ public class ApplicationService {
         String siteId =(node.get("siteId"))!=null?node.get("siteId").asText():null;
         Optional<SiteEntity> site=sitesRepository.findSiteById(String.valueOf(siteId));
         IssueType issueType =(node.get("issueType"))!=null?IssueType.valueOf(node.get("issueType").asText()):null;
-        String equipmentId =(node.get("equipment"))!=null?node.get("equipment").asText():null;
+        Long equipmentId =(node.get("equipment"))!=null?node.get("equipment").asLong():null;
         node.get("siteName");
         node.get("issueType");
         node.get("equipment");

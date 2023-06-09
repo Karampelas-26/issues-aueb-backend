@@ -4,8 +4,7 @@ import com.aueb.issues.model.entity.EquipmentEntity;
 import com.aueb.issues.model.mapper.EquipmentMapper;
 import com.aueb.issues.repository.EquipmentRepository;
 import com.aueb.issues.web.dto.EquipmentDTO;
-import com.aueb.issues.web.dto.TeacherApplicationsDTO;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.aueb.issues.web.dto.ResponseMessageDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -54,7 +52,7 @@ public class EquipmentService {
 
     }
 
-    public ResponseEntity<String> updateEquipment(String id, EquipmentDTO request) {
+    public ResponseEntity<String> updateEquipment(Long id, EquipmentDTO request) {
         try{
 
             EquipmentEntity equipment = equipmentRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Application not found"));
@@ -75,15 +73,14 @@ public class EquipmentService {
         }
     }
 
-    public ResponseEntity<String> deleteEquipment(String id) {
+    public ResponseEntity<ResponseMessageDTO> deleteEquipment(Long id) {
         try{
-            equipmentRepository.findById(id).orElseThrow(()->{new EntityNotFoundException("No such entity found");
-            return null;});
+            equipmentRepository.findById(id).orElseThrow(()->new EntityNotFoundException("No such entity found"));
             equipmentRepository.deleteById(id);
-            return ResponseEntity.ok(null);
+            return ResponseEntity.ok(new ResponseMessageDTO(String.valueOf(id)));
         }catch (Exception e){
             log.error(e.toString());
-            return null;
+            return ResponseEntity.badRequest().body(new ResponseMessageDTO(e.getMessage()));
         }
     }
 

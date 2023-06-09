@@ -64,6 +64,11 @@ public class CommonController {
         return equipmentService.getEquipment();
     }
 
+    @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN', 'TEACHER')")
+    @DeleteMapping("/deleteEquipment/{equipmentId}")
+    public ResponseEntity<ResponseMessageDTO> deleteEquipment(@PathVariable("equipmentId") Long id){
+        return equipmentService.deleteEquipment(id);
+    }
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
     @GetMapping("/completeApplication")
     public ResponseEntity<ResponseMessageDTO> completeApplication(@RequestParam(value = "id") String id){
@@ -129,4 +134,6 @@ public class CommonController {
     public ResponseEntity<Map<String,List<String>>> getStaticData(){
         return applicationService.getStaticData();
     }
+
+
 }
