@@ -91,6 +91,9 @@ public class ApplicationService {
                     .issueType(issueType)
                     .build();
             applicationRepository.save(newEntity);
+            if(user.getRole().equals(Role.TEACHER)){
+                user.addPreference(site.getId());
+            }
             return  ResponseEntity.ok(new ResponseMessageDTO("Successfully created new issue for site: " + site.getName()));
         } catch (EntityNotFoundException e) {
             log.error(e.toString());
@@ -99,34 +102,7 @@ public class ApplicationService {
             log.error(e.getMessage());
             return ResponseEntity.internalServerError().body(new ResponseMessageDTO(e.getMessage()));
         }
-    public ResponseEntity<String> submitApplication(ObjectNode node, UserEntity user){
 
-        String title =(node.get("title"))!=null?node.get("title").asText():null;
-        String siteId =(node.get("siteId"))!=null?node.get("siteId").asText():null;
-        Optional<SiteEntity> site=sitesRepository.findSiteById(String.valueOf(siteId));
-        IssueType issueType =(node.get("issueType"))!=null?IssueType.valueOf(node.get("issueType").asText()):null;
-        String equipmentId =(node.get("equipment"))!=null?node.get("equipment").asText():null;
-        node.get("siteName");
-        node.get("issueType");
-        node.get("equipment");
-
-        Optional<EquipmentEntity> equipmentEntity=equipmentRepository.findById(equipmentId);
-        ApplicationEntity newEntity=ApplicationEntity.builder()
-                .id(UUID.randomUUID().toString())
-                .title(title)
-                .creationUser(user)
-                .createDate(LocalDateTime.now())
-                .status(Status.CREATED)
-                .priority(Priority.MEDIUM)
-                .site(site.orElse(null))
-                .issueType(issueType)
-//                .equipment(equipmentEntity.orElse(null))
-                .build();
-        applicationRepository.save(newEntity);
-        if(user.getRole().equals(Role.TEACHER)&& site.isPresent()){
-            user.addPreference(site.get().getId());
-        }
-        return  ResponseEntity.ok(null);
     }
 
     public ResponseEntity<List<ApplicationDTO>> getAllApplications(UserEntity userEntity){
