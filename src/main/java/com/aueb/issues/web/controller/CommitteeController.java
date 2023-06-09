@@ -16,7 +16,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author George Karampelas
@@ -37,6 +39,8 @@ public class CommitteeController {
     EquipmentService equipmentService;
     @Autowired
     SiteService siteService;
+    @Autowired
+    StatisticsService statisticsService;
 
     //TODO: Methods for Statistics, getBuildings, getUsers, getEquipment,
     @PostMapping("/create-user")
@@ -90,11 +94,6 @@ public class CommitteeController {
         return equipmentService.createEquipment(request);
     }
 
-    @GetMapping("/getEquipment")
-    public ResponseEntity<List<EquipmentDTO>> getEquipment(){
-        return equipmentService.getEquipment();
-    }
-
     @PutMapping("/updateEquipment/{equipmentId}")
     public ResponseEntity<String> updateEquipment(@PathVariable("equipmentId") Long id,
                                                   @RequestBody EquipmentDTO request){
@@ -109,5 +108,14 @@ public class CommitteeController {
     @GetMapping("/all-sites")
     public ResponseEntity<List<SiteDTO>> getAllSites(){
         return siteService.getAllSites();
+    }
+
+    //stats
+    @GetMapping("/statistics/getApplicationsByMonth")
+    public ResponseEntity<List<Map<String, Object>>> getApplicationsByMonth(@RequestParam(value = "buildingId",required = false) Long buildingId,
+                                                                            @RequestParam(value = "createStart",required = false) LocalDateTime createStart,
+                                                                            @RequestParam(value = "createEnd",required = false) LocalDateTime createEnd,
+                                                                            @RequestParam(value = "issueType",required = false)String issueType){
+        return statisticsService.getAllStatsByMonth(buildingId,issueType,createStart,createEnd);
     }
 }

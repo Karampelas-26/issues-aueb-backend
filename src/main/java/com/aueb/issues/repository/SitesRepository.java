@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +21,8 @@ public interface SitesRepository extends JpaRepository<SiteEntity, String> {
 //    @Query(value = "select s from SiteEntity as s"+
 //    "where(:buildingId=null or s.building.id=:buildingId)")
 //    public List<SiteEntity> getSitesOfBuilding(@Param("buildingId")Long buildingId);
+
+    Optional<SiteEntity> findSiteEntitiesByName(String siteName);
 
     @Query(value="select s "+
             "from SiteEntity as s"+

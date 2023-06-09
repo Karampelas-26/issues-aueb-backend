@@ -22,6 +22,7 @@ public class SiteEntity {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(unique = true)
     private String name;
     private String floor;
 
