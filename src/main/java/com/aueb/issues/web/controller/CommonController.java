@@ -63,9 +63,10 @@ public class CommonController {
     public ResponseEntity<ResponseMessageDTO> completeApplication(@RequestParam(value = "id") String id){
         return applicationService.completeApplication(id);
     }
+
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN', 'TEACHER')")
-    @PostMapping(value ="/submit-new-issue")
-    public ResponseEntity<String> submitApplication(@RequestBody ObjectNode node, Authentication authentication ){
+    @PostMapping(value = "/submit-new-issue")
+    public ResponseEntity<ResponseMessageDTO> submitApplication(@RequestBody ObjectNode node, Authentication authentication) {
         return applicationService.submitApplication(node, (UserEntity) authentication.getPrincipal());
     }
 
@@ -91,11 +92,18 @@ public class CommonController {
     public ResponseEntity<List<UserDTO>> getUsersByTechTeam(@RequestParam(value= "issue_type", required = true) String issueType){
         return userService.getUserByTechTeam(issueType);
     }
+
     //comments
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
     @PostMapping("/add_comment")
-    public ResponseEntity<CommentDTO> addComment(@RequestParam(value = "issue_id",required = true)String issueId,@RequestBody CommentDTO commentDto){
-        return applicationService.createComment(issueId,commentDto);
+    public ResponseEntity<CommentDTO> addComment(@RequestParam(value = "issue_id", required = true) String issueId, @RequestBody String commentDto, Authentication authentication) {
+        return applicationService.createComment(issueId, commentDto, (UserEntity) authentication.getPrincipal());
+    }
+
+    @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN','TEACHER')")
+    @GetMapping("/getPersonalInfo")
+    public ResponseEntity<UserDTO> getPersonalInfo(Authentication authentication) {
+        return userService.getPersonalInfo((UserEntity) authentication.getPrincipal());
     }
     //get Static Data
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN', 'TEACHER')")
