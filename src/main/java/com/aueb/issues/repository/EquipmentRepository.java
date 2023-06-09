@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EquipmentRepository extends JpaRepository<EquipmentEntity, String> {
+public interface EquipmentRepository extends JpaRepository<EquipmentEntity, Long> {
     @Query(value = "select e from EquipmentEntity as e"+
     " where(:siteId=null or e.site.id=:siteId)")
     public List<EquipmentEntity> getEquipmentOfSite(@Param("siteId")Long siteId);

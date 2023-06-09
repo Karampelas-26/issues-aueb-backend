@@ -95,14 +95,9 @@ public class CommitteeController {
     }
 
     @PutMapping("/updateEquipment/{equipmentId}")
-    public ResponseEntity<String> updateEquipment(@PathVariable("equipmentId") String id,
+    public ResponseEntity<String> updateEquipment(@PathVariable("equipmentId") Long id,
                                                   @RequestBody EquipmentDTO request){
         return equipmentService.updateEquipment(id,request);
-    }
-
-    @DeleteMapping("/deleteEquipment/{equipmentId}")
-    public ResponseEntity<String> deleteEquipment(@PathVariable("equipmentId") String id){
-        return equipmentService.deleteEquipment(id);
     }
 
     @PostMapping("/createSites")

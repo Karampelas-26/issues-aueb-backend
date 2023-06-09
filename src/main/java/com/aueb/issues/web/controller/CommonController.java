@@ -58,6 +58,17 @@ public class CommonController {
         return applicationService.getApplicationsBySingleValues((UserEntity) authentication.getPrincipal(),siteName, priority,issueType,status,buildingName);
     }
 
+    @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN', 'TEACHER')")
+    @GetMapping("/getEquipment")
+    public ResponseEntity<List<EquipmentDTO>> getEquipment(){
+        return equipmentService.getEquipment();
+    }
+
+    @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN', 'TEACHER')")
+    @DeleteMapping("/deleteEquipment/{equipmentId}")
+    public ResponseEntity<ResponseMessageDTO> deleteEquipment(@PathVariable("equipmentId") Long id){
+        return equipmentService.deleteEquipment(id);
+    }
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
     @GetMapping("/completeApplication")
     public ResponseEntity<ResponseMessageDTO> completeApplication(@RequestParam(value = "id") String id){
@@ -130,12 +141,6 @@ public class CommonController {
     @GetMapping("/staticEnums")
     public ResponseEntity<Map<String,List<String>>> getStaticData(){
         return applicationService.getStaticData();
-    }
-
-    @PreAuthorize("hasAnyRole('COMMITTEE', 'TEACHER')")
-    @GetMapping("/getEquipment")
-    public ResponseEntity<List<EquipmentDTO>> getEquipment(){
-        return equipmentService.getEquipment();
     }
 
 }
