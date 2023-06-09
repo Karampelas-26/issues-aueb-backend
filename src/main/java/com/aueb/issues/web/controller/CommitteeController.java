@@ -94,11 +94,6 @@ public class CommitteeController {
         return equipmentService.createEquipment(request);
     }
 
-    @GetMapping("/getEquipment")
-    public ResponseEntity<List<EquipmentDTO>> getEquipment(){
-        return equipmentService.getEquipment();
-    }
-
     @PutMapping("/updateEquipment/{equipmentId}")
     public ResponseEntity<String> updateEquipment(@PathVariable("equipmentId") String id,
                                                   @RequestBody EquipmentDTO request){

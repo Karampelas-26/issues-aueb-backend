@@ -8,8 +8,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface EquipmentMapper {
     EquipmentMapper INSTANCE = Mappers.getMapper(EquipmentMapper.class);
+    @Mapping(source = "entity.id",target = "id")
     @Mapping(source = "entity.typeOfEquipment", target="typeOfEquipment")
-    @Mapping(source = "entity.site.name",target = "siteName")
-    @Mapping(source = "entity.site.building.name", target = "buildingName")
     public EquipmentDTO toDTO(EquipmentEntity entity);
 }
