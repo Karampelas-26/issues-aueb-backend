@@ -76,7 +76,7 @@ public class ApplicationService {
             String title =(node.get("title"))!=null?node.get("title").asText():null;
             SiteEntity site=sitesRepository.findSiteEntitiesByName(siteName).orElseThrow(() -> new EntityNotFoundException("Site with name: " + node.get("siteName").asText() + " not found"));
             IssueType issueType =(node.get("issueType"))!=null?IssueType.valueOf(node.get("issueType").asText()):null;
-            String equipmentId =(node.get("equipment"))!=null?node.get("equipment").asText():null;
+            Long equipmentId =(node.get("equipment"))!=null?node.get("equipment").asLong():null;
             if(equipmentId != null) {
                 EquipmentEntity equipmentEntity=equipmentRepository.findById(equipmentId).orElseThrow(() -> new EntityNotFoundException("Equipment with id: " + equipmentId + " not found"));
             }

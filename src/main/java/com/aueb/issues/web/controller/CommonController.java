@@ -143,12 +143,4 @@ public class CommonController {
         return applicationService.getStaticData();
     }
 
-    @PreAuthorize("hasAnyRole('COMMITTEE', 'TEACHER')")
-    @GetMapping("/getEquipment")
-    public ResponseEntity<List<EquipmentDTO>> getEquipment(){
-        return equipmentService.getEquipment();
-    }
-
-
-
 }
