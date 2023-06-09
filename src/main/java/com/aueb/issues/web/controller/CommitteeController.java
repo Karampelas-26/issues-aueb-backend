@@ -113,7 +113,7 @@ public class CommitteeController {
 
     //stats
     @GetMapping("/statistics/getApplicationsByMonth")
-    public ResponseEntity<List<Map<String, Object>>> getApplicationsByMonth(@RequestParam(value = "buildingId",required = false) Long buildingId,
+    public ResponseEntity<List<Map<String, Object>>> getApplicationsByMonth(@RequestParam(value = "buildingId",required = false) List<Long> buildingId,
                                                                             @RequestParam(value = "createStart",required = false)
                                                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createStart,
                                                                             @RequestParam(value = "createEnd",required = false)

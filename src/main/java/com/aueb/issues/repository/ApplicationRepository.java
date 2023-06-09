@@ -35,19 +35,17 @@ public interface ApplicationRepository extends JpaRepository<ApplicationEntity, 
     List<ApplicationEntity> findByBuildingName(@Param("buildingName") String buildingName);
 
     //statistics querries
-    @Query(value = "SELECT EXTRACT (MONTH from appl.create_date) AS MonthNumber, count (*) " +
+    @Query(value = "SELECT ((CAST(EXTRACT(YEAR FROM appl.create_date) AS TEXT)) || '-' || (CAST(EXTRACT(MONTH FROM appl.create_date) AS TEXT)) )AS MonthNumber,building.id, count(*)\n, count (*) " +
             "FROM public.application appl " +
             "join public.site on appl.site_id =site.id " +
             "join public.building on site.building_id=building.id "+
             "WHERE appl.create_date >= COALESCE(:startDate, appl.create_date) " +
             "AND appl.create_date <= COALESCE(:endDate, appl.create_date) " +
-            "AND building.id = COALESCE(:buildingId, building.id) " +
             "AND appl.issue_type = COALESCE(:issueType, appl.issue_type)"+
-            "GROUP BY MonthNumber", nativeQuery = true)
+            "GROUP BY MonthNumber, building.id", nativeQuery = true)
     List<Map<String, Object>> countApplicationsByMonthWithFilters(
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate,
-            @Param("buildingId") Long buildingId,
             @Param("issueType")String issueType
     );
     //if it's building id im getting there is no need for double join. i need it if it's  name
