@@ -5,10 +5,7 @@ import com.aueb.issues.model.entity.EquipmentEntity;
 import com.aueb.issues.model.entity.CommentEntity;
 import com.aueb.issues.model.entity.SiteEntity;
 import com.aueb.issues.model.entity.UserEntity;
-import com.aueb.issues.web.dto.BuildingDTO;
-import com.aueb.issues.web.dto.EquipmentDTO;
-import com.aueb.issues.web.dto.CommentDTO;
-import com.aueb.issues.web.dto.SiteDTO;
+import com.aueb.issues.web.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +18,7 @@ public  class MapperUtils {
     static SiteMapper siteMapper;
     static EquipmentMapper equipmentMapper;
     static ApplicationMapper applicationMapper;
+    static UserMapper userMapper;
 
     public static String map(Object object){
         if(object!=null)
@@ -62,12 +60,18 @@ public  class MapperUtils {
         return null;
     }
 
+    public static UserDTO mapCommentUser(UserEntity user){
+        if(user==null) return null;
+        return userMapper.toDto(user);
+    }
+
     @Autowired
-    public void init(BuildingMapper buildingMapper, SiteMapper siteMapper,ApplicationMapper applicationMapper){
+    public void init(BuildingMapper buildingMapper, SiteMapper siteMapper,ApplicationMapper applicationMapper, UserMapper userMapper){
        MapperUtils.siteMapper=siteMapper;
        MapperUtils.buildingMapper=buildingMapper;
        MapperUtils.applicationMapper=applicationMapper;
-       MapperUtils.equipmentMapper=equipmentMapper;
+       MapperUtils.userMapper=userMapper;
+
 
     }
 }

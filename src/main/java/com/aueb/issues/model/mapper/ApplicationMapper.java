@@ -35,10 +35,10 @@ public interface ApplicationMapper {
 
     @Mapping(source = "content", target = "content")
     @Mapping(source = "dateTime", target = "dateTime")
-    @Mapping(source = "userName", target = "user")
+    @Mapping(expression = "java(MapperUtils.mapCommentUser(entity.getUser()))", target = "user")
     public CommentDTO toCommentDTO(CommentEntity entity);
     @Mapping(source = "content", target = "content")
     @Mapping(source = "dateTime", target = "dateTime")
-    @Mapping(source = "user", target = "userName")
+    @Mapping(source = "user", target = "user")
     public CommentEntity toEntity(CommentDTO dto);
 }

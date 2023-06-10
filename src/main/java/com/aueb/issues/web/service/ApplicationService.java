@@ -19,11 +19,17 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -43,6 +49,8 @@ public class ApplicationService {
     BuildingService buildingService;
     @Autowired
     EquipmentRepository equipmentRepository;
+    @Autowired
+    ExcelWriter excelWriter;
 
     public ResponseEntity<List<TeacherApplicationsDTO>> getTeacherApplications(UserEntity user){
         return getTeacherApplicationsByStatus(user, null);
@@ -244,7 +252,7 @@ public class ApplicationService {
             CommentEntity newComment = CommentEntity.builder()
                     .content(comment)
                     .dateTime(LocalDateTime.now())
-                    .userName(user.getLastname() + " " + user.getFirstname())
+                    .user(user)
                     .build();
             commentsOfIssue.add(newComment);
             applicationRepository.save(issue);
@@ -289,5 +297,30 @@ public class ApplicationService {
     public List<ApplicationDTO> toDTO(List<ApplicationEntity> entities){
 
         return entities.stream().map(ApplicationMapper.INSTANCE::toDTO).toList();
+    }
+
+    public ResponseEntity<Resource> downloadStats() {
+        List<ApplicationEntity> applicationEntities = applicationRepository.findAll();
+        LocalDate currentDate = LocalDate.now();
+
+        // Format the date as "dd/MM/yyyy"
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+        try {
+            Resource workbook = excelWriter.generateMassActionFile(applicationEntities);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", "statistics.xlsx");
+
+            return ResponseEntity
+                    .ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(workbook);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

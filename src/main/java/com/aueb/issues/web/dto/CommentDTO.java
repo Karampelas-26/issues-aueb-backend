@@ -10,6 +10,6 @@ import java.time.LocalDateTime;
 public class CommentDTO {
     private String content;
     private LocalDateTime dateTime;
-    private String user;
+    private UserDTO user;
 }
 
