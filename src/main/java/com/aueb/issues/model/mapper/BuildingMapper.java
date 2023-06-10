@@ -13,6 +13,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface BuildingMapper {
     BuildingMapper INSTANCE = Mappers.getMapper(BuildingMapper.class);
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "address",target = "address")
     @Mapping(source = "floors", target = "floors")

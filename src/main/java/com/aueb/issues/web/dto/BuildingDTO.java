@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BuildingDTO {
+    private Long id;
     private String name;
     private String address;
     private int floors;

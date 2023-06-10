@@ -90,7 +90,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                 .lastname("Karampelas")
                 .gender("M")
                 .address("Eygeniou Karavias 12, 11144 Attica")
-                .createdDate(LocalDateTime.now())
+                .createdDate(getRandomDate())
                 .role(Role.COMMITTEE)
                 .activated(true)
                 .build();
@@ -104,7 +104,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                 .lastname("iDanys")
                 .gender("M")
                 .address("Eygeniou Karavias 2, 11144 Attica")
-                .createdDate(LocalDateTime.now())
+                .createdDate(getRandomDate())
                 .role(Role.TEACHER)
                 .activated(true)
                 .build();
@@ -118,7 +118,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                 .lastname("Aggelis")
                 .gender("M")
                 .address("Eygeniou Karavias 32, 11144 Attica")
-                .createdDate(LocalDateTime.now())
+                .createdDate(getRandomDate())
                 .role(Role.TECHNICIAN)
                 .technicalTeam(IssueType.ELECTRICAL)
                 .activated(true)
@@ -127,13 +127,41 @@ public class InitThingsOnStartUp implements CommandLineRunner {
 
 
         createBuildins();
-        createApplications(300);
+        createApplications(10000);
         HashSet<Long> pref= new HashSet<>();
         pref.add(1L);
         pref.add(2L);
         pref.add(3L);
         teacher.setPreferences(pref);
         userRepository.save(teacher);
+    }
+
+    private LocalDateTime getRandomDate(){
+        Random random = new Random();
+
+        // Generate a random year between 2020 and 2023
+        int year = random.nextInt(2024 - 2020) + 2020;
+
+        // Generate a random month between 1 and 12
+        int month = random.nextInt(12) + 1;
+
+        // Generate a random day between 1 and 28 (assuming non-leap year)
+        int day = random.nextInt(28) + 1;
+
+        // Generate a random hour between 0 and 23
+        int hour = random.nextInt(24);
+
+        // Generate a random minute between 0 and 59
+        int minute = random.nextInt(60);
+
+        // Generate a random second between 0 and 59
+        int second = random.nextInt(60);
+
+        // Generate a random nanosecond between 0 and 999_999_999
+        int nano = random.nextInt(1_000_000_000);
+
+        // Create the LocalDateTime object using the generated values
+        return LocalDateTime.of(year, month, day, hour, minute, second, nano);
     }
 
     private void createBuildins(){
@@ -208,7 +236,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                     .issueType(IssueType.ELECTRICAL)
                     .priority(priorities[random.nextInt(priorities.length)])
                     .comments(new ArrayList<>())
-                    .createDate(LocalDateTime.now())
+                    .createDate(getRandomDate())
                     .status(statuses[random.nextInt(statuses.length)])
                     .build();
             app.getComments().add(CommentEntity.builder()

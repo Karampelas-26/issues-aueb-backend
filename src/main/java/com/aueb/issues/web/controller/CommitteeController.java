@@ -9,6 +9,8 @@ import com.aueb.issues.web.service.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -49,73 +51,81 @@ public class CommitteeController {
     }
 
     @PostMapping("/upload-users")
-    public ResponseEntity<ResponseMessageDTO> uploadUsers(@RequestParam("file")MultipartFile file){
+    public ResponseEntity<ResponseMessageDTO> uploadUsers(@RequestParam("file") MultipartFile file) {
         return userService.createUserCsv(file);
     }
 
     @GetMapping("/get-users")
-    public ResponseEntity<List<UserDTO>> getUsers(){
+    public ResponseEntity<List<UserDTO>> getUsers() {
         return userService.getUsers();
     }
 
     @PutMapping("/update-user")
-    public ResponseEntity<ResponseMessageDTO> updateUser(@RequestBody UserDTO request){
+    public ResponseEntity<ResponseMessageDTO> updateUser(@RequestBody UserDTO request) {
         return userService.updateUser(request);
     }
 
     @DeleteMapping("/delete-user/{userId}")
-    public ResponseEntity<ResponseMessageDTO> deleteUser(@PathVariable("userId") String id){
+    public ResponseEntity<ResponseMessageDTO> deleteUser(@PathVariable("userId") String id) {
         return userService.deleteUser(id);
     }
 
     @PostMapping("/createBuilding")
-    public ResponseEntity<ResponseMessageDTO> createBuilding(@RequestBody BuildingDTO requestDTO){
+    public ResponseEntity<ResponseMessageDTO> createBuilding(@RequestBody BuildingDTO requestDTO) {
         return buildingsService.createBuilding(requestDTO);
     }
 
     @GetMapping("/getBuilding")
-    public ResponseEntity<List<BuildingDTO>> getBuildings(){
+    public ResponseEntity<List<BuildingDTO>> getBuildings() {
         return buildingsService.getBuildings();
     }
 
     @PutMapping("/updateBuilding/{buildingId}")
     public ResponseEntity<String> updateBuilding(@PathVariable("buildingId") int id,
-            @RequestBody BuildingDTO request){
-        return buildingsService.updateBuilding(id,request);
+                                                 @RequestBody BuildingDTO request) {
+        return buildingsService.updateBuilding(id, request);
     }
 
     @DeleteMapping("deleteBuilding/{buildingId}")
-    public ResponseEntity<String> deleteBuilding(@PathVariable("buildingId") int id){
+    public ResponseEntity<String> deleteBuilding(@PathVariable("buildingId") int id) {
         return buildingsService.deleteBuilding(id);
     }
 
     @PostMapping("/createEquipment")
-    public ResponseEntity<String> createEquipment(@RequestBody EquipmentDTO request){
+    public ResponseEntity<String> createEquipment(@RequestBody EquipmentDTO request) {
         return equipmentService.createEquipment(request);
     }
 
     @PutMapping("/updateEquipment/{equipmentId}")
     public ResponseEntity<String> updateEquipment(@PathVariable("equipmentId") Long id,
-                                                  @RequestBody EquipmentDTO request){
-        return equipmentService.updateEquipment(id,request);
+                                                  @RequestBody EquipmentDTO request) {
+        return equipmentService.updateEquipment(id, request);
     }
 
     @PostMapping("/createSites")
-    public ResponseEntity<ResponseMessageDTO> createSites(@RequestBody CreateBuildingRequest request){
+    public ResponseEntity<ResponseMessageDTO> createSites(@RequestBody CreateBuildingRequest request) {
         return siteService.createSites(request);
     }
 
     @GetMapping("/all-sites")
-    public ResponseEntity<List<SiteDTO>> getAllSites(){
+    public ResponseEntity<List<SiteDTO>> getAllSites() {
         return siteService.getAllSites();
     }
 
     //stats
     @GetMapping("/statistics/getApplicationsByMonth")
-    public ResponseEntity<List<Map<String, Object>>> getApplicationsByMonth(@RequestParam(value = "buildingId",required = false) Long buildingId,
-                                                                            @RequestParam(value = "createStart",required = false) LocalDateTime createStart,
-                                                                            @RequestParam(value = "createEnd",required = false) LocalDateTime createEnd,
-                                                                            @RequestParam(value = "issueType",required = false)String issueType){
-        return statisticsService.getAllStatsByMonth(buildingId,issueType,createStart,createEnd);
+    public ResponseEntity<List<Map<String, Object>>> getApplicationsByMonth(@RequestParam(value = "buildingId", required = false) List<Long> buildingId,
+                                                                            @RequestParam(value = "createStart", required = false)
+                                                                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createStart,
+                                                                            @RequestParam(value = "createEnd", required = false)
+                                                                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createEnd,
+                                                                            @RequestParam(value = "issueType", required = false) String issueType) {
+        return statisticsService.getAllStatsByMonth(buildingId, issueType, createStart, createEnd);
     }
+
+    @GetMapping("/downloadStatistics")
+    public ResponseEntity<Resource> downloadStatitstics(){
+        return applicationService.downloadStats();
+    }
+
 }
