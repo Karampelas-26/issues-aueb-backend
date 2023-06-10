@@ -6,7 +6,10 @@ import com.aueb.issues.model.enums.Priority;
 import com.aueb.issues.model.enums.Role;
 import com.aueb.issues.model.enums.Status;
 import com.aueb.issues.repository.*;
+import com.aueb.issues.repository.representations.UserRepresentation;
+import com.aueb.issues.repository.service.CsvParser;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -26,6 +30,7 @@ import java.util.*;
 @Component
 @Order(1)
 @RequiredArgsConstructor
+@Slf4j
 public class InitThingsOnStartUp implements CommandLineRunner {
 
     private final PasswordEncoder passwordEncoder;
@@ -41,45 +46,11 @@ public class InitThingsOnStartUp implements CommandLineRunner {
     LocalDateTime date = LocalDateTime.now();
     @Autowired
     private EquipmentRepository equipmentRepository;
+    @Autowired
+    CsvParser csvParser;
 
     @Override
     public void run(String... args) throws Exception {
-//        BuildingEntity marsaleio = BuildingEntity.builder()
-//                .id(0)
-//                .name("marsaleio megaro")
-//                .address("28hs oktombriou")
-//                .floors(5)
-//                .build();
-//        buildingRepository.save(marsaleio);
-//        SiteEntity a32 =  SiteEntity.builder()
-//                .id(String.valueOf(UUID.randomUUID()))
-//                .name("A 32")
-//                .buildingId(String.valueOf(marsaleio.getId()))
-//                .floor("3")
-//                .build();
-//        sitesRepository.save(a32);
-//        ApplicationEntity issue1 = ApplicationEntity.builder()
-//                .id(String.valueOf(UUID.randomUUID()))
-//                .title("Progector error")
-//                .site(a32)
-//                .building(marsaleio)
-//                .priority(Priority.MEDIUM)
-//                .createDate(date)
-//                .completionDate(date.plusDays(3))
-//                .build();
-//        applicationRepository.save(issue1);
-//
-//        ApplicationEntity issue2 = ApplicationEntity.builder()
-//                .id(String.valueOf(UUID.randomUUID()))
-//                .title("HDMI error")
-//                .site(a32)
-//                .building(marsaleio)
-//                .priority(Priority.LOW)
-//                .createDate(date)
-//                .completionDate(date.plusDays(4))
-//                .build();
-//        applicationRepository.save(issue2);
-
 
         UserEntity admin = UserEntity.builder()
                 .id(String.valueOf(UUID.randomUUID()))
@@ -97,7 +68,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
         userRepository.save(admin);
         UserEntity teacher = UserEntity.builder()
                 .id(String.valueOf(UUID.randomUUID()))
-                .email("giorgosmeid@gmail.com")
+                .email("p3180072@aueb.gr")
                 .password(passwordEncoder.encode("pass"))
                 .phone("6945227238")
                 .firstname("Steve")
@@ -112,7 +83,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
         UserEntity tech = UserEntity.builder()
                 .id(String.valueOf(UUID.randomUUID()))
                 .password(passwordEncoder.encode("pass"))
-                .email("haralabos13aggelis@hotmail.com")
+                .email("kgiorgoks@gmail.com")
                 .phone("6945227238")
                 .firstname("Charalampos")
                 .lastname("Aggelis")
@@ -125,9 +96,38 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                 .build();
         userRepository.save(tech);
 
+        MultipartFile result=toMultipart();
+        List<UserRepresentation>
+                rep=csvParser.readUserCsv(result);
+        for(UserRepresentation usr: rep) {
+            Optional<UserEntity> usrExists = userRepository.findByEmail(usr.getEmail());
+            if(!usrExists.isEmpty()){
+                log.info("User with email: " + usr.getEmail() + " already exists");
+            }else {
+                UserEntity.UserEntityBuilder user = UserEntity.builder()
+                        .id(UUID.randomUUID().toString())
+                        .email(usr.getEmail())
+                        .password(passwordEncoder.encode("pass"))
+                        .phone(usr.getPhone())
+                        .firstname(usr.getFName())
+                        .lastname(usr.getLName())
+                        .gender(usr.getGender())
+                        .address(usr.getAddress())
+                        .createdDate(LocalDateTime.now())
+                        .role(Role.valueOf(usr.getRole()))
+                        .activated(true);
+                if(usr.getTechnicalTeam() != null && !usr.getTechnicalTeam().isEmpty()){
+                    user.technicalTeam(IssueType.valueOf(usr.getTechnicalTeam()));
+                }
+                UserEntity tmp = user.build();
+                userRepository.save(tmp);
+            }
+        }
+
+        log.info("users created");
 
         createBuildins();
-        createApplications(10000);
+        createApplications(1000);
         HashSet<Long> pref= new HashSet<>();
         pref.add(1L);
         pref.add(2L);
