@@ -1,8 +1,11 @@
 package com.aueb.issues.web.service;
 
 import com.aueb.issues.model.entity.EquipmentEntity;
+import com.aueb.issues.model.entity.SiteEntity;
 import com.aueb.issues.model.mapper.EquipmentMapper;
 import com.aueb.issues.repository.EquipmentRepository;
+import com.aueb.issues.repository.SitesRepository;
+import com.aueb.issues.web.dto.CreateEquipmentRequest;
 import com.aueb.issues.web.dto.EquipmentDTO;
 import com.aueb.issues.web.dto.ResponseMessageDTO;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -23,22 +28,27 @@ public class EquipmentService {
     BuildingService buildingService;
     @Autowired
     SiteService siteService;
+    @Autowired
+    SitesRepository sitesRepository;
     LocalDateTime dateTime = LocalDateTime.now();
-    public ResponseEntity<String> createEquipment(EquipmentDTO request) {
+    public ResponseEntity<ResponseMessageDTO> createEquipment(CreateEquipmentRequest request) {
         try{
+            List<SiteEntity> site = sitesRepository.findByName(request.getSiteName());
             EquipmentEntity equipment = EquipmentEntity.builder()
-//                    .id(String.valueOf(UUID.randomUUID()))
-//                    .building(buildingService.getBuildingById(request.getBuildingId()))
-//                    .site(siteService.getSiteBySiteId(request.getSiteId()))
                     .typeOfEquipment(request.getTypeOfEquipment())
                     .build();
             equipmentRepository.save(equipment);
-
+            for(SiteEntity s:site){
+                s.addEquipment(equipment);
+                sitesRepository.save(s);
+            }
+            return ResponseEntity.ok(new ResponseMessageDTO());
         }catch(Exception e){
             log.error(e.toString());
+            return ResponseEntity.badRequest().body(new ResponseMessageDTO(e.getMessage()));
         }
 
-        return ResponseEntity.ok(null);
+
     }
 
     public ResponseEntity<List<EquipmentDTO>> getEquipment() {
