@@ -1,7 +1,5 @@
 package com.aueb.issues.web.dto;
 
-import com.aueb.issues.model.entity.SiteEntity;
-import com.aueb.issues.model.enums.Priority;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +21,7 @@ public class ApplicationDTO {
     private String priority;
     private LocalDateTime createDate;
     private String assigneeTechId;
+    private String createdUserId;
     private List<CommentDTO> comments;
     private String description;
     private String issueType;

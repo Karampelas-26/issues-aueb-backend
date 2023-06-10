@@ -127,7 +127,7 @@ public class CommitteeController {
 
     @GetMapping("/downloadStatistics")
     public ResponseEntity<Resource> downloadStatistics(){
-        return applicationService.downloadStats();
+        return statisticsService.downloadStats();
     }
 
 }

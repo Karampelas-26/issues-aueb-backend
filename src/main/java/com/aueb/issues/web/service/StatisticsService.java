@@ -1,5 +1,6 @@
 package com.aueb.issues.web.service;
 
+import com.aueb.issues.model.entity.ApplicationEntity;
 import com.aueb.issues.model.entity.BuildingEntity;
 import com.aueb.issues.model.enums.IssueType;
 import com.aueb.issues.repository.ApplicationRepository;
@@ -7,10 +8,15 @@ import com.aueb.issues.repository.BuildingRepository;
 import com.aueb.issues.web.dto.StatPojo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -22,6 +28,8 @@ public class StatisticsService {
     ApplicationRepository applicationRepository;
     @Autowired
     BuildingRepository buildingRepository;
+    @Autowired
+    ExcelWriter excelWriter;
 
     public ResponseEntity<StatPojo> getAllStatsByMonth(Long buildingId, String issueType, LocalDateTime creationStart, LocalDateTime creationEnd) {
         // Validate issueType
@@ -92,6 +100,31 @@ public class StatisticsService {
             }
         }
         return data;
+    }
+
+    public ResponseEntity<Resource> downloadStats() {
+        List<ApplicationEntity> applicationEntities = applicationRepository.findAll();
+        LocalDate currentDate = LocalDate.now();
+
+        // Format the date as "dd/MM/yyyy"
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+        try {
+            Resource workbook = excelWriter.generateMassActionFile(applicationEntities);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", "statistics.xlsx");
+
+            return ResponseEntity
+                    .ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(workbook);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
 }

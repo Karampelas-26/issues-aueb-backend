@@ -22,6 +22,7 @@ public interface ApplicationMapper {
     @Mapping(expression = "java(entity.getAssigneeTech() != null ? MapperUtils.map(entity.getAssigneeTech().getId()) : null)", target = "assigneeTechId")
     @Mapping(expression = "java(MapperUtils.mapCommentList(entity.getComments()))", target = "comments")
     @Mapping(source = "entity.description", target = "description")
+    @Mapping(expression = "java(entity.getCreationUser().getId())",target ="createdUserId" )
     @Mapping(expression = "java(entity.getIssueType().name())", target = "issueType")
     @Mapping(source ="entity.dueDate" ,target="dueDate")
     @Mapping(source = "entity.createDate", target ="createDate")

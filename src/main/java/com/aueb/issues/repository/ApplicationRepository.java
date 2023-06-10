@@ -1,6 +1,7 @@
 package com.aueb.issues.repository;
 
 import com.aueb.issues.model.entity.ApplicationEntity;
+import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.model.enums.IssueType;
 import com.aueb.issues.model.enums.Priority;
 import com.aueb.issues.model.enums.Status;
@@ -29,8 +30,8 @@ public interface ApplicationRepository extends JpaRepository<ApplicationEntity, 
                                                 @Param("buildingName")String buildingName);
 
 
-    @Query("SELECT a FROM ApplicationEntity a JOIN a.site s JOIN s.building b WHERE b.name = :buildingName")
-    List<ApplicationEntity> findByBuildingName(@Param("buildingName") String buildingName);
+    @Query("SELECT a FROM ApplicationEntity a JOIN a.creationUser WHERE a.creationUser = :creationUser")
+    List<ApplicationEntity> findByUser(@Param("creationUser")UserEntity user);
 
     //statistics querries
     @Query(value = "SELECT ((CAST(EXTRACT(YEAR FROM appl.create_date) AS TEXT)) || '-' || (CAST(EXTRACT(MONTH FROM appl.create_date) AS TEXT)) )AS MonthNumber, count(*)\n, count (*) " +
@@ -48,5 +49,4 @@ public interface ApplicationRepository extends JpaRepository<ApplicationEntity, 
             @Param("buildingId")Long buildingId,
             @Param("issueType")String issueType
     );
-    //if it's building id im getting there is no need for double join. i need it if it's  name
 }

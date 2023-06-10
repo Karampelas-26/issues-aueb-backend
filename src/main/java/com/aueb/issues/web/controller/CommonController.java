@@ -1,6 +1,5 @@
 package com.aueb.issues.web.controller;
 
-import com.aueb.issues.model.entity.EquipmentEntity;
 import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.web.dto.ApplicationDTO;
 import com.aueb.issues.web.dto.CommentDTO;
@@ -57,6 +56,18 @@ public class CommonController {
                                                                                       Authentication authentication){
         return applicationService.getApplicationsBySingleValues((UserEntity) authentication.getPrincipal(),siteName, priority,issueType,status,buildingName);
     }
+    @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
+    @GetMapping("/getApplicationsByUser")
+    public ResponseEntity<List<ApplicationDTO>> getApplicationsByUser(@RequestParam(value = "userId", required = true)String id){
+        return applicationService.getApplicationByUserId(id);
+    }
+
+    @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
+    @GetMapping("/getSingleApplication")
+    public ResponseEntity<ApplicationDTO> getSingleApplication(@RequestParam(value = "id",required = true)String id){
+        return applicationService.getSingleEntityById(id);
+    }
+
 
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN', 'TEACHER')")
     @GetMapping("/getEquipment")
