@@ -77,7 +77,7 @@ public class UserService {
             List<UserRepresentation> userCSV =  csvParser.readUserCsv(file);
             for(UserRepresentation usr: userCSV) {
                 Optional<UserEntity> usrExists = userRepository.findByEmail(usr.getEmail());
-                if(usrExists.isEmpty()){
+                if(usrExists.isPresent()){
                     log.info("User with email: " + usr.getEmail() + " already exists");
                     return ResponseEntity.badRequest().body(new ResponseMessageDTO("User with email: " + usr.getEmail() + " already exists"));
                 }
