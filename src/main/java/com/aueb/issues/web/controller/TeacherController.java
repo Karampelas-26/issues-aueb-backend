@@ -53,12 +53,12 @@ public class TeacherController {
     }
 
     @PostMapping(value = "/setPreferences")
-    public ResponseEntity<ResponseMessageDTO> setPreferences(@RequestBody String sites, Authentication authentication){
+    public ResponseEntity<ResponseMessageDTO> setPreferences(@RequestParam List<String> sites, Authentication authentication){
         return userService.setPreferences((UserEntity) authentication.getPrincipal(), sites);
     }
     @GetMapping(value = "/getPreferences")
-    public ResponseEntity<List<Long>> getPreferences(Authentication authentication){
-        return userService.getPreferences((UserEntity) authentication.getPrincipal());
+    public ResponseEntity<List<String>> getPreferences(Authentication authentication){
+        return userService.getPreferences ((UserEntity) authentication.getPrincipal());
     }
 
 }
