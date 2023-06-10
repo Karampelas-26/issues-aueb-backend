@@ -92,7 +92,7 @@ public class CommitteeController {
     }
 
     @PostMapping("/createEquipment")
-    public ResponseEntity<String> createEquipment(@RequestBody EquipmentDTO request) {
+    public ResponseEntity<ResponseMessageDTO> createEquipment(@RequestBody CreateEquipmentRequest request){
         return equipmentService.createEquipment(request);
     }
 
