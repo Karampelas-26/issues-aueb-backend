@@ -43,8 +43,6 @@ public class CommitteeController {
     SiteService siteService;
     @Autowired
     StatisticsService statisticsService;
-
-    //TODO: Methods for Statistics, getBuildings, getUsers, getEquipment,
     @PostMapping("/create-user")
     public ResponseEntity<ResponseMessageDTO> createUser(@RequestBody CreateUserDTO request) {
         return userService.createUser(request);
@@ -114,13 +112,13 @@ public class CommitteeController {
 
     //stats
     @GetMapping("/statistics/getApplicationsByMonth")
-    public ResponseEntity<List<Map<String, Object>>> getApplicationsByMonth(@RequestParam(value = "buildingId", required = false) List<Long> buildingId,
-                                                                            @RequestParam(value = "createStart", required = false)
-                                                                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createStart,
-                                                                            @RequestParam(value = "createEnd", required = false)
-                                                                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createEnd,
-                                                                            @RequestParam(value = "issueType", required = false) String issueType) {
-        return statisticsService.getAllStatsByMonth(buildingId, issueType, createStart, createEnd);
+    public ResponseEntity<StatPojo> getApplicationsByMonth(@RequestParam(value = "buildingId",required = false) Long buildingId,
+                                                                            @RequestParam(value = "createStart",required = false)
+                                                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createStart,
+                                                                            @RequestParam(value = "createEnd",required = false)
+                                                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createEnd,
+                                                                            @RequestParam(value = "issueType",required = false)String issueType){
+        return statisticsService.getAllStatsByMonth(buildingId,issueType,createStart,createEnd);
     }
 
     @GetMapping("/downloadStatistics")

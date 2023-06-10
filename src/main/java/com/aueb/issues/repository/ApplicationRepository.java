@@ -4,10 +4,8 @@ import com.aueb.issues.model.entity.ApplicationEntity;
 import com.aueb.issues.model.enums.IssueType;
 import com.aueb.issues.model.enums.Priority;
 import com.aueb.issues.model.enums.Status;
-import jakarta.persistence.TemporalType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.Temporal;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -35,17 +33,19 @@ public interface ApplicationRepository extends JpaRepository<ApplicationEntity, 
     List<ApplicationEntity> findByBuildingName(@Param("buildingName") String buildingName);
 
     //statistics querries
-    @Query(value = "SELECT ((CAST(EXTRACT(YEAR FROM appl.create_date) AS TEXT)) || '-' || (CAST(EXTRACT(MONTH FROM appl.create_date) AS TEXT)) )AS MonthNumber,building.id, count(*)\n, count (*) " +
+    @Query(value = "SELECT ((CAST(EXTRACT(YEAR FROM appl.create_date) AS TEXT)) || '-' || (CAST(EXTRACT(MONTH FROM appl.create_date) AS TEXT)) )AS MonthNumber, count(*)\n, count (*) " +
             "FROM public.application appl " +
             "join public.site on appl.site_id =site.id " +
             "join public.building on site.building_id=building.id "+
             "WHERE appl.create_date >= COALESCE(:startDate, appl.create_date) " +
             "AND appl.create_date <= COALESCE(:endDate, appl.create_date) " +
             "AND appl.issue_type = COALESCE(:issueType, appl.issue_type)"+
-            "GROUP BY MonthNumber, building.id", nativeQuery = true)
+            "And building.id = COALESCE(:buildingId, building.id) "+
+            "GROUP BY MonthNumber", nativeQuery = true)
     List<Map<String, Object>> countApplicationsByMonthWithFilters(
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate,
+            @Param("buildingId")Long buildingId,
             @Param("issueType")String issueType
     );
     //if it's building id im getting there is no need for double join. i need it if it's  name
