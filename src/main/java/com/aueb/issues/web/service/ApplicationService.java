@@ -100,7 +100,7 @@ public class ApplicationService {
                     .build();
             applicationRepository.save(newEntity);
             if(user.getRole().equals(Role.TEACHER)){
-                user.addPreference(site.getId());
+                user.addPreference(site.getName());
             }
             return  ResponseEntity.ok(new ResponseMessageDTO("Successfully created new issue for site: " + site.getName()));
         } catch (EntityNotFoundException e) {

@@ -34,7 +34,7 @@ public class UserEntity implements UserDetails {
     private String lastname;
     private String gender;
     private String address;
-    private HashSet<Long> preferences; //Sites' id
+    private HashSet<String> preferences; //Sites' id
     private LocalDateTime createdDate;
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -42,13 +42,13 @@ public class UserEntity implements UserDetails {
     private IssueType technicalTeam;
     private boolean activated;
 
-    public void addPreference(Long siteId){
+    public void addPreference(String siteId){
         if (preferences==null)
             preferences=new HashSet<>();
         preferences.add(siteId);
     }
 
-    public boolean updatePreferences(HashSet<Long> siteIds){
+    public boolean updatePreferences(HashSet<String> siteIds){
         try{
             preferences=siteIds;
             return true;

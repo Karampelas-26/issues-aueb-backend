@@ -194,12 +194,8 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<ResponseMessageDTO>setPreferences(UserEntity user, String  sitesList){
-        String[] numberStrings=sitesList.split(",");
-        HashSet<Long> sites=new HashSet<>();
-        for(String n:numberStrings){
-            sites.add(Long.parseLong(n.trim()));
-        }
+    public ResponseEntity<ResponseMessageDTO>setPreferences(UserEntity user, List<String> sitesList){
+        HashSet<String> sites= (HashSet<String>) sitesList.stream().collect(Collectors.toSet());
         try {
             if(user.updatePreferences(sites))
                 return new ResponseEntity<>(new ResponseMessageDTO("True"),HttpStatus.OK);
@@ -210,7 +206,7 @@ public class UserService {
           return new ResponseEntity<>(new ResponseMessageDTO("False"),HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity<List<Long>> getPreferences(UserEntity user){
+    public ResponseEntity<List<String>> getPreferences(UserEntity user){
         return new ResponseEntity<>(user.getPreferences().stream().toList(),HttpStatus.OK);
     }
     public ResponseEntity<List<UserDTO>> getUser(List<String> userIds) {
