@@ -214,7 +214,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
             app.getComments().add(CommentEntity.builder()
                     .content("Yello")
                     .dateTime(LocalDateTime.now())
-                    .userName(users.get(random.nextInt(users.size())).getId())
+                    .user(users.get(random.nextInt(users.size())))
                     .build());
 
 //            System.err.println(app.toString());

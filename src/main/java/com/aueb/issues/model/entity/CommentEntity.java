@@ -1,9 +1,6 @@
 package com.aueb.issues.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,8 +20,9 @@ public class CommentEntity {
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
-
     private String content;
-    private String userName;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private UserEntity user;
     private LocalDateTime dateTime;
 }
