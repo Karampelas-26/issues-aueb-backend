@@ -23,7 +23,7 @@ import java.util.List;
 
 @Service
 public class ExcelWriter {
-    public String generateMassActionFile(List<ApplicationEntity> dataRows) throws IOException {
+    public Resource generateMassActionFile(List<ApplicationEntity> dataRows) throws IOException {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Sheet1");
         //style
@@ -126,8 +126,8 @@ public class ExcelWriter {
 
             i++;
         }
-        return writeFile(workbook);
-//        return getInputStream(workbook);
+//        return writeFile(workbook);
+        return getInputStream(workbook);
     }
     private Resource getInputStream(Workbook workbook) throws IOException {
 
