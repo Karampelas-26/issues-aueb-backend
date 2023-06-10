@@ -77,7 +77,7 @@ public class UserService {
             List<UserRepresentation> userCSV =  csvParser.readUserCsv(file);
             for(UserRepresentation usr: userCSV) {
                 Optional<UserEntity> usrExists = userRepository.findByEmail(usr.getEmail());
-                if(!usrExists.isEmpty()){
+                if(usrExists.isEmpty()){
                     log.info("User with email: " + usr.getEmail() + " already exists");
                     return ResponseEntity.badRequest().body(new ResponseMessageDTO("User with email: " + usr.getEmail() + " already exists"));
                 }
@@ -157,7 +157,15 @@ public class UserService {
         }
         return new ResponseEntity<>(userRepository.findByTechTeam(IssueType.valueOf(issueType)).stream().map(UserMapper.INSTANCE::toDto).toList(),HttpStatus.OK);
     }
-
+    public ResponseEntity<Map<String, List<UserDTO>>> getTechTeamsWUsers() {
+        List<IssueType> types=Arrays.stream(IssueType.values()).toList();
+        Map<String, List<UserDTO>> map=new HashMap<>();
+        for(IssueType t:types){
+            List<UserDTO> userEntities=userRepository.findByTechTeam(t).stream().map(UserMapper.INSTANCE::toDto).toList();
+            map.put(t.name(),userEntities);
+        }
+        return new ResponseEntity<>(map,HttpStatus.OK);
+    }
     public ResponseEntity<ResponseMessageDTO> updateUser(UserDTO request) {
         try{
 

@@ -9,11 +9,11 @@ import com.aueb.issues.repository.*;
 import com.aueb.issues.repository.representations.UserRepresentation;
 import com.aueb.issues.repository.service.CsvParser;
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -143,7 +143,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
 
 
     public MultipartFile toMultipart(){
-        Path path = Paths.get("C:\\Users\\georg\\Desktop\\AEPS\\data\\user_to_init.csv");
+        Path path = Paths.get("C:\\Users\\Admin\\Downloads\\user_to_init.csv");
         String name = "user_to_init.csv";
         String originalFileName = "user_to_init.csv";
         String contentType = "text/csv";
