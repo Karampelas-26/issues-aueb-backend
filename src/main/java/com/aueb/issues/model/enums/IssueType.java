@@ -9,7 +9,7 @@ public enum IssueType {
     CLIMATE_CONTROL,
     INFRASTRUCTURE;
 
-    public List<String> getAll(){
+    public static List<String> getAll(){
         List<String> ret=new ArrayList<>();
         ret.add(ELECTRICAL.name());
         ret.add(EQUIPMENT.name());

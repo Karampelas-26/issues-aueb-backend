@@ -15,10 +15,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -91,7 +96,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                 .address("Eygeniou Karavias 32, 11144 Attica")
                 .createdDate(getRandomDate())
                 .role(Role.TECHNICIAN)
-                .technicalTeam(IssueType.ELECTRICAL)
+//                .technicalTeam(IssueType.ELECTRICAL)
                 .activated(true)
                 .build();
         userRepository.save(tech);
@@ -134,6 +139,22 @@ public class InitThingsOnStartUp implements CommandLineRunner {
         pref.add(3L);
         teacher.setPreferences(pref);
         userRepository.save(teacher);
+    }
+
+
+    public MultipartFile toMultipart(){
+        Path path = Paths.get("C:\\Users\\georg\\Desktop\\AEPS\\data\\user_to_init.csv");
+        String name = "user_to_init.csv";
+        String originalFileName = "user_to_init.csv";
+        String contentType = "text/csv";
+        byte[] content = null;
+        try {
+            content = Files.readAllBytes(path);
+        } catch (final IOException e){
+            log.error(e.getMessage());
+        }
+        return new MockMultipartFile(name,
+                originalFileName, contentType, content);
     }
 
     private LocalDateTime getRandomDate(){
@@ -201,12 +222,10 @@ public class InitThingsOnStartUp implements CommandLineRunner {
             for(int i=0; i<=5;i++){
                 for(int j = 1; j <= b.getFloors(); j++){
                     SiteEntity site = SiteEntity.builder().name(prefix + b.getName().substring(0,1)+String.valueOf(j)+String.valueOf(i)).floor(String.valueOf(j)).building(b).build();
-//                    site.addEquipment(equipmentEntities[random.nextInt(8)]);
                     for(EquipmentEntity equipment: equipmentEntities){
                         site.addEquipment(equipment);
                     }
                     sitesRepository.save(site);
-//                    b.addSite(site);
                 }
             }
             buildingRepository.save(b);
@@ -223,29 +242,31 @@ public class InitThingsOnStartUp implements CommandLineRunner {
         Random random = new Random();
         List<UserEntity> users = userRepository.findAll();
         List<SiteEntity> sites = sitesRepository.findAll();
+        List<String> issueTypes = IssueType.getAll();
         List<EquipmentEntity> equipments = equipmentRepository.findAll();
         Priority[] priorities = Priority.values();
         Status[] statuses = Status.values();
         for(int i=0; i<num;i++){
+            UserEntity userCreated = users.get(random.nextInt(users.size()));
+            LocalDateTime dateCreated = getRandomDate();
             SiteEntity site = sites.get(random.nextInt(sites.size()));
             ApplicationEntity app = ApplicationEntity.builder()
                     .id(UUID.randomUUID().toString())
                     .title("Application: " + String.valueOf(appNum))
                     .site(site)
-                    .creationUser(users.get(random.nextInt(users.size())))
-                    .issueType(IssueType.ELECTRICAL)
+                    .creationUser(userCreated)
+                    .issueType(IssueType.valueOf(issueTypes.get(random.nextInt(issueTypes.size()))))
                     .priority(priorities[random.nextInt(priorities.length)])
                     .comments(new ArrayList<>())
-                    .createDate(getRandomDate())
+                    .createDate(dateCreated)
                     .status(statuses[random.nextInt(statuses.length)])
                     .build();
             app.getComments().add(CommentEntity.builder()
-                    .content("Yello")
-                    .dateTime(LocalDateTime.now())
-                    .user(users.get(random.nextInt(users.size())))
+                    .content("Hello")
+                    .dateTime(dateCreated)
+                    .user(userCreated)
                     .build());
 
-//            System.err.println(app.toString());
             applicationRepository.save(app);
             appNum++;
 
