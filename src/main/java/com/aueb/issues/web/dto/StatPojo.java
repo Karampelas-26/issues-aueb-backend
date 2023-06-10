@@ -8,7 +8,8 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class OuterStatPojo {
+public class StatPojo {
     private List<String> labels;
-    private List<InnerStatPojo> innerStatPojos;
+    private String label;
+    private List<String>data;
 }
