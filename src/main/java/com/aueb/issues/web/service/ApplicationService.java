@@ -252,7 +252,7 @@ public class ApplicationService {
             CommentEntity newComment = CommentEntity.builder()
                     .content(comment)
                     .dateTime(LocalDateTime.now())
-                    .userName(user.getLastname() + " " + user.getFirstname())
+                    .user(user)
                     .build();
             commentsOfIssue.add(newComment);
             applicationRepository.save(issue);
