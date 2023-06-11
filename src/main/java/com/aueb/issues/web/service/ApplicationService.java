@@ -37,7 +37,7 @@ import java.util.*;
 @Service
 @Slf4j
 public class ApplicationService {
-    private final String UN_ASSIGN_COMMAND="un_assign";
+    private static final String UN_ASSIGN_COMMAND="un_assign";
     @Autowired
     ApplicationRepository applicationRepository;
     @Autowired
@@ -50,9 +50,6 @@ public class ApplicationService {
     BuildingService buildingService;
     @Autowired
     EquipmentRepository equipmentRepository;
-    @Autowired
-    ExcelWriter excelWriter;
-
     public ResponseEntity<List<TeacherApplicationsDTO>> getTeacherApplications(UserEntity user){
         return getTeacherApplicationsByStatus(user, null);
     }
@@ -141,22 +138,9 @@ public class ApplicationService {
     public ResponseEntity<List<ApplicationDTO>> getApplicationsBySingleValues(UserEntity userEntity, String siteName, String priority, String issueType, String status, String buildingName){
         try {
 
-            if(priority!=null && !(priority.equals(Priority.LOW.name())||priority.equals(Priority.HIGH.name())||priority.equals(Priority.MEDIUM.name()))){
-                log.error("Incorrect Priority");
+            if (!isValidIssueType(issueType)||!isValidStatus(status)||!isValidPriority(priority))
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
 
-            if(issueType!=null  && ! (issueType.equals(IssueType.CLIMATE_CONTROL.name())||issueType.equals(IssueType.ELECTRICAL.name())||
-                    issueType.equals(IssueType.EQUIPMENT.name())||issueType.equals(IssueType.INFRASTRUCTURE.name()))){
-                log.error("Incorrect IssueType");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-            if(status!=null && !(status.equals(Status.CREATED.name())||status.equals(Status.REJECTED.name())||
-                    status.equals(Status.VALIDATED.name())||status.equals(Status.ASSIGNED.name())||status.equals(Status.COMPLETED.name())
-                    ||status.equals(Status.ARCHIVED.name()))){
-                log.error("Incorrect Status");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
             List<Status> exStatus=new ArrayList<>();
             if(issueType==null&&userEntity.getRole().equals(Role.TECHNICIAN)&&userEntity.getTechnicalTeam()!=null){
                 issueType=userEntity.getTechnicalTeam().name();
@@ -188,16 +172,24 @@ public class ApplicationService {
         }
         return ResponseEntity.internalServerError().body(null);
     }
-    public ResponseEntity<List<ApplicationDTO>> getApplicationsByBuilding(String buildingName){
-        List<ApplicationEntity> entities=applicationRepository.findByBuildingName(buildingName);
-        return ResponseEntity.ok(toDTO(entities));
+    public ResponseEntity<ApplicationDTO> getSingleEntityById(String id){
+        Optional<ApplicationEntity> app= applicationRepository.findById(id);
+        if(app.isPresent())
+            return new ResponseEntity<>(ApplicationMapper.INSTANCE.toDTO(app.get()),HttpStatus.OK);
+        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+    }
+
+    public ResponseEntity<List<ApplicationDTO>> getApplicationByUserId(String id){
+        Optional<UserEntity> user=userRepository.findById(id);
+        if(!user.isPresent()) return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        List<ApplicationDTO> applicationDTOS=applicationRepository.findByUser(user.get())
+                .stream().map(ApplicationMapper.INSTANCE::toDTO).toList();
+        return new ResponseEntity<>(applicationDTOS,HttpStatus.OK);
     }
 
     public ResponseEntity<String> deleteIssue(String id){
         try{
-            applicationRepository.findById(id).orElseThrow(()->{new EntityNotFoundException("No such entity found");
-                return null;
-            });
+            applicationRepository.findById(id).orElseThrow(()->new EntityNotFoundException("No such entity found"));
             applicationRepository.deleteById(id);
             return ResponseEntity.ok(null);
         }catch (Exception e){
@@ -209,7 +201,7 @@ public class ApplicationService {
     public ResponseEntity<ApplicationDTO> updateApplication(ApplicationDTO applicationDTO){
         try{
             ApplicationEntity issue = applicationRepository.findById(applicationDTO.getId()).orElseThrow(()->
-                {new EntityNotFoundException("Application not found"); return null;});
+                new EntityNotFoundException("Application not found"));
 
             issue.setDueDate(applicationDTO.getDueDate());
             issue.setPriority(Priority.valueOf(applicationDTO.getPriority()));
@@ -270,7 +262,6 @@ public class ApplicationService {
         try{
             ApplicationEntity issue = applicationRepository.findById(issueId).orElseThrow(()-> new EntityNotFoundException("Application not found"));
             List<CommentEntity> commentsOfIssue=issue.getComments();
-//            CommentEntity newComment=ApplicationMapper.INSTANCE.toEntity(commentDTO);
             CommentEntity newComment = CommentEntity.builder()
                     .content(comment)
                     .dateTime(LocalDateTime.now())
@@ -320,29 +311,17 @@ public class ApplicationService {
 
         return entities.stream().map(ApplicationMapper.INSTANCE::toDTO).toList();
     }
-
-    public ResponseEntity<Resource> downloadStats() {
-        List<ApplicationEntity> applicationEntities = applicationRepository.findAll();
-        LocalDate currentDate = LocalDate.now();
-
-        // Format the date as "dd/MM/yyyy"
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String formattedDate = currentDate.format(formatter);
-        try {
-            Resource workbook = excelWriter.generateMassActionFile(applicationEntities);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "statistics.xlsx");
-
-            return ResponseEntity
-                    .ok()
-                    .headers(headers)
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .body(workbook);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().build();
-        }
+    private boolean isValidIssueType(String issueType) {
+        return issueType == null ||
+                Arrays.stream(IssueType.values()).map(Enum::name).toList().contains(issueType);
     }
+    private boolean isValidStatus(String status) {
+        return status == null ||
+                Arrays.stream(Status.values()).map(Enum::name).toList().contains(status);
+    }
+    private boolean isValidPriority(String pri) {
+        return pri == null ||
+                Arrays.stream(Priority.values()).map(Enum::name).toList().contains(pri);
+    }
+
 }

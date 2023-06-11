@@ -166,6 +166,14 @@ public class UserService {
         }
         return new ResponseEntity<>(map,HttpStatus.OK);
     }
+
+    public ResponseEntity<Map<String, List<UserDTO>>> getUsersWOTechTeam(){
+        Map<String, List<UserDTO>> map=new HashMap<>();
+        List<UserDTO> userEntities=userRepository.findByTechTeam(null).stream().map(UserMapper.INSTANCE::toDto).toList();
+        map.put("Technician Without Tech Team",userEntities);
+        return new ResponseEntity<>(map,HttpStatus.OK);
+
+    }
     public ResponseEntity<ResponseMessageDTO> updateUser(UserDTO request) {
         try{
 
