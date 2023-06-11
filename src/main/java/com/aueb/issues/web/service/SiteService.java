@@ -10,6 +10,7 @@ import com.aueb.issues.repository.SitesRepository;
 import com.aueb.issues.web.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -99,6 +100,12 @@ public class SiteService {
         }
 
         return ResponseEntity.ok(buildingSitesMap);
+    }
+    //for submit
+    public ResponseEntity<List<String>> getEquipmentOfSite(String siteName){
+        SiteEntity site = sitesRepository.findByName(siteName);
+        List<String> ret=site.getEquipmentEntities().stream().map(eq->eq.getTypeOfEquipment()).toList();
+        return new ResponseEntity<>(ret, HttpStatus.OK);
     }
     private boolean siteContainsEquipmentType(SiteEntity site, String typeOfEquipment) {
         List<EquipmentEntity> equipmentEntities = site.getEquipmentEntities();
