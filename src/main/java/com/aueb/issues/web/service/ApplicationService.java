@@ -49,6 +49,8 @@ public class ApplicationService {
     @Autowired
     BuildingService buildingService;
     @Autowired
+    NotificationService notificationService;
+    @Autowired
     EquipmentRepository equipmentRepository;
     public ResponseEntity<List<TeacherApplicationsDTO>> getTeacherApplications(UserEntity user){
         return getTeacherApplicationsByStatus(user, null);
@@ -92,35 +94,41 @@ public class ApplicationService {
             }else  description=null;
 
             IssueType issueType;
+
+            String title="Application "+applicationRepository.count();
             jnode=node.get("description");
             if(jnode!=null&&!jnode.isEmpty()) {
-                issueType  = jnode.asText();
-            }else  description=null;
+                issueType  = isValidIssueType(jnode.asText())?IssueType.valueOf(jnode.asText()):null;
+            }else  issueType=null;
 
+            Long equipmentId=null;
+            Optional<EquipmentEntity> equipmentEntity=null;
+            if(issueType.equals(IssueType.EQUIPMENT)) {
+                jnode = node.get("equipment");
+                if (jnode != null && !jnode.isEmpty()) {
+                    equipmentId = node.get("equipment").asLong();
+                } else equipmentId = null;
+                equipmentEntity = equipmentRepository.findById(equipmentId);
+                title=title.concat( " : "+ equipmentEntity.get().getTypeOfEquipment());
+            }
 
-            IssueType issueType = !node.get("issueType").isEmpty() ? IssueType.valueOf(node.get("issueType").asText()) : null;
-            Long equipmentId = !node.get("equipment").isEmpty()? node.get("equipment").asLong() : null;
-            Optional<EquipmentEntity> equipmentEntity=equipmentRepository.findById(equipmentId);
             ApplicationEntity newEntity=ApplicationEntity.builder()
                     .id(UUID.randomUUID().toString())
+                    .title(title)
                     .description(description)
                     .creationUser(user)
                     .createDate(LocalDateTime.now())
                     .status(Status.CREATED)
                     .priority(Priority.MEDIUM)
+                    .issueType(issueType)
                     .site(site)
                     .build();
-            if (issueType != null) newEntity.setIssueType(issueType);
-            if(equipmentEntity.isPresent()){
-                newEntity.setTitle(equipmentEntity.get().getTypeOfEquipment());
-            }
-            else {
-                newEntity.setTitle("Application: " + applicationRepository.count());
-            }
+
             applicationRepository.save(newEntity);
             if(user.getRole().equals(Role.TEACHER)){
                 user.addPreference(site.getName());
             }
+            notificationService.addCreatedOnSiteNotification(siteName,title);
             return  ResponseEntity.ok(new ResponseMessageDTO("Successfully created new issue for site: " + site.getName()));
         } catch (EntityNotFoundException e) {
             log.error(e.toString());
@@ -202,7 +210,8 @@ public class ApplicationService {
         try{
             ApplicationEntity issue = applicationRepository.findById(applicationDTO.getId()).orElseThrow(()->
                 new EntityNotFoundException("Application not found"));
-
+            if(!issue.getDueDate().equals(applicationDTO.getDueDate()))
+                notificationService.addDueDateNotification(issue.getCreationUser(),issue.getTitle(),applicationDTO.getDueDate());
             issue.setDueDate(applicationDTO.getDueDate());
             issue.setPriority(Priority.valueOf(applicationDTO.getPriority()));
             issue.setDescription(applicationDTO.getDescription());
@@ -220,6 +229,10 @@ public class ApplicationService {
                 }
             }
             issue.setStatus(newStatus);
+            if (newStatus.equals(Status.COMPLETED))
+                notificationService.addCompletedOnSiteNotification(issue.getSite().getName(),issue.getTitle());
+            else if (newStatus.equals(Status.REJECTED))
+                notificationService.addRejectedNotification(issue.getCreationUser(),issue.getTitle());
             if(applicationDTO.getAssigneeTechId()!=null){
                 Optional<UserEntity> newAssignee =userRepository.findById(applicationDTO.getAssigneeTechId());
                 if(newAssignee.isPresent())
@@ -250,6 +263,7 @@ public class ApplicationService {
             issue.setStatus(Status.COMPLETED);
             issue.setCompletionDate(LocalDateTime.now());
             applicationRepository.save(issue);
+            notificationService.addCompletedOnSiteNotification(issue.getSite().getName(),issue.getTitle());
             return ResponseEntity.ok(new ResponseMessageDTO("Completed"));
         } catch (Exception e) {
             log.error(e.toString());
