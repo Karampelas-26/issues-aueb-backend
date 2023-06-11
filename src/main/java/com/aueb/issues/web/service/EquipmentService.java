@@ -38,7 +38,7 @@ public class EquipmentService {
                     .typeOfEquipment(equipment)
                     .build();
             equipmentRepository.save(eq);
-            return ResponseEntity.ok(new ResponseMessageDTO());
+            return ResponseEntity.ok(new ResponseMessageDTO("Successfully saved"));
         }catch(Exception e){
             log.error(e.toString());
             return ResponseEntity.badRequest().body(new ResponseMessageDTO(e.getMessage()));
