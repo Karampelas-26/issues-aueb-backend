@@ -134,9 +134,9 @@ public class InitThingsOnStartUp implements CommandLineRunner {
         createBuildins();
         createApplications(1000);
         HashSet<String> pref= new HashSet<>();
-        pref.add("Π1");
-        pref.add("Π2");
-        pref.add("Π3");
+        pref.add("1Π10");
+        pref.add("1Π12");
+        pref.add("1Π13");
         teacher.setPreferences(pref);
         userRepository.save(teacher);
     }
