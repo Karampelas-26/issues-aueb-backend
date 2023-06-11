@@ -61,6 +61,8 @@ public class NotificationService {
         List<UserEntity> teachers=userRepository.findTeachers();
         for(UserEntity teacher:teachers){
             teacher.setNotifications(initNotifications(teacher.getNotifications()));
+            if(teacher.getPreferences()==null || teacher.getPreferences().isEmpty())
+                return;
             if(teacher.getPreferences().contains(site)){
                 NotificationsEntity notification=
                         NotificationsEntity.builder()
@@ -78,6 +80,9 @@ public class NotificationService {
         List<UserEntity> teachers=userRepository.findTeachers();
         for(UserEntity teacher:teachers){
             teacher.setNotifications(initNotifications(teacher.getNotifications()));
+            if(teacher.getPreferences()==null || teacher.getPreferences().isEmpty())
+                return;
+
             if(teacher.getPreferences().contains(siteName)){
                 NotificationsEntity notification=
                         NotificationsEntity.builder()
