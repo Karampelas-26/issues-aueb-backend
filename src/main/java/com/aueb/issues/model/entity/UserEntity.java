@@ -42,6 +42,9 @@ public class UserEntity implements UserDetails {
     private IssueType technicalTeam;
     private boolean activated;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NotificationsEntity> notifications;
+
     public void addPreference(String siteId){
         if (preferences==null)
             preferences=new HashSet<>();
@@ -62,6 +65,13 @@ public class UserEntity implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         return List.of(new SimpleGrantedAuthority("ROLE_"+role.name()));
+    }
+
+    public void addNotification(NotificationsEntity notificationsEntity){
+        if(notifications==null){
+            notifications=new ArrayList<>();
+        }
+        notifications.add(notificationsEntity);
     }
 
     @Override

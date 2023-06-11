@@ -61,6 +61,11 @@ public  class MapperUtils {
         return null;
     }
 
+    public static String mapIssueType(IssueType type){
+        if(type==null) return null;
+        return type.name();
+    }
+
     public static UserDTO mapCommentUser(UserEntity user){
         if(user==null) return null;
         return userMapper.toDto(user);

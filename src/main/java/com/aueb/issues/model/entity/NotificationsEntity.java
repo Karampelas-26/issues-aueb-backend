@@ -1,14 +1,10 @@
 package com.aueb.issues.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
-
 /**
  * @author George Karampelas
  */
@@ -17,15 +13,16 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@IdClass(NotificationId.class)
 @Table(name = "notification")
 public class NotificationsEntity {
-
     @Id
-    private String userId;
-    @Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+    private String id;
+    private String content;
     private LocalDateTime dateNotification;
-
-    private String issueId;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private UserEntity user;
 
 }

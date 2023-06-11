@@ -3,6 +3,7 @@ package com.aueb.issues.web.service;
 import com.aueb.issues.model.entity.BuildingEntity;
 import com.aueb.issues.model.entity.EquipmentEntity;
 import com.aueb.issues.model.entity.SiteEntity;
+import com.aueb.issues.model.mapper.EquipmentMapper;
 import com.aueb.issues.model.mapper.SiteMapper;
 import com.aueb.issues.repository.BuildingRepository;
 import com.aueb.issues.repository.EquipmentRepository;
@@ -103,9 +104,9 @@ public class SiteService {
         return ResponseEntity.ok(buildingSitesMap);
     }
     //for submit
-    public ResponseEntity<List<String>> getEquipmentOfSite(String siteName){
+    public ResponseEntity<List<EquipmentDTO>> getEquipmentOfSite(String siteName){
         SiteEntity site = sitesRepository.findByName(siteName);
-        List<String> ret=site.getEquipmentEntities().stream().map(eq->eq.getTypeOfEquipment()).toList();
+        List<EquipmentDTO> ret=site.getEquipmentEntities().stream().map(EquipmentMapper.INSTANCE::toDTO).toList();
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
     private boolean siteContainsEquipmentType(SiteEntity site, String typeOfEquipment) {
