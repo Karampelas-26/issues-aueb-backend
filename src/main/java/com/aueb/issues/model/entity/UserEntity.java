@@ -42,6 +42,9 @@ public class UserEntity implements UserDetails {
     private IssueType technicalTeam;
     private boolean activated;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NotificationsEntity> notifications;
+
     public void addPreference(String siteId){
         if (preferences==null)
             preferences=new HashSet<>();
