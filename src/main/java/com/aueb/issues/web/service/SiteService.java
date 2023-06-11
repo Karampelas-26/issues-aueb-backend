@@ -1,9 +1,11 @@
 package com.aueb.issues.web.service;
 
 import com.aueb.issues.model.entity.BuildingEntity;
+import com.aueb.issues.model.entity.EquipmentEntity;
 import com.aueb.issues.model.entity.SiteEntity;
 import com.aueb.issues.model.mapper.SiteMapper;
 import com.aueb.issues.repository.BuildingRepository;
+import com.aueb.issues.repository.EquipmentRepository;
 import com.aueb.issues.repository.SitesRepository;
 import com.aueb.issues.web.dto.*;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -22,6 +24,8 @@ public class SiteService {
     SitesRepository sitesRepository;
     @Autowired
     BuildingRepository buildingRepository;
+    @Autowired
+    EquipmentRepository equipmentRepository;
 
     public SiteEntity getSiteBySiteId(String id){
         return sitesRepository.getReferenceById(id);
@@ -72,5 +76,39 @@ public class SiteService {
                 .toList();
 
         return ResponseEntity.ok(names);
+    }
+
+    public ResponseEntity<Map<String, List<String>>> getSiteByBuildingAndEquipmentType(String typeOfEquipment) {
+        List<BuildingEntity> buildings = buildingRepository.findAll();
+        List<EquipmentEntity> equipment = equipmentRepository.findByTypeOfEquipment(typeOfEquipment);
+
+        Map<String, List<String>> buildingSitesMap = new HashMap<>();
+
+        for (BuildingEntity building : buildings) {
+            List<SiteEntity> buildingSites = sitesRepository.findByBuildingId(building.getId());
+
+            List<String> filteredSites = buildingSites.stream()
+                    .filter(site -> site.getEquipmentEntities().stream()
+                            .anyMatch(siteEquipment -> equipment.contains(siteEquipment)))
+                    .map(SiteEntity::getName)
+                    .collect(Collectors.toList());
+
+            if (!filteredSites.isEmpty()) {
+                buildingSitesMap.put(building.getName(), filteredSites);
+            }
+        }
+
+        return ResponseEntity.ok(buildingSitesMap);
+    }
+    private boolean siteContainsEquipmentType(SiteEntity site, String typeOfEquipment) {
+        List<EquipmentEntity> equipmentEntities = site.getEquipmentEntities();
+
+        for (EquipmentEntity equipment : equipmentEntities) {
+            if (equipment.getTypeOfEquipment().equals(typeOfEquipment)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

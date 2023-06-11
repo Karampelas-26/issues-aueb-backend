@@ -80,6 +80,9 @@ public class CommitteeController {
     @GetMapping("/getBuilding")
     public ResponseEntity<List<BuildingDTO>> getBuildings() {
         return buildingsService.getBuildings();
+    }@GetMapping("/getNothing")
+    public ResponseEntity<ResponseMessageDTO> getBuilding() {
+        return ResponseEntity.ok(new ResponseMessageDTO("sdaf"));
     }
 
     @PutMapping("/updateBuilding/{buildingId}")
@@ -93,9 +96,18 @@ public class CommitteeController {
         return buildingsService.deleteBuilding(id);
     }
 
+    @GetMapping("/getSiteContainEquipment")
+    public ResponseEntity<Map<String, List<String>>> getSitesByEquipmentType(@RequestParam("typeOfEquipment") String typeOfEquipment) {
+
+        return siteService.getSiteByBuildingAndEquipmentType(typeOfEquipment);
+    }
+
+    @GetMapping("/get")
+    public String get(){return "hh";}
+
     @PostMapping("/createEquipment")
-    public ResponseEntity<ResponseMessageDTO> createEquipment(@RequestBody CreateEquipmentRequest request){
-        return equipmentService.createEquipment(request);
+    public ResponseEntity<ResponseMessageDTO> createEquipment(@RequestBody String equipment){
+        return equipmentService.createEquipment(equipment);
     }
 
     @PutMapping("/updateEquipment/{equipmentId}")

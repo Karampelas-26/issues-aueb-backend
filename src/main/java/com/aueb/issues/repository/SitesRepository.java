@@ -1,5 +1,6 @@
 package com.aueb.issues.repository;
 
+import com.aueb.issues.model.entity.EquipmentEntity;
 import com.aueb.issues.model.entity.SiteEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,8 +25,13 @@ public interface SitesRepository extends JpaRepository<SiteEntity, String> {
 
     Optional<SiteEntity> findSiteEntitiesByName(String siteName);
 
-    @Query(value="select s "+
-            "from SiteEntity as s"+
-    " where (:buildingId = null or s.building.id = :buildingId)")
+    @Query(value = "select s " +
+            "from SiteEntity as s" +
+            " where (:buildingId = null or s.building.id = :buildingId)")
     public List<SiteEntity> getsAllSitesOfBuilding(@Param("buildingId") Long buildingId);
+
+    @Query("SELECT s.name FROM SiteEntity s JOIN s.equipmentEntities e WHERE e = :equipment")
+    List<String> findSiteNamesByEquipment(@Param("equipment") EquipmentEntity equipment);
+
+    List<SiteEntity> findByBuildingId(Long id);
 }
