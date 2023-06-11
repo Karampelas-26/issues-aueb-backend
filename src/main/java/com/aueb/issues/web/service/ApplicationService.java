@@ -14,6 +14,7 @@ import com.aueb.issues.web.dto.ApplicationDTO;
 import com.aueb.issues.web.dto.CommentDTO;
 import com.aueb.issues.web.dto.ResponseMessageDTO;
 import com.aueb.issues.web.dto.TeacherApplicationsDTO;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.EntityNotFoundException;
@@ -80,9 +81,26 @@ public class ApplicationService {
     }
     public ResponseEntity<ResponseMessageDTO> submitApplication(ObjectNode node, UserEntity user){
         try {
-            String siteName = node.get("siteName").asText();
-            String description = node.get("description").isEmpty()?node.get("description").asText():null;
-            SiteEntity site=sitesRepository.findSiteEntitiesByName(siteName).orElseThrow(() -> new EntityNotFoundException("Site with name: " + node.get("siteName").asText() + " not found"));
+            String siteName;
+            JsonNode jnode=node.get("siteName");
+            if(jnode!=null&&!jnode.isEmpty()) {
+                siteName = jnode.asText();
+            }else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            SiteEntity site=sitesRepository.findSiteEntitiesByName(siteName).orElseThrow(() -> new EntityNotFoundException("Site with name: " + siteName+ " not found"));
+
+            String description;
+            jnode=node.get("description");
+            if(jnode!=null&&!jnode.isEmpty()) {
+                 description  = jnode.asText();
+            }else  description=null;
+
+            IssueType issueType;
+            jnode=node.get("description");
+            if(jnode!=null&&!jnode.isEmpty()) {
+                issueType  = jnode.asText();
+            }else  description=null;
+
+
             IssueType issueType = !node.get("issueType").isEmpty() ? IssueType.valueOf(node.get("issueType").asText()) : null;
             Long equipmentId = !node.get("equipment").isEmpty()? node.get("equipment").asLong() : null;
             Optional<EquipmentEntity> equipmentEntity=equipmentRepository.findById(equipmentId);
