@@ -62,6 +62,11 @@ public class CommitteeController {
     public ResponseEntity<Map<String, List<UserDTO>>> getTechTeamWUser(){
         return userService.getTechTeamsWUsers();
     }
+    @GetMapping("/getTechsWithoutTeams")
+    public ResponseEntity<Map<String, List<UserDTO>>> getTechsWOTeams(){
+        return userService.getUsersWOTechTeam();
+    }
+
     @PutMapping("/update-user")
     public ResponseEntity<ResponseMessageDTO> updateUser(@RequestBody UserDTO request) {
         return userService.updateUser(request);
