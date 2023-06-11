@@ -2,7 +2,6 @@ package com.aueb.issues.web.service;
 
 import com.aueb.issues.email.EmailService;
 import com.aueb.issues.model.entity.NotificationsEntity;
-import com.aueb.issues.model.entity.SiteEntity;
 import com.aueb.issues.model.entity.UserEntity;
 import com.aueb.issues.model.mapper.NotificationMapper;
 import com.aueb.issues.repository.UserRepository;
@@ -52,7 +51,7 @@ public class NotificationService {
                 .build();
         user.getNotifications().add(notification);
         userRepository.save(user);
-        emailService.sendEmail(user.getEmail(),DUE_UPDATE,notification.getContent());
+        emailService.sendEmail(user.getEmail(),SUBJECT_DUEDATE,notification.getContent());
     }
     public void addCreatedOnSiteNotification(String site, String title){
         List<UserEntity> teachers=userRepository.findTeachers();
