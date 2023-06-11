@@ -145,7 +145,7 @@ public class CommonController {
 
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN', 'TEACHER')")
     @GetMapping("/getEquipmentsOfSiteName")
-    public ResponseEntity<List<String>> getEquipmentsOfSiteName(@RequestParam(value = "siteName", required = true) String sitename){
+    public ResponseEntity<List<EquipmentDTO>> getEquipmentsOfSiteName(@RequestParam(value = "siteName", required = true) String sitename){
         return siteService.getEquipmentOfSite(sitename);
     }
 }
