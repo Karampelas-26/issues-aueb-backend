@@ -52,7 +52,7 @@ public class TeacherController {
         return notificationService.panicButton(siteId);
     }
 
-    @PostMapping(value = "/setPreferences")
+    @GetMapping(value = "/setPreferences")
     public ResponseEntity<ResponseMessageDTO> setPreferences(@RequestParam List<String> sites, Authentication authentication){
         return userService.setPreferences((UserEntity) authentication.getPrincipal(), sites);
     }
