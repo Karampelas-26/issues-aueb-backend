@@ -167,11 +167,10 @@ public class UserService {
         return new ResponseEntity<>(map,HttpStatus.OK);
     }
 
-    public ResponseEntity<Map<String, List<UserDTO>>> getUsersWOTechTeam(){
-        Map<String, List<UserDTO>> map=new HashMap<>();
-        List<UserDTO> userEntities=userRepository.findByTechTeam(null).stream().map(UserMapper.INSTANCE::toDto).toList();
-        map.put("Technician Without Tech Team",userEntities);
-        return new ResponseEntity<>(map,HttpStatus.OK);
+    public ResponseEntity<List<UserDTO>> getUsersWOTechTeam(){
+        List<UserDTO> userEntities=userRepository.findByNullTechTeam().stream().map(UserMapper.INSTANCE::toDto).toList();
+
+        return new ResponseEntity<>(userEntities,HttpStatus.OK);
 
     }
     public ResponseEntity<ResponseMessageDTO> updateUser(UserDTO request) {
@@ -193,6 +192,9 @@ public class UserService {
             if(request.getRole()!=null)
                 user.setRole(request.getRole());
 
+            System.out.println(request.getTechnicalTeam());
+
+            user.setTechnicalTeam(request.getTechnicalTeam() == null || request.getTechnicalTeam().equals("")? null : IssueType.valueOf(request.getTechnicalTeam()));
             userRepository.save(user);
             return ResponseEntity.ok(new ResponseMessageDTO("User saved successfully"));
 

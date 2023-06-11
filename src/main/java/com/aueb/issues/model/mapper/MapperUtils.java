@@ -70,6 +70,10 @@ public  class MapperUtils {
         if(user==null) return null;
         return userMapper.toDto(user);
     }
+    public static String mapTechTeam(IssueType any){
+        if (any==null) return null;
+        return any.name();
+    }
 
     @Autowired
     public void init(BuildingMapper buildingMapper, SiteMapper siteMapper,ApplicationMapper applicationMapper, UserMapper userMapper){

@@ -215,14 +215,17 @@ public class InitThingsOnStartUp implements CommandLineRunner {
         for(EquipmentEntity equipment: equipmentEntities){
             equipmentRepository.save(equipment);
         }
+
+        List<EquipmentEntity> equipmentEntityList = equipmentRepository.findAll();
         Random random = new Random();
         int prefix = 0;
         for(BuildingEntity b: buildings){
             prefix++;
             for(int i=0; i<=5;i++){
                 for(int j = 1; j <= b.getFloors(); j++){
-                    SiteEntity site = SiteEntity.builder().name(prefix + b.getName().substring(0,1)+String.valueOf(j)+String.valueOf(i)).floor(String.valueOf(j)).building(b).build();
-                    for(EquipmentEntity equipment: equipmentEntities){
+                    SiteEntity site = SiteEntity.builder().name(prefix + b.getName().substring(0, 1) + String.valueOf(j) + String.valueOf(i)).floor(String.valueOf(j)).building(b).build();
+                    List<EquipmentEntity> randEquipments = getRandomSublist(equipmentEntityList);
+                    for(EquipmentEntity equipment: randEquipments){
                         site.addEquipment(equipment);
                     }
                     sitesRepository.save(site);
@@ -234,7 +237,13 @@ public class InitThingsOnStartUp implements CommandLineRunner {
 
     }
 
-
+    public static <T> List<T> getRandomSublist(List<T> list) {
+        Random random = new Random();
+        int n = random.nextInt(list.size()) + 1;
+        List<T> sublist = new ArrayList<>(list);
+        Collections.shuffle(sublist, new Random());
+        return sublist.subList(0, n);
+    }
     @Transactional
     public void createApplications(int num) {
 

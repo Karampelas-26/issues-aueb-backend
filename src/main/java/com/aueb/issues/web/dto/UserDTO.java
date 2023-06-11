@@ -22,5 +22,6 @@ public class UserDTO {
     private String gender;
     private String address;
     private Date createdDate;
+    private String technicalTeam;
     private Role role;
 }

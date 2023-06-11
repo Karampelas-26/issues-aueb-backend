@@ -9,6 +9,7 @@ import com.aueb.issues.repository.BuildingRepository;
 import com.aueb.issues.repository.EquipmentRepository;
 import com.aueb.issues.repository.SitesRepository;
 import com.aueb.issues.web.dto.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -118,5 +119,37 @@ public class SiteService {
         }
 
         return false;
+    }
+
+    public ResponseEntity<ResponseMessageDTO> deleteEquipmentsOnSites(Long typeOfEquipment, List<String> sitesName) {
+        try{
+            EquipmentEntity equipment = equipmentRepository.findEquipmentEntityById(typeOfEquipment).orElseThrow(()->new EntityNotFoundException("Equipment not found"));
+            List<SiteEntity> existingSites = sitesRepository.findAllByNameIn(sitesName);
+            for (SiteEntity site : existingSites) {
+                if (site.getEquipmentEntities().contains(equipment)) {
+                    site.deleteEquipment(equipment);
+                    sitesRepository.save(site);
+                }
+            }
+            return ResponseEntity.ok(new ResponseMessageDTO("Successfully deleted"));
+        } catch (EntityNotFoundException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(new ResponseMessageDTO(e.getMessage()));
+        }
+    }
+
+    public ResponseEntity<ResponseMessageDTO> addEquipmentsOnSites(Long typeOfEquipment, List<String> sitesName) {
+        try{
+            EquipmentEntity equipment = equipmentRepository.findEquipmentEntityById(typeOfEquipment).orElseThrow(()->new EntityNotFoundException("Equipment not found"));
+            List<SiteEntity> existingSites = sitesRepository.findAllByNameIn(sitesName);
+            for (SiteEntity site : existingSites) {
+                site.addEquipment(equipment);
+                sitesRepository.save(site);
+            }
+            return ResponseEntity.ok(new ResponseMessageDTO("Successfully added"));
+        } catch (EntityNotFoundException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(new ResponseMessageDTO(e.getMessage()));
+        }
     }
 }
