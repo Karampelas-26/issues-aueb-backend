@@ -43,14 +43,10 @@ public class TeacherController {
         return  applicationService.getTeacherApplicationsByStatus((UserEntity) authentication.getPrincipal(),status);
     }
     @GetMapping(value="/notifications", produces = "application/json")
-    public ResponseEntity<List<NotificationDTO>> getNotifications(){
-        return notificationService.getNotifications();
+    public ResponseEntity<List<NotificationDTO>> getNotifications(Authentication authentication){
+        return notificationService.getNotificationsOfUser((UserEntity) authentication.getPrincipal());
     }
 
-    @PostMapping(value = "/panic")
-    public ResponseEntity<String> panicButton(@RequestBody String siteId){
-        return notificationService.panicButton(siteId);
-    }
 
     @GetMapping(value = "/setPreferences")
     public ResponseEntity<ResponseMessageDTO> setPreferences(@RequestParam("sites") List<String> sites, Authentication authentication){

@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class NotificationDTO {
-    private String userId;
     private LocalDateTime dateNotification;
-    private String issueId;
+    private String content;
 }

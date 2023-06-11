@@ -3,10 +3,14 @@ package com.aueb.issues.web.service;
 import com.aueb.issues.email.EmailService;
 import com.aueb.issues.model.entity.NotificationsEntity;
 import com.aueb.issues.model.entity.UserEntity;
+import com.aueb.issues.model.mapper.NotificationMapper;
 import com.aueb.issues.repository.UserRepository;
 
+import com.aueb.issues.web.dto.NotificationDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -72,6 +76,11 @@ public class NotificationService {
                 emailService.sendEmail(teacher.getEmail(),SUBJECT_CREATE,notification.getContent());
             }
         }
+    }
+
+    public ResponseEntity<List<NotificationDTO>> getNotificationsOfUser(UserEntity user){
+        List<NotificationDTO> ret=user.getNotifications().stream().map(NotificationMapper.INSTANCE::toDTO).toList();
+        return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
 }
