@@ -143,7 +143,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
 
 
     public MultipartFile toMultipart(){
-        Path path = Paths.get("C:\\Users\\Admin\\Downloads\\user_to_init.csv");
+        Path path = Paths.get("C:\\Users\\georg\\Desktop\\AEPS\\data\\user_to_init.csv");
         String name = "user_to_init.csv";
         String originalFileName = "user_to_init.csv";
         String contentType = "text/csv";

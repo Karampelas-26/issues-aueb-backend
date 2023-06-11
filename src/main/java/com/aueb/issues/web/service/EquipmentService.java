@@ -31,17 +31,13 @@ public class EquipmentService {
     @Autowired
     SitesRepository sitesRepository;
     LocalDateTime dateTime = LocalDateTime.now();
-    public ResponseEntity<ResponseMessageDTO> createEquipment(CreateEquipmentRequest request) {
+    public ResponseEntity<ResponseMessageDTO> createEquipment(String equipment) {
         try{
-            List<SiteEntity> site = sitesRepository.findByName(request.getSiteName());
-            EquipmentEntity equipment = EquipmentEntity.builder()
-                    .typeOfEquipment(request.getTypeOfEquipment())
+
+            EquipmentEntity eq = EquipmentEntity.builder()
+                    .typeOfEquipment(equipment)
                     .build();
-            equipmentRepository.save(equipment);
-            for(SiteEntity s:site){
-                s.addEquipment(equipment);
-                sitesRepository.save(s);
-            }
+            equipmentRepository.save(eq);
             return ResponseEntity.ok(new ResponseMessageDTO());
         }catch(Exception e){
             log.error(e.toString());

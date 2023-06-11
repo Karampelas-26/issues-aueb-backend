@@ -154,4 +154,9 @@ public class CommonController {
         return applicationService.getStaticData();
     }
 
+    @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN', 'TEACHER')")
+    @GetMapping("/getEquipmentsOfSiteName")
+    public ResponseEntity<List<String>> getEquipmentsOfSiteName(@RequestParam(value = "siteName", required = true) String sitename){
+        return siteService.getEquipmentOfSite(sitename);
+    }
 }
