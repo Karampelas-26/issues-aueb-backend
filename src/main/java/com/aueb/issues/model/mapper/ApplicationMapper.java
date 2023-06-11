@@ -23,7 +23,7 @@ public interface ApplicationMapper {
     @Mapping(expression = "java(MapperUtils.mapCommentList(entity.getComments()))", target = "comments")
     @Mapping(source = "entity.description", target = "description")
     @Mapping(expression = "java(entity.getCreationUser().getId())",target ="createdUserId" )
-    @Mapping(expression = "java(entity.getIssueType().name())", target = "issueType")
+    @Mapping(expression = "java(MapperUtils.mapIssueType(entity.getIssueType()))", target = "issueType")
     @Mapping(source ="entity.dueDate" ,target="dueDate")
     @Mapping(source = "entity.createDate", target ="createDate")
     public ApplicationDTO toDTO(ApplicationEntity entity);

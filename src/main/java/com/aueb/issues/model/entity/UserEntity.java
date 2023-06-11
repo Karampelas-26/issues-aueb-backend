@@ -67,6 +67,13 @@ public class UserEntity implements UserDetails {
         return List.of(new SimpleGrantedAuthority("ROLE_"+role.name()));
     }
 
+    public void addNotification(NotificationsEntity notificationsEntity){
+        if(notifications==null){
+            notifications=new ArrayList<>();
+        }
+        notifications.add(notificationsEntity);
+    }
+
     @Override
     public String getPassword() {
         return this.password;

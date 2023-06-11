@@ -82,9 +82,9 @@ public class ApplicationService {
         try {
             String siteName;
             JsonNode jnode=node.get("siteName");
-            if(jnode!=null&&!jnode.isEmpty()) {
+            if(jnode!=null&&!jnode.isNull()) {
                 siteName = jnode.asText();
-            }else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }else return ResponseEntity.badRequest().body(new ResponseMessageDTO("site node null"));
             SiteEntity site=sitesRepository.findSiteEntitiesByName(siteName).orElseThrow(() -> new EntityNotFoundException("Site with name: " + siteName+ " not found"));
 
             String description;
@@ -97,15 +97,15 @@ public class ApplicationService {
 
             String title="Application "+applicationRepository.count();
             jnode=node.get("description");
-            if(jnode!=null&&!jnode.isEmpty()) {
+            if(jnode!=null&&!jnode.isNull()) {
                 issueType  = isValidIssueType(jnode.asText())?IssueType.valueOf(jnode.asText()):null;
             }else  issueType=null;
 
             Long equipmentId=null;
             Optional<EquipmentEntity> equipmentEntity=null;
-            if(issueType.equals(IssueType.EQUIPMENT)) {
+            if(issueType!=null&&issueType.equals(IssueType.EQUIPMENT)) {
                 jnode = node.get("equipment");
-                if (jnode != null && !jnode.isEmpty()) {
+                if (jnode!=null&&!jnode.isNull()) {
                     equipmentId = node.get("equipment").asLong();
                 } else equipmentId = null;
                 equipmentEntity = equipmentRepository.findById(equipmentId);

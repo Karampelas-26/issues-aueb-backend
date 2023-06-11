@@ -5,6 +5,7 @@ import com.aueb.issues.model.entity.EquipmentEntity;
 import com.aueb.issues.model.entity.CommentEntity;
 import com.aueb.issues.model.entity.SiteEntity;
 import com.aueb.issues.model.entity.UserEntity;
+import com.aueb.issues.model.enums.IssueType;
 import com.aueb.issues.web.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -58,6 +59,11 @@ public  class MapperUtils {
             return ret;
         }
         return null;
+    }
+
+    public static String mapIssueType(IssueType type){
+        if(type==null) return null;
+        return type.name();
     }
 
     public static UserDTO mapCommentUser(UserEntity user){
