@@ -34,4 +34,6 @@ public interface SitesRepository extends JpaRepository<SiteEntity, String> {
     List<String> findSiteNamesByEquipment(@Param("equipment") EquipmentEntity equipment);
 
     List<SiteEntity> findByBuildingId(Long id);
+
+    List<SiteEntity> findAllByNameIn(List<String> siteNames);
 }

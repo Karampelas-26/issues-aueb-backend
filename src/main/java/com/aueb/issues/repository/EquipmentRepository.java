@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EquipmentRepository extends JpaRepository<EquipmentEntity, Long> {
@@ -15,4 +16,6 @@ public interface EquipmentRepository extends JpaRepository<EquipmentEntity, Long
     public List<EquipmentEntity> getEquipmentOfSite(@Param("siteId")Long siteId);
 
     List<EquipmentEntity> findByTypeOfEquipment(String typeOfEquipment);
+
+    Optional<EquipmentEntity> findEquipmentEntityById(Long id);
 }

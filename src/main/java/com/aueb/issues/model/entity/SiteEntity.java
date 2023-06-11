@@ -36,6 +36,14 @@ public class SiteEntity {
     public void addEquipment(EquipmentEntity equipment) {
         if (equipmentEntities == null)
             equipmentEntities = new ArrayList<>();
-        equipmentEntities.add(equipment);
+        if (!equipmentEntities.contains(equipment)) {
+            equipmentEntities.add(equipment);
+        }
+    }
+
+    public void deleteEquipment(EquipmentEntity equipment) {
+        if (equipmentEntities != null) {
+            equipmentEntities.remove(equipment);
+        }
     }
 }

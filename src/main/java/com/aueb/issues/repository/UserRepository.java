@@ -19,4 +19,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     public List<UserEntity> findByTechTeam(@Param("issueType") IssueType issueType);
 
     Optional<List<UserEntity>> findByIdIn(List<String> userIds);
+
+    @Query(value = "select * from _user\n" +
+            "where technical_team is null and role = 'TECHNICIAN'", nativeQuery = true)
+    public List<UserEntity> findByNullTechTeam();
 }

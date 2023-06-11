@@ -19,6 +19,7 @@ public interface UserMapper {
     @Mapping(source = "address", target = "address")
     @Mapping(source = "createdDate", target = "createdDate")
     @Mapping(source = "role", target = "role")
+    @Mapping(expression = "java(MapperUtils.mapTechTeam(userEntity.getTechnicalTeam()))", target = "technicalTeam")
     UserDTO toDto(UserEntity userEntity);
 
 

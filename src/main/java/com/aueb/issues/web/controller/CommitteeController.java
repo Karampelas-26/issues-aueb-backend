@@ -63,7 +63,7 @@ public class CommitteeController {
         return userService.getTechTeamsWUsers();
     }
     @GetMapping("/getTechsWithoutTeams")
-    public ResponseEntity<Map<String, List<UserDTO>>> getTechsWOTeams(){
+    public ResponseEntity<List<UserDTO>> getTechsWOTeams(){
         return userService.getUsersWOTechTeam();
     }
 
@@ -107,8 +107,14 @@ public class CommitteeController {
         return siteService.getSiteByBuildingAndEquipmentType(typeOfEquipment);
     }
 
-    @GetMapping("/get")
-    public String get(){return "hh";}
+    @PutMapping("/deleteEquipmentsOnSite/{typeOfEquipment}")
+    public ResponseEntity<ResponseMessageDTO> deleteEquipmentsOnSites(@PathVariable("typeOfEquipment") Long typeOfEquipment, @RequestBody List<String> sitesName) {
+        return siteService.deleteEquipmentsOnSites(typeOfEquipment, sitesName);
+    }
+    @PutMapping("/addEquipmentsOnSite/{typeOfEquipment}")
+    public ResponseEntity<ResponseMessageDTO> addEquipmentsOnSites(@PathVariable("typeOfEquipment") Long typeOfEquipment, @RequestBody List<String> sitesName) {
+        return siteService.addEquipmentsOnSites(typeOfEquipment, sitesName);
+    }
 
     @PostMapping("/createEquipment")
     public ResponseEntity<ResponseMessageDTO> createEquipment(@RequestBody String equipment){
