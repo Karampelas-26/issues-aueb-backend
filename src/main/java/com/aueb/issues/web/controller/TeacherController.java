@@ -53,7 +53,7 @@ public class TeacherController {
     }
 
     @GetMapping(value = "/setPreferences")
-    public ResponseEntity<ResponseMessageDTO> setPreferences(@RequestParam List<String> sites, Authentication authentication){
+    public ResponseEntity<ResponseMessageDTO> setPreferences(@RequestParam("sites") List<String> sites, Authentication authentication){
         return userService.setPreferences((UserEntity) authentication.getPrincipal(), sites);
     }
     @GetMapping(value = "/getPreferences")

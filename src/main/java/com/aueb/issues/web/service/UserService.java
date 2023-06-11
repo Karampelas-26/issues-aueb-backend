@@ -198,12 +198,13 @@ public class UserService {
         HashSet<String> sites= (HashSet<String>) sitesList.stream().collect(Collectors.toSet());
         try {
             if(user.updatePreferences(sites))
-                return new ResponseEntity<>(new ResponseMessageDTO("True"),HttpStatus.OK);
+                userRepository.save(user);
+            return new ResponseEntity<>(new ResponseMessageDTO("Preferences saved successfully"),HttpStatus.OK);
 
         }catch (Exception e){
             log.error(e.getMessage());
+          return new ResponseEntity<>(new ResponseMessageDTO("Preferences were not saved"),HttpStatus.BAD_REQUEST);
         }
-          return new ResponseEntity<>(new ResponseMessageDTO("False"),HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<List<String>> getPreferences(UserEntity user){
