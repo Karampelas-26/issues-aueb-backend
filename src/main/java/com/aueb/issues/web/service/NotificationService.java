@@ -31,13 +31,11 @@ public class NotificationService {
     private static  final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     public static final String SUBJECT_COMPLETION="AUTECH-ΟΛΟΚΛΗΡΩΣΗ ΑΙΤΗΣΗΣ";
     public static final String SUBJECT_REJECTION="AUTECH-ΑΠΟΡΡΙΨΗ ΑΙΤΗΣΗΣ";
-    public static final String SUBJECT_DUEDATE="AUTECH-ΑΛΛΑΓΗ ΠΡΟΘΕΣΜΙΑΣ ΑΙΤΗΣΗΣ";
     public static final String SUBJECT_CREATE="AUTECH-ΔΗΜΙΟΥΡΓΙΑ ΑΙΤΗΣΗΣ";
     public static final String STATUS_COMPLETION="Η κατάσταση της αίτησης με τίτλο: %s  και αίθουσα <<%s>> άλλαξε σε <<ΟΛΟΚΛΗΡΩΜΕΝΗ>>.";
     public static final String STATUS_REJECTED="Η  αίτηση με τίτλο: %s Απορρίφθηκε.";
     public static final String APPLICATION_CREATED_PREF="Μια αίτηση δημιουργήθηκε για την αίθουσα %s , με τίτλο: %s. Λάβατε αυτή την ειδοποιηση" +
             " διότι αυτή η αίθουσα έχει δηλωθεί στις προτιμίσεις σας.";
-    public static final String DUE_UPDATE="Η ημερομηνία αναμενόμενης ολοκλήρωσης της αίτησης με τίτλο: %s άλλαξε σε %s.";
     public void addRejectedNotification(UserEntity user,String title){
     NotificationsEntity notification=NotificationsEntity.builder()
                 .dateNotification(LocalDateTime.now())
@@ -47,18 +45,6 @@ public class NotificationService {
         user.addNotification(notification);
         userRepository.save(user);
         emailService.sendEmail(user.getEmail(),SUBJECT_REJECTION,notification.getContent());
-    }
-    public void addDueDateNotification(UserEntity user,String title,LocalDateTime due){
-
-        NotificationsEntity notification=
-                NotificationsEntity.builder()
-                .dateNotification(LocalDateTime.now())
-                .content(String.format(DUE_UPDATE,title,due.format(formatter)))
-                .user(user)
-                .build();
-        user.addNotification(notification);
-        userRepository.save(user);
-        emailService.sendEmail(user.getEmail(),SUBJECT_DUEDATE,notification.getContent());
     }
     public void addCreatedOnSiteNotification(String site, String title){
         List<UserEntity> teachers=userRepository.findTeachers();

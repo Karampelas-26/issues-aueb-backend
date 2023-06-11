@@ -209,9 +209,7 @@ public class ApplicationService {
     public ResponseEntity<ApplicationDTO> updateApplication(ApplicationDTO applicationDTO){
         try{
             ApplicationEntity issue = applicationRepository.findById(applicationDTO.getId()).orElseThrow(()->
-                new EntityNotFoundException("Application not found"));
-            if(!issue.getDueDate().equals(applicationDTO.getDueDate()))
-                notificationService.addDueDateNotification(issue.getCreationUser(),issue.getTitle(),applicationDTO.getDueDate());
+                    new EntityNotFoundException("Application not found"));
             issue.setDueDate(applicationDTO.getDueDate());
             issue.setPriority(Priority.valueOf(applicationDTO.getPriority()));
             issue.setDescription(applicationDTO.getDescription());
@@ -229,8 +227,10 @@ public class ApplicationService {
                 }
             }
             issue.setStatus(newStatus);
-            if (newStatus.equals(Status.COMPLETED))
+            if (newStatus.equals(Status.COMPLETED)){
                 notificationService.addCompletedOnSiteNotification(issue.getSite().getName(),issue.getTitle());
+                issue.setCompletionDate(LocalDateTime.now());
+            }
             else if (newStatus.equals(Status.REJECTED))
                 notificationService.addRejectedNotification(issue.getCreationUser(),issue.getTitle());
             if(applicationDTO.getAssigneeTechId()!=null){
