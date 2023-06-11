@@ -252,7 +252,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
             SiteEntity site = sites.get(random.nextInt(sites.size()));
             ApplicationEntity app = ApplicationEntity.builder()
                     .id(UUID.randomUUID().toString())
-                    .title("Application: " + String.valueOf(appNum))
+                    .title("Application: " + appNum)
                     .site(site)
                     .creationUser(userCreated)
                     .issueType(IssueType.valueOf(issueTypes.get(random.nextInt(issueTypes.size()))))
@@ -266,7 +266,8 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                     .dateTime(dateCreated)
                     .user(userCreated)
                     .build());
-
+            if(app.getStatus()==Status.COMPLETED)
+                app.setCompletionDate(LocalDateTime.of(2023,6,10,0,0));
             applicationRepository.save(app);
             appNum++;
 
