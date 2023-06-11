@@ -68,7 +68,7 @@ public class ApplicationService {
                     status==null?null:Status.valueOf(status),null);
             List<ApplicationEntity> resFiltered=results.stream()
                     .filter(res-> !res.getStatus().equals(Status.ARCHIVED))
-                    .filter(res->user.getPreferences().contains(res.getSite().getId()))
+                    .filter(res->user.getPreferences().contains(res.getSite().getName()))
                     .toList();
 
             ret=resFiltered.stream().map(ApplicationMapper.INSTANCE::toTeacherDTO).toList();
