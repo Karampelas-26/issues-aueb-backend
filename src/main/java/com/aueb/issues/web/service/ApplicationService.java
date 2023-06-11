@@ -81,23 +81,27 @@ public class ApplicationService {
     public ResponseEntity<ResponseMessageDTO> submitApplication(ObjectNode node, UserEntity user){
         try {
             String siteName = node.get("siteName").asText();
-            String title =(node.get("title"))!=null?node.get("title").asText():null;
+            String description = node.get("description").isEmpty()?node.get("description").asText():null;
             SiteEntity site=sitesRepository.findSiteEntitiesByName(siteName).orElseThrow(() -> new EntityNotFoundException("Site with name: " + node.get("siteName").asText() + " not found"));
-            IssueType issueType =(node.get("issueType"))!=null?IssueType.valueOf(node.get("issueType").asText()):null;
-            Long equipmentId =(node.get("equipment"))!=null?node.get("equipment").asLong():null;
-            if(equipmentId != null) {
-                EquipmentEntity equipmentEntity=equipmentRepository.findById(equipmentId).orElseThrow(() -> new EntityNotFoundException("Equipment with id: " + equipmentId + " not found"));
-            }
+            IssueType issueType = !node.get("issueType").isEmpty() ? IssueType.valueOf(node.get("issueType").asText()) : null;
+            Long equipmentId = !node.get("equipment").isEmpty()? node.get("equipment").asLong() : null;
+            Optional<EquipmentEntity> equipmentEntity=equipmentRepository.findById(equipmentId);
             ApplicationEntity newEntity=ApplicationEntity.builder()
                     .id(UUID.randomUUID().toString())
-                    .title(title)
+                    .description(description)
                     .creationUser(user)
                     .createDate(LocalDateTime.now())
                     .status(Status.CREATED)
                     .priority(Priority.MEDIUM)
                     .site(site)
-                    .issueType(issueType)
                     .build();
+            if (issueType != null) newEntity.setIssueType(issueType);
+            if(equipmentEntity.isPresent()){
+                newEntity.setTitle(equipmentEntity.get().getTypeOfEquipment());
+            }
+            else {
+                newEntity.setTitle("Application: " + applicationRepository.count());
+            }
             applicationRepository.save(newEntity);
             if(user.getRole().equals(Role.TEACHER)){
                 user.addPreference(site.getName());

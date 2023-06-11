@@ -15,4 +15,7 @@ public interface EquipmentRepository extends JpaRepository<EquipmentEntity, Long
     public List<EquipmentEntity> getEquipmentOfSite(@Param("siteId")Long siteId);
 
     List<EquipmentEntity> findByTypeOfEquipment(String typeOfEquipment);
+
+
+
 }
