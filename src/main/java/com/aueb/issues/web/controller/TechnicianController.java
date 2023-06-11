@@ -2,12 +2,9 @@ package com.aueb.issues.web.controller;
 
 
 import com.aueb.issues.model.entity.UserEntity;
-import com.aueb.issues.web.dto.UserDTO;
+import com.aueb.issues.web.dto.*;
 import com.aueb.issues.web.service.BuildingService;
 import com.aueb.issues.web.service.SiteService;
-import com.aueb.issues.web.dto.ApplicationDTO;
-import com.aueb.issues.web.dto.BuildingDTO;
-import com.aueb.issues.web.dto.SiteDTO;
 import com.aueb.issues.web.service.ApplicationService;
 import com.aueb.issues.web.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -70,5 +67,6 @@ public class TechnicianController {
     public ResponseEntity<Map<String, List<String>>> getBuildingSitesName(){
         return buildingService.getBuildinsSitesName();
     }
+
 
 }

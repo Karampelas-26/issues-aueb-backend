@@ -42,7 +42,7 @@ public class UserEntity implements UserDetails {
     private IssueType technicalTeam;
     private boolean activated;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NotificationsEntity> notifications;
 
     public void addPreference(String siteId){
@@ -72,6 +72,12 @@ public class UserEntity implements UserDetails {
             notifications=new ArrayList<>();
         }
         notifications.add(notificationsEntity);
+    }
+
+    public void deleteNotifications(){
+        for (NotificationsEntity n:notifications) {
+            notifications.remove(n);
+        }
     }
 
     @Override

@@ -128,7 +128,7 @@ public class ApplicationService {
             if(user.getRole().equals(Role.TEACHER)){
                 user.addPreference(site.getName());
             }
-            notificationService.addCreatedOnSiteNotification(siteName,title);
+            notificationService.addCreatedNotification(user,title);
             return  ResponseEntity.ok(new ResponseMessageDTO("Successfully created new issue for site: " + site.getName()));
         } catch (EntityNotFoundException e) {
             log.error(e.toString());
@@ -233,6 +233,8 @@ public class ApplicationService {
             }
             else if (newStatus.equals(Status.REJECTED))
                 notificationService.addRejectedNotification(issue.getCreationUser(),issue.getTitle());
+            else if(newStatus.equals(Status.VALIDATED)||newStatus.equals(Status.ASSIGNED))
+                notificationService.addValidatedOnSiteNotification(issue.getSite().getName(),issue.getTitle());
             if(applicationDTO.getAssigneeTechId()!=null){
                 Optional<UserEntity> newAssignee =userRepository.findById(applicationDTO.getAssigneeTechId());
                 if(newAssignee.isPresent())

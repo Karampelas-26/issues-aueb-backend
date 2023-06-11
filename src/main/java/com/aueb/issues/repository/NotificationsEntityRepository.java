@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface NotificationsEntityRepository extends JpaRepository<NotificationsEntity, String> {
     public List<NotificationsEntity> findNotificationsEntitiesByUser(UserEntity user);
+
+    public void deleteNotificationsEntitiesByUser(UserEntity user);
 }

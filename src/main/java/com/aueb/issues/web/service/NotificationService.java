@@ -8,6 +8,7 @@ import com.aueb.issues.repository.NotificationsEntityRepository;
 import com.aueb.issues.repository.UserRepository;
 
 import com.aueb.issues.web.dto.NotificationDTO;
+import com.aueb.issues.web.dto.ResponseMessageDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,8 @@ public class NotificationService {
     public static final String SUBJECT_CREATE="AUTECH-ΔΗΜΙΟΥΡΓΙΑ ΑΙΤΗΣΗΣ";
     public static final String STATUS_COMPLETION="Η κατάσταση της αίτησης με τίτλο: %s  και αίθουσα <<%s>> άλλαξε σε <<ΟΛΟΚΛΗΡΩΜΕΝΗ>>.";
     public static final String STATUS_REJECTED="Η  αίτηση με τίτλο: %s Απορρίφθηκε.";
-    public static final String APPLICATION_CREATED_PREF="Μια αίτηση δημιουργήθηκε για την αίθουσα %s , με τίτλο: %s. Λάβατε αυτή την ειδοποιηση" +
+    public static final String STATUS_CREATED="Η  αίτηση με τίτλο: %s Δημιουργήθηκε.";
+    public static final String APPLICATION_VALIDATED_PREF="Μια αίτηση δημιουργήθηκε για την αίθουσα %s , με τίτλο: %s. Λάβατε αυτή την ειδοποιηση" +
             " διότι αυτή η αίθουσα έχει δηλωθεί στις προτιμίσεις σας.";
     public void addRejectedNotification(UserEntity user,String title){
     NotificationsEntity notification=NotificationsEntity.builder()
@@ -46,7 +48,17 @@ public class NotificationService {
         userRepository.save(user);
         emailService.sendEmail(user.getEmail(),SUBJECT_REJECTION,notification.getContent());
     }
-    public void addCreatedOnSiteNotification(String site, String title){
+    public void addCreatedNotification(UserEntity user,String title){
+    NotificationsEntity notification=NotificationsEntity.builder()
+                .dateNotification(LocalDateTime.now())
+                .content(String.format(STATUS_CREATED,title))
+                .user(user)
+                .build();
+        user.addNotification(notification);
+        userRepository.save(user);
+        emailService.sendEmail(user.getEmail(),SUBJECT_CREATE,notification.getContent());
+    }
+    public void addValidatedOnSiteNotification(String site, String title){
         List<UserEntity> teachers=userRepository.findTeachers();
         for(UserEntity teacher:teachers){
             if(teacher.getPreferences()==null || teacher.getPreferences().isEmpty())
@@ -55,7 +67,7 @@ public class NotificationService {
                 NotificationsEntity notification=
                         NotificationsEntity.builder()
                                 .dateNotification(LocalDateTime.now())
-                                .content(String.format(APPLICATION_CREATED_PREF,site,title))
+                                .content(String.format(APPLICATION_VALIDATED_PREF,site,title))
                                 .user(teacher)
                                 .build();
                 teacher.addNotification(notification);
@@ -89,7 +101,4 @@ public class NotificationService {
         List<NotificationDTO> ret=notificationsEntityRepository.findNotificationsEntitiesByUser(user).stream().map(NotificationMapper.INSTANCE::toDTO).toList();
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
-
-
-
 }
