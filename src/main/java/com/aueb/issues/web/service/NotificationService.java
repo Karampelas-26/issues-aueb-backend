@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,15 +41,18 @@ public class NotificationService {
                 .content(String.format(STATUS_REJECTED,title))
                 .build();
         user.getNotifications().add(notification);
+        user.setNotifications(initNotifications(user.getNotifications()));
         userRepository.save(user);
         emailService.sendEmail(user.getEmail(),SUBJECT_REJECTION,notification.getContent());
     }
     public void addDueDateNotification(UserEntity user,String title,LocalDateTime due){
+
         NotificationsEntity notification=
                 NotificationsEntity.builder()
                 .dateNotification(LocalDateTime.now())
                 .content(String.format(DUE_UPDATE,title,due.format(formatter)))
                 .build();
+        user.setNotifications(initNotifications(user.getNotifications()));
         user.getNotifications().add(notification);
         userRepository.save(user);
         emailService.sendEmail(user.getEmail(),SUBJECT_DUEDATE,notification.getContent());
@@ -56,6 +60,7 @@ public class NotificationService {
     public void addCreatedOnSiteNotification(String site, String title){
         List<UserEntity> teachers=userRepository.findTeachers();
         for(UserEntity teacher:teachers){
+            teacher.setNotifications(initNotifications(teacher.getNotifications()));
             if(teacher.getPreferences().contains(site)){
                 NotificationsEntity notification=
                         NotificationsEntity.builder()
@@ -72,6 +77,7 @@ public class NotificationService {
     public void addCompletedOnSiteNotification(String siteName, String title){
         List<UserEntity> teachers=userRepository.findTeachers();
         for(UserEntity teacher:teachers){
+            teacher.setNotifications(initNotifications(teacher.getNotifications()));
             if(teacher.getPreferences().contains(siteName)){
                 NotificationsEntity notification=
                         NotificationsEntity.builder()
@@ -88,6 +94,12 @@ public class NotificationService {
     public ResponseEntity<List<NotificationDTO>> getNotificationsOfUser(UserEntity user){
         List<NotificationDTO> ret=user.getNotifications().stream().map(NotificationMapper.INSTANCE::toDTO).toList();
         return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
+    private List<NotificationsEntity> initNotifications(List<NotificationsEntity> list){
+        if(list==null ||list.isEmpty())
+            return new ArrayList<>();
+        else return list;
     }
 
 }
