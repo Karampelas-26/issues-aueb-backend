@@ -187,10 +187,8 @@ public class ApplicationService {
         return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity<List<ApplicationDTO>> getApplicationByUserId(String id){
-        Optional<UserEntity> user=userRepository.findById(id);
-        if(!user.isPresent()) return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
-        List<ApplicationDTO> applicationDTOS=applicationRepository.findByUser(user.get())
+    public ResponseEntity<List<ApplicationDTO>> getApplicationByAssigneeUserId(UserEntity user){
+        List<ApplicationDTO> applicationDTOS=applicationRepository.findByUser(user)
                 .stream().map(ApplicationMapper.INSTANCE::toDTO).toList();
         return new ResponseEntity<>(applicationDTOS,HttpStatus.OK);
     }

@@ -30,8 +30,8 @@ public interface ApplicationRepository extends JpaRepository<ApplicationEntity, 
                                                 @Param("buildingName")String buildingName);
 
 
-    @Query("SELECT a FROM ApplicationEntity a JOIN a.creationUser WHERE a.creationUser = :creationUser")
-    List<ApplicationEntity> findByUser(@Param("creationUser")UserEntity user);
+    @Query("SELECT a FROM ApplicationEntity a JOIN a.creationUser WHERE a.assigneeTech = :assignee")
+    List<ApplicationEntity> findByUser(@Param("assignee")UserEntity user);
 
     //statistics querries
     @Query(value = "SELECT ((CAST(EXTRACT(YEAR FROM appl.create_date) AS TEXT)) || '-' || (CAST(EXTRACT(MONTH FROM appl.create_date) AS TEXT)) )AS MonthNumber, count(*)\n, count (*) " +

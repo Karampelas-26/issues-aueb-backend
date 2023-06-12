@@ -60,7 +60,7 @@ public class CommonController {
     @GetMapping("/getApplicationsByUser")
     public ResponseEntity<List<ApplicationDTO>> getApplicationsByUser(Authentication authentication){
         UserEntity user = (UserEntity) authentication.getPrincipal();
-        return applicationService.getApplicationByUserId(user.getId());
+        return applicationService.getApplicationByAssigneeUserId(user);
     }
 
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
