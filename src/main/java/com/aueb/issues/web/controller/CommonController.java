@@ -58,8 +58,9 @@ public class CommonController {
     }
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")
     @GetMapping("/getApplicationsByUser")
-    public ResponseEntity<List<ApplicationDTO>> getApplicationsByUser(@RequestParam(value = "userId", required = true)String id){
-        return applicationService.getApplicationByUserId(id);
+    public ResponseEntity<List<ApplicationDTO>> getApplicationsByUser(Authentication authentication){
+        UserEntity user = (UserEntity) authentication.getPrincipal();
+        return applicationService.getApplicationByUserId(user.getId());
     }
 
     @PreAuthorize("hasAnyRole('COMMITTEE', 'TECHNICIAN')")

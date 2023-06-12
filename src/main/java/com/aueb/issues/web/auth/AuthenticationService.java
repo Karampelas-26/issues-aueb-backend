@@ -10,10 +10,7 @@ import com.aueb.issues.repository.UserRepository;
 import com.aueb.issues.security.JwtTokenUtil;
 import com.aueb.issues.model.auth.LoginRequest;
 import com.aueb.issues.model.auth.LoginResponse;
-import com.aueb.issues.web.dto.ForgotPasswordRequest;
-import com.aueb.issues.web.dto.ForgotPasswordResponse;
-import com.aueb.issues.web.dto.ResetPasswordRequest;
-import com.aueb.issues.web.dto.ResetPasswordResponse;
+import com.aueb.issues.web.dto.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -150,7 +147,7 @@ public class AuthenticationService {
         return (!isExpired) && validOTP;
     }
 
-    public ResponseEntity<ActivationUserResponse> activateUser(ActivationUserRequest request) {
+    public ResponseEntity<ResponseMessageDTO> activateUser(ActivationUserRequest request) {
 
         ActivationToken token = activationTokenRepository.findByActivationToken(request.getActivationToken()).orElseThrow(() -> new EntityNotFoundException("Activation token not found"));
 
@@ -163,9 +160,9 @@ public class AuthenticationService {
             userRepository.save(user);
             activationTokenRepository.delete(token);
             log.info("success");
-            return ResponseEntity.ok(new ActivationUserResponse(user));
+            return ResponseEntity.ok(new ResponseMessageDTO("Successfully activate acount"));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessageDTO("Could not activate account, try again"));
 
     }
 }

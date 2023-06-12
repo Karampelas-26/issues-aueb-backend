@@ -117,7 +117,8 @@ public class UserService {
 
         activationTokenRepository.save(activationToken);
 
-        String activationLink = "http://localhost:4200/activate?token=" + token;
+        String activationLink = "Click this activation link to enable your account on AU-TECH \n" +
+                "http://localhost:4200/activate?token=" + token;
         emailService.sendEmail(user.getEmail(), "Account Activation", activationLink);
     }
 

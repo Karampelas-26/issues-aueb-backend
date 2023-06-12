@@ -3,10 +3,7 @@ package com.aueb.issues.web.auth;
 import com.aueb.issues.model.auth.LoginRequest;
 import com.aueb.issues.model.auth.LoginResponse;
 import com.aueb.issues.model.entity.ActivationToken;
-import com.aueb.issues.web.dto.ForgotPasswordRequest;
-import com.aueb.issues.web.dto.ForgotPasswordResponse;
-import com.aueb.issues.web.dto.ResetPasswordRequest;
-import com.aueb.issues.web.dto.ResetPasswordResponse;
+import com.aueb.issues.web.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +36,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/activation")
-    public ResponseEntity<ActivationUserResponse> activateUser(@RequestBody ActivationUserRequest request){
+    public ResponseEntity<ResponseMessageDTO> activateUser(@RequestBody ActivationUserRequest request){
         return authenticationService.activateUser(request);
     }
 }
