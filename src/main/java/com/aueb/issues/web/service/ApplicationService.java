@@ -96,7 +96,7 @@ public class ApplicationService {
             IssueType issueType;
 
             String title="Application "+applicationRepository.count();
-            jnode=node.get("description");
+            jnode=node.get("issueType");
             if(jnode!=null&&!jnode.isNull()) {
                 issueType  = isValidIssueType(jnode.asText())?IssueType.valueOf(jnode.asText()):null;
             }else  issueType=null;
