@@ -73,7 +73,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
         userRepository.save(admin);
         UserEntity teacher = UserEntity.builder()
                 .id(String.valueOf(UUID.randomUUID()))
-                .email("giorgosmeid@gmail.com")
+                .email("kgiorgoks@gmail.com")
                 .password(passwordEncoder.encode("pass"))
                 .phone("6945227238")
                 .firstname("Steve")
@@ -88,7 +88,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
         UserEntity tech = UserEntity.builder()
                 .id(String.valueOf(UUID.randomUUID()))
                 .password(passwordEncoder.encode("pass"))
-                .email("kgiorgoks@gmail.com")
+                .email("giorgosmeid@gmail.com")
                 .phone("6945227238")
                 .firstname("Karampelas")
                 .lastname("Giorgos")
@@ -96,7 +96,7 @@ public class InitThingsOnStartUp implements CommandLineRunner {
                 .address("Eygeniou Karavias 32, 11144 Attica")
                 .createdDate(getRandomDate())
                 .role(Role.TECHNICIAN)
-//                .technicalTeam(IssueType.ELECTRICAL)
+                .technicalTeam(IssueType.ELECTRICAL)
                 .activated(true)
                 .build();
         userRepository.save(tech);
