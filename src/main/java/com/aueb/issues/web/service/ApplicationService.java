@@ -89,8 +89,8 @@ public class ApplicationService {
 
             String description;
             jnode=node.get("description");
-            if(jnode!=null&&!jnode.isEmpty()) {
-                 description  = jnode.asText();
+            if(jnode!=null&&!jnode.isNull()) {
+                description  = jnode.asText();
             }else  description=null;
 
             IssueType issueType;
